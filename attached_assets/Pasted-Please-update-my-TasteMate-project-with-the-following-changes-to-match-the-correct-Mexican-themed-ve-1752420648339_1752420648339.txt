@@ -1,0 +1,77 @@
+Please update my TasteMate project with the following changes to match the correct Mexican-themed version with proper UI/UX, layout order, animations, and component styles. I want this to look and feel like the original "old tastemate" design. This version is targeted at Mexican food discovery and should be production-ready.
+
+🔧 VISUAL CHANGES
+Logo Header
+
+Center-align the TasteMate logo at the top.
+
+Use the logo image I uploaded (logo.png or the one just above).
+
+Make it larger and spin slowly on hover or tap.
+
+Keep the language flags, dark mode toggle, and settings icon aligned to the top-right.
+
+Promo Carousel
+
+Place it right below the header.
+
+Fix any broken promo image paths (replace them with local working PNGs if needed).
+
+Component Order
+Reorder components to this exact layout:
+
+Header
+
+Promo Carousel
+
+Chatbot Intro Message — Text:
+👋 Hi! I'm TasteMate, your flavor buddy, let me help you choose the perfect meal!
+
+Text Input — Placeholder:
+Tell me what you're craving...
+
+Spiciness Meter
+
+Label should say How Spicy? aligned to the left.
+
+Levels: 0 (❄️), 1 (🌶️), 2 (🌶️🌶️), 3 (🌶️🌶️🌶️), 4 (🔥🌶️).
+
+Glow animation increases with intensity.
+
+Each pepper wiggles slightly on hover/touch.
+
+This replaces the old 6-level meter with a 5-level one, so update database seeders and models accordingly.
+
+Flavor Shortcut Buttons
+
+Match the rounded teal buttons in the second image.
+
+Animate subtly on hover/tap.
+
+Each should still support hotkey display and translations.
+
+Input Row
+
+"Surprise Me" button and "Send" button should appear on the same row, aligned and centered under the flavor buttons.
+
+Body Background
+
+Use the uploaded background-bg.png file as the repeating or full-body background (whichever looks better).
+
+It should be subtle and not interfere with readability.
+
+🎨 THEME FIXES
+Themes are currently prefixed with "themes" — remove the prefix so that class names reflect the actual theme (e.g., default, sunset, minty, etc.).
+
+Fix theme switching logic so that the primary and secondary colors are applied globally (via Tailwind CSS or context provider).
+
+Ensure admin CRUD for themes is working and now reflects corrected class structure.
+
+🧠 DATABASE CHANGES
+Spiciness levels are now 0–4 instead of 0–5:
+
+Update the MongoDB Spiciness collection.
+
+Adjust the seed data and frontend mapping logic accordingly.
+
+Ensure any existing API endpoints like /api/spiciness return this updated structure.

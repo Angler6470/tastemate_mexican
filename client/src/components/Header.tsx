@@ -20,17 +20,20 @@ export function Header() {
     <header className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50 transition-colors duration-300">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center justify-center flex-1">
+          {/* Left spacer */}
+          <div className="flex-1"></div>
+          
+          {/* Centered Logo */}
+          <Link href="/" className="flex items-center justify-center">
             <img 
               src={logoPath} 
               alt="TasteMate Logo" 
-              className="h-12 w-auto transition-transform duration-300 hover:animate-spin-slow cursor-pointer"
+              className="h-16 w-auto transition-transform duration-500 hover:rotate-12 cursor-pointer"
             />
           </Link>
 
-          {/* Controls */}
-          <div className="flex items-center space-x-4">
+          {/* Right Controls */}
+          <div className="flex items-center space-x-4 flex-1 justify-end">
             {/* Language Toggle */}
             <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 rounded-full p-1">
               <Button

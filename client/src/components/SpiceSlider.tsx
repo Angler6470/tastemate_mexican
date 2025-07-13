@@ -20,8 +20,8 @@ export function SpiceSlider({ value, onChange }: SpiceSliderProps) {
 
   return (
     <div className="mb-8">
-      <Label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 text-center">
-        🌶️ {t("home.spiceLevel")}
+      <Label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 text-left">
+        How Spicy?
       </Label>
       
       <div className="relative bg-gray-100 dark:bg-gray-800 rounded-lg p-6">
@@ -32,8 +32,9 @@ export function SpiceSlider({ value, onChange }: SpiceSliderProps) {
               key={spice.id}
               onClick={() => onChange(spice.level)}
               className={`
-                spice-button flex flex-col items-center p-3 rounded-lg transition-all duration-300 cursor-pointer
+                spice-button flex flex-col items-center p-3 rounded-lg transition-all duration-300 cursor-pointer hover:animate-wiggle
                 ${value === spice.level ? 'active' : ''}
+                ${spice.level > 0 ? `spice-glow-${spice.level}` : ''}
               `}
             >
               <span className="text-2xl mb-1">{spice.emoji}</span>
@@ -48,7 +49,7 @@ export function SpiceSlider({ value, onChange }: SpiceSliderProps) {
         <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
           <div 
             className="h-full bg-gradient-to-r from-blue-400 via-yellow-400 via-orange-400 to-red-600 transition-all duration-300"
-            style={{ width: `${(value / 5) * 100}%` }}
+            style={{ width: `${(value / 4) * 100}%` }}
           />
         </div>
         

@@ -179,7 +179,7 @@ export class DatabaseStorage implements IStorage {
       ...menuItem,
     };
     
-    const [created] = await db.insert(menuItems).values([newMenuItem]).returning();
+    const [created] = await db.insert(menuItems).values(newMenuItem).returning();
     return created;
   }
 
@@ -258,11 +258,14 @@ async function seedDatabase() {
   
   try {
     // Check if data already exists
-    const existingFlavors = await db.select().from(flavors).limit(1);
-    if (existingFlavors.length > 0) {
-      console.log('Database already seeded, skipping...');
-      return;
-    }
+    // Clear existing data for fresh seed
+    await db.delete(menuItems);
+    await db.delete(promos);
+    await db.delete(themes);
+    await db.delete(hotkeys);
+    await db.delete(flavors);
+    await db.delete(spiciness);
+    await db.delete(users);
 
     // Demo admin user
     await db.insert(users).values({
@@ -272,14 +275,13 @@ async function seedDatabase() {
       role: 'admin',
     });
 
-    // Demo spiciness levels (Mexican restaurant theme)
+    // Demo spiciness levels (Mexican restaurant theme) - 5 levels (0-4)
     await db.insert(spiciness).values([
       { id: 'spice-1', level: 0, name: 'no_heat', emoji: '❄️', translations: { en: 'No Heat', es: 'Sin Picante' }, active: true },
       { id: 'spice-2', level: 1, name: 'mild', emoji: '🌶️', translations: { en: 'Mild', es: 'Suave' }, active: true },
       { id: 'spice-3', level: 2, name: 'medium', emoji: '🌶️🌶️', translations: { en: 'Medium', es: 'Medio' }, active: true },
-      { id: 'spice-4', level: 3, name: 'hot', emoji: '🔥', translations: { en: 'Hot', es: 'Picante' }, active: true },
-      { id: 'spice-5', level: 4, name: 'very_hot', emoji: '🔥🔥', translations: { en: 'Very Hot', es: 'Muy Picante' }, active: true },
-      { id: 'spice-6', level: 5, name: 'extreme', emoji: '🔥🔥🔥', translations: { en: 'Extreme', es: 'Extremo' }, active: true },
+      { id: 'spice-4', level: 3, name: 'hot', emoji: '🌶️🌶️🌶️', translations: { en: 'Hot', es: 'Picante' }, active: true },
+      { id: 'spice-5', level: 4, name: 'fire', emoji: '🔥🌶️', translations: { en: 'Fire', es: 'Fuego' }, active: true },
     ]);
 
     // Demo flavors (Mexican restaurant theme)
@@ -440,7 +442,7 @@ async function seedDatabase() {
         description: { en: 'Rice bowl with smoky chipotle chicken, black beans, and avocado', es: 'Tazón de arroz con pollo chipotle ahumado, frijoles negros y aguacate' },
         price: 15.99,
         imageUrl: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=300',
-        spiceLevel: 4,
+        spiceLevel: 3,
         flavors: ['flavor-8', 'flavor-4', 'flavor-6'],
         category: 'Main Course',
         ingredients: ['chicken', 'chipotle', 'rice', 'black beans', 'avocado'],

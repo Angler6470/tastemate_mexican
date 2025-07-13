@@ -15,7 +15,7 @@ import type { ChatResponse } from "@shared/schema";
 
 export default function Home() {
   const { language, t } = useI18n();
-  const [spiceLevel, setSpiceLevel] = useState(2);
+  const [spiceLevel, setSpiceLevel] = useState(1);
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<string[]>([]);
 
@@ -48,30 +48,39 @@ export default function Home() {
         
         <Card className="mb-8 ocean-card">
           <CardContent className="p-8">
+            {/* Chatbot Intro Message */}
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
-                <i className="fas fa-magic mr-2 text-primary"></i>
-                {t("home.title")}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                {t("home.subtitle")}
-              </p>
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
+                <p className="text-lg text-blue-800 dark:text-blue-200">
+                  👋 Hi! I'm TasteMate, your flavor buddy, let me help you choose the perfect meal!
+                </p>
+              </div>
+              
+              {/* Text Input */}
+              <div className="mb-6">
+                <ChatInterface
+                  spiceLevel={spiceLevel}
+                  selectedFlavors={selectedFlavors}
+                  onRecommendations={setRecommendations}
+                />
+              </div>
             </div>
 
-            <SpiceSlider value={spiceLevel} onChange={setSpiceLevel} />
+            {/* Spiciness Meter */}
+            <div className="mb-6">
+              <SpiceSlider value={spiceLevel} onChange={setSpiceLevel} />
+            </div>
             
-            <FlavorPills 
-              selectedFlavors={selectedFlavors} 
-              onChange={setSelectedFlavors} 
-            />
+            {/* Flavor Shortcut Buttons */}
+            <div className="mb-6">
+              <FlavorPills 
+                selectedFlavors={selectedFlavors} 
+                onChange={setSelectedFlavors} 
+              />
+            </div>
             
-            <ChatInterface
-              spiceLevel={spiceLevel}
-              selectedFlavors={selectedFlavors}
-              onRecommendations={setRecommendations}
-            />
-            
-            <div className="text-center">
+            {/* Input Row - Surprise Me and Send buttons */}
+            <div className="flex justify-center gap-4">
               <Button
                 onClick={handleSurpriseMe}
                 disabled={surpriseMutation.isPending}

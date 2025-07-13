@@ -59,45 +59,17 @@
   }
 }
 
+/* Mexican Theme Body Background */
 body {
-  background: linear-gradient(135deg, #67e8f9 0%, #22d3ee  50%, #0891b2 100%);
+  background-image: url('@assets/tastemate-bg_1752420690753.webp');
+  background-size: cover;
+  background-position: center;
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
 }
 
-/* Ocean food pattern background */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%2367e8f9' fill-opacity='0.15'%3E%3Cpath d='M20 20c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm40 0c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm0 40c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm-40 0c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10z'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 100px 100px;
-  z-index: -2;
-}
-
-/* Food icons pattern overlay */
-body::after {
-  content: '🌮 🥑 🌶️ 🧀 🍋 🌿 🌽 🔥';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  font-size: 40px;
-  color: rgba(103, 232, 249, 0.1);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-around;
-  z-index: -1;
-  pointer-events: none;
-  line-height: 1;
-}
+/* Remove old ocean patterns since we're using the new background */
 
 #root {
   background-color: transparent;
@@ -258,7 +230,48 @@ body::after {
   text-shadow: 0 0 12px #b91c1c, 0 0 24px #b91c1c;
 }
 
-/* Dynamic slider colors for each spice level */
+/* Updated Mexican theme styling */
+.flavor-pill {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  border: 2px solid #0d9488;
+  color: white;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.flavor-pill:hover {
+  background: linear-gradient(135deg, #0d9488, #0f766e);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+}
+
+.flavor-pill.selected {
+  background: linear-gradient(135deg, #0891b2, #0e7490);
+  border-color: #0891b2;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.3);
+}
+
+.spice-button {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.spice-button:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.spice-button.active {
+  background: linear-gradient(135deg, #0891b2, #0e7490);
+  border-color: #0891b2;
+  color: white;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.3);
+}
+
+/* Dynamic slider colors for each spice level (0-4) */
 .slider-color-0 {
   accent-color: #38bdf8;
 }

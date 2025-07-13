@@ -24,16 +24,7 @@ type ChatInterfaceProps = {
 export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations }: ChatInterfaceProps) {
   const { language, t } = useI18n();
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "1",
-      content: language === "es" 
-        ? "👋 ¡Hola! Soy tu asistente de comida con IA. ¡Dime qué se te antoja y encontraré el plato perfecto para ti!" 
-        : "👋 Hi! I'm your AI food assistant. Tell me what you're craving and I'll find the perfect dish for you!",
-      isUser: false,
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -105,7 +96,7 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations }
 
   return (
     <div className="mb-6">
-      <div className="ocean-card rounded-xl p-4 mb-4 h-64 overflow-y-auto transition-colors duration-300">
+      <div className="ocean-card rounded-xl p-4 mb-4 h-48 overflow-y-auto transition-colors duration-300">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -138,7 +129,7 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations }
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder={t("home.chatPlaceholder")}
+          placeholder="Tell me what you're craving..."
           className="flex-1"
           disabled={chatMutation.isPending}
         />
