@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Link } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Palette, Settings } from "lucide-react";
+import { HelpDialog } from "./HelpDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -88,6 +88,9 @@ export function Header() {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              {/* Help Dialog */}
+              <HelpDialog />
             </div>
 
             {/* Admin Access */}

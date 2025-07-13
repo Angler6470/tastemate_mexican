@@ -88,5 +88,25 @@
   "copiedToClipboard": "Copied to Clipboard",
   "pasteInInstagram": "Paste this in your Instagram story or post!",
   "linkCopied": "Link copied to clipboard",
-  "checkOut": "Check out"
+  "checkOut": "Check out",
+  "help": {
+    "title": "How to Use TasteMate",
+    "chatbot": {
+      "title": "AI Chatbot",
+      "description": "Chat with our AI to get personalized food recommendations based on your preferences and cravings."
+    },
+    "spiciness": {
+      "title": "Spiciness Meter",
+      "description": "Adjust the spice level slider to match your heat tolerance from mild to extra spicy."
+    },
+    "surprise": {
+      "title": "Surprise Me Button",
+      "description": "Get a random food recommendation when you're feeling adventurous and can't decide."
+    },
+    "shortcuts": {
+      "title": "Flavor Shortcuts",
+      "description": "Quick flavor buttons that instantly generate recommendations for specific tastes like spicy, sweet, or savory."
+    },
+    "footer": "Combine these features for the best experience - set your spice level, choose flavors, then chat with our AI for perfect recommendations!"
+  }
 }

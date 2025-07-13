@@ -88,5 +88,25 @@
   "copiedToClipboard": "Copiado al Portapapeles",
   "pasteInInstagram": "¡Pega esto en tu historia o publicación de Instagram!",
   "linkCopied": "Enlace copiado al portapapeles",
-  "checkOut": "Echa un vistazo a"
+  "checkOut": "Echa un vistazo a",
+  "help": {
+    "title": "Cómo Usar TasteMate",
+    "chatbot": {
+      "title": "Chatbot AI",
+      "description": "Chatea con nuestra AI para obtener recomendaciones de comida personalizadas basadas en tus preferencias y antojos."
+    },
+    "spiciness": {
+      "title": "Medidor de Picante",
+      "description": "Ajusta el nivel de picante para que coincida con tu tolerancia al chile, desde suave hasta extra picante."
+    },
+    "surprise": {
+      "title": "Botón Sorpréndeme",
+      "description": "Obtén una recomendación aleatoria de comida cuando te sientas aventurero y no puedas decidir."
+    },
+    "shortcuts": {
+      "title": "Atajos de Sabor",
+      "description": "Botones rápidos de sabor que generan instantáneamente recomendaciones para gustos específicos como picante, dulce o salado."
+    },
+    "footer": "¡Combina estas características para la mejor experiencia - ajusta tu nivel de picante, elige sabores, luego chatea con nuestra AI para recomendaciones perfectas!"
+  }
 }
