@@ -86,7 +86,7 @@ export default function Home() {
                 disabled={surpriseMutation.isPending}
                 className="surprise-button px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
-                🎲 {t("home.surpriseMe")} {surpriseMutation.isPending && "..."}
+                🎲 {t("home.surpriseMe")}{surpriseMutation.isPending && "..."}
               </Button>
             </div>
           </CardContent>
