@@ -198,7 +198,7 @@ export class DatabaseStorage implements IStorage {
       flavors: Array.isArray(menuItem.flavors) ? menuItem.flavors : [],
     };
     
-    const [created] = await db.insert(menuItems).values(newMenuItem).returning();
+    const [created] = await db.insert(menuItems).values(newMenuItem as any).returning();
     return created;
   }
 

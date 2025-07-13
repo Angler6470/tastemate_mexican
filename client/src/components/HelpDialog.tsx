@@ -38,7 +38,7 @@ export function HelpDialog() {
           <HelpCircle className="h-5 w-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] bg-gray-50 dark:bg-gray-900">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-center">
             {t('help.title') || 'How to Use TasteMate'}

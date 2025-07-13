@@ -25,7 +25,16 @@ type ChatInterfaceProps = {
 export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, autoSubmitMessage }: ChatInterfaceProps) {
   const { language, t } = useLanguage();
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: 'intro',
+      content: language === 'es' 
+        ? '¡Hola! Soy tu asistente de TasteMate. Cuéntame sobre tus antojos y preferencias de comida, y te recomendaré los mejores platillos mexicanos para ti. ¿En qué puedo ayudarte hoy?'
+        : 'Hello! I\'m your TasteMate assistant. Tell me about your food cravings and preferences, and I\'ll recommend the best Mexican dishes for you. How can I help you today?',
+      isUser: false,
+      timestamp: new Date(),
+    }
+  ]);
   const [isAutoSubmitting, setIsAutoSubmitting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
