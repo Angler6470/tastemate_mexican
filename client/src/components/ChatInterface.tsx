@@ -4,7 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Send, Loader2, Sparkles } from "lucide-react";
+import { Send, Loader2, Sparkles, Dice6 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import type { ChatRequest, ChatResponse } from "@shared/schema";
 
@@ -20,9 +20,11 @@ type ChatInterfaceProps = {
   selectedFlavors: string[];
   onRecommendations: (recommendations: string[]) => void;
   autoSubmitMessage?: string;
+  onSurpriseMe?: () => void;
+  isSurpriseLoading?: boolean;
 };
 
-export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, autoSubmitMessage }: ChatInterfaceProps) {
+export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, autoSubmitMessage, onSurpriseMe, isSurpriseLoading }: ChatInterfaceProps) {
   const { language, t } = useLanguage();
   const [message, setMessage] = useState("");
   const getIntroMessage = () => ({
@@ -176,7 +178,7 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, 
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <Input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -185,6 +187,16 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, 
           className="flex-1"
           disabled={chatMutation.isPending}
         />
+        {onSurpriseMe && (
+          <Button
+            onClick={onSurpriseMe}
+            disabled={isSurpriseLoading || chatMutation.isPending}
+            className="surprise-button px-4 py-2 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            <Dice6 className="h-4 w-4 mr-2" />
+            {t("home.surpriseMe")}
+          </Button>
+        )}
         <Button
           onClick={handleSend}
           disabled={chatMutation.isPending || !message.trim()}

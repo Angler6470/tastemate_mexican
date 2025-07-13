@@ -61,12 +61,22 @@
 
 /* Mexican Theme Body Background */
 body {
-  background-image: url('@assets/tastemate-bg_1752420690753.webp');
+  background-image: url('@assets/tastemate-bg_1752433419183.webp');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
+}
+
+/* Logo spin animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.logo-spin {
+  animation: spin 0.5s ease-in-out;
 }
 
 /* Remove old ocean patterns since we're using the new background */

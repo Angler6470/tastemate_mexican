@@ -190,6 +190,8 @@ export default function Home() {
                   selectedFlavors={selectedFlavors}
                   onRecommendations={setRecommendations}
                   autoSubmitMessage={autoSubmitMessage}
+                  onSurpriseMe={handleSurpriseMe}
+                  isSurpriseLoading={surpriseMutation.isPending}
                 />
               </div>
             </div>
@@ -208,16 +210,7 @@ export default function Home() {
               />
             </div>
             
-            {/* Input Row - Surprise Me and Send buttons */}
-            <div className="flex justify-center gap-4">
-              <Button
-                onClick={handleSurpriseMe}
-                disabled={surpriseMutation.isPending}
-                className="surprise-button px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-              >
-                🎲 {t("home.surpriseMe")}{surpriseMutation.isPending && "..."}
-              </Button>
-            </div>
+
           </CardContent>
         </Card>
 

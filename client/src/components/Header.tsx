@@ -28,7 +28,8 @@ export function Header() {
             <img 
               src={logoPath} 
               alt="TasteMate - A Flavor Companion" 
-              className="h-16 w-auto transition-transform duration-500 hover:scale-110 cursor-pointer"
+              className="h-32 w-auto transition-transform duration-500 hover:scale-110 hover:animate-spin cursor-pointer"
+              style={{ animationDuration: '0.5s' }}
             />
           </Link>
 

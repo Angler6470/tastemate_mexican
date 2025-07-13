@@ -46,8 +46,9 @@ export function FlavorPills({ selectedFlavors, onChange, onShortcutClick }: Flav
             variant="outline"
             size="sm"
             className={`
-              shortcut-button flavor-pill px-4 py-2 rounded-full transition-all duration-300 hover:scale-105
-              ${selectedFlavors.includes(flavor.id) ? 'selected' : ''}
+              px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 hover:brightness-110
+              bg-primary/10 hover:bg-primary/20 border-none
+              ${selectedFlavors.includes(flavor.id) ? 'bg-primary/30 text-primary-foreground' : 'text-primary'}
             `}
             onClick={() => handleFlavorClick(flavor)}
           >
