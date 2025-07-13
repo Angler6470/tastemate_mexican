@@ -181,3 +181,41 @@ export const chatResponseSchema = z.object({
 });
 
 export type ChatResponse = z.infer<typeof chatResponseSchema>;
+
+// Reviews schema
+export const reviews = pgTable('reviews', {
+  id: text('id').primaryKey().default('review-' + Date.now()),
+  menuItemId: text('menu_item_id').notNull(),
+  userName: text('user_name').notNull(),
+  rating: integer('rating').notNull(), // 1-5 stars
+  comment: text('comment'),
+  createdAt: timestamp('created_at').defaultNow(),
+  isApproved: boolean('is_approved').default(false),
+});
+
+export const insertReviewSchema = createInsertSchema(reviews).omit({
+  id: true,
+  createdAt: true,
+  isApproved: true,
+});
+
+export type Review = typeof reviews.$inferSelect;
+export type InsertReview = z.infer<typeof insertReviewSchema>;
+
+// Social shares schema
+export const socialShares = pgTable('social_shares', {
+  id: text('id').primaryKey().default('share-' + Date.now()),
+  menuItemId: text('menu_item_id').notNull(),
+  platform: text('platform').notNull(), // 'facebook', 'twitter', 'instagram', 'whatsapp'
+  shareCount: integer('share_count').default(1),
+  lastSharedAt: timestamp('last_shared_at').defaultNow(),
+});
+
+export const insertSocialShareSchema = createInsertSchema(socialShares).omit({
+  id: true,
+  shareCount: true,
+  lastSharedAt: true,
+});
+
+export type SocialShare = typeof socialShares.$inferSelect;
+export type InsertSocialShare = z.infer<typeof insertSocialShareSchema>;

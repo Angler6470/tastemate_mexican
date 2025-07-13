@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { protectRoute, adminOnly, comparePassword, generateToken, hashPassword } from "./middleware/auth";
 import { generateFoodRecommendations, generateSurpriseRecommendation } from "./services/openai";
-import { insertUserSchema, insertFlavorSchema, insertSpicinessSchema, insertPromoSchema, insertMenuItemSchema, insertThemeSchema, insertHotkeySchema, chatRequestSchema } from "@shared/schema";
+import { insertUserSchema, insertFlavorSchema, insertSpicinessSchema, insertPromoSchema, insertMenuItemSchema, insertThemeSchema, insertHotkeySchema, insertReviewSchema, insertSocialShareSchema, chatRequestSchema } from "@shared/schema";
 import type { AuthenticatedRequest } from "./middleware/auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -310,6 +310,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Hotkey deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: "Failed to delete hotkey" });
+    }
+  });
+
+  // Public review routes
+  app.get("/api/reviews", async (req, res) => {
+    try {
+      const reviews = await storage.getReviews();
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch reviews" });
+    }
+  });
+
+  app.get("/api/reviews/menuitem/:menuItemId", async (req, res) => {
+    try {
+      const { menuItemId } = req.params;
+      const reviews = await storage.getReviewsByMenuItem(menuItemId);
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch reviews for menu item" });
+    }
+  });
+
+  app.post("/api/reviews", async (req, res) => {
+    try {
+      const validatedData = insertReviewSchema.parse(req.body);
+      const review = await storage.createReview(validatedData);
+      res.json(review);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create review" });
+    }
+  });
+
+  // Social sharing routes
+  app.get("/api/social-shares", async (req, res) => {
+    try {
+      const shares = await storage.getSocialShares();
+      res.json(shares);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch social shares" });
+    }
+  });
+
+  app.get("/api/social-shares/menuitem/:menuItemId", async (req, res) => {
+    try {
+      const { menuItemId } = req.params;
+      const shares = await storage.getSocialSharesByMenuItem(menuItemId);
+      res.json(shares);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch social shares for menu item" });
+    }
+  });
+
+  app.post("/api/social-shares", async (req, res) => {
+    try {
+      const validatedData = insertSocialShareSchema.parse(req.body);
+      const share = await storage.createSocialShare(validatedData);
+      res.json(share);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create social share" });
+    }
+  });
+
+  app.post("/api/social-shares/increment", async (req, res) => {
+    try {
+      const { menuItemId, platform } = req.body;
+      const share = await storage.incrementShareCount(menuItemId, platform);
+      res.json(share);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to increment share count" });
+    }
+  });
+
+  // Admin review routes
+  app.get("/api/admin/reviews", protectRoute, adminOnly, async (req: AuthenticatedRequest, res) => {
+    try {
+      const reviews = await storage.getReviews();
+      res.json(reviews);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch reviews" });
+    }
+  });
+
+  app.put("/api/admin/reviews/:id", protectRoute, adminOnly, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      const validatedData = insertReviewSchema.partial().parse(req.body);
+      const review = await storage.updateReview(id, validatedData);
+      res.json(review);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update review" });
+    }
+  });
+
+  app.post("/api/admin/reviews/:id/approve", protectRoute, adminOnly, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      const approved = await storage.approveReview(id);
+      res.json({ success: approved });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to approve review" });
+    }
+  });
+
+  app.delete("/api/admin/reviews/:id", protectRoute, adminOnly, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteReview(id);
+      res.json({ success: deleted });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete review" });
     }
   });
 

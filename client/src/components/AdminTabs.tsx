@@ -10,10 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Edit2, Trash2, Save, X } from "lucide-react";
+import { Plus, Edit2, Trash2, Save, X, MessageCircle, Share2, Star, Check, User } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { MenuItem, Promo, Theme, Flavor, Hotkey } from "@shared/schema";
+import type { MenuItem, Promo, Theme, Flavor, Hotkey, Review, SocialShare } from "@shared/schema";
 
 export function AdminTabs() {
   const { token } = useAuth();
@@ -44,6 +44,15 @@ export function AdminTabs() {
 
   const { data: hotkeys = [] } = useQuery<Hotkey[]>({
     queryKey: ["/api/hotkeys"],
+  });
+
+  const { data: reviews = [] } = useQuery<Review[]>({
+    queryKey: ["/api/admin/reviews"],
+    meta: { headers },
+  });
+
+  const { data: socialShares = [] } = useQuery<SocialShare[]>({
+    queryKey: ["/api/social-shares"],
   });
 
   // Mutations
@@ -130,11 +139,19 @@ export function AdminTabs() {
     <Card>
       <CardContent className="p-6">
         <Tabs defaultValue="menu" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="menu">{t("admin.dashboard.tabs.menu")}</TabsTrigger>
             <TabsTrigger value="promos">{t("admin.dashboard.tabs.promos")}</TabsTrigger>
             <TabsTrigger value="themes">{t("admin.dashboard.tabs.themes")}</TabsTrigger>
             <TabsTrigger value="hotkeys">{t("admin.dashboard.tabs.hotkeys")}</TabsTrigger>
+            <TabsTrigger value="reviews">
+              <MessageCircle className="h-4 w-4 mr-1" />
+              Reviews
+            </TabsTrigger>
+            <TabsTrigger value="social">
+              <Share2 className="h-4 w-4 mr-1" />
+              Social
+            </TabsTrigger>
             <TabsTrigger value="stats">{t("admin.dashboard.tabs.stats")}</TabsTrigger>
           </TabsList>
 
@@ -408,6 +425,151 @@ export function AdminTabs() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="reviews" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                Manage Reviews
+              </h3>
+              <Badge variant="secondary">
+                {reviews.length} Total Reviews
+              </Badge>
+            </div>
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <Card key={review.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <User className="h-4 w-4 text-gray-500" />
+                          <span className="font-medium">{review.userName}</span>
+                          <div className="flex items-center gap-1">
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <Star
+                                key={i}
+                                className={`h-4 w-4 ${
+                                  i < review.rating
+                                    ? 'fill-yellow-400 text-yellow-400'
+                                    : 'text-gray-300'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <Badge variant={review.isApproved ? "default" : "secondary"}>
+                            {review.isApproved ? "Approved" : "Pending"}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                          {review.comment}
+                        </p>
+                        <div className="text-xs text-gray-500">
+                          {new Date(review.createdAt).toLocaleDateString()} • Menu Item: {review.menuItemId}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        {!review.isApproved && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                              try {
+                                await fetch(`/api/admin/reviews/${review.id}/approve`, {
+                                  method: 'POST',
+                                  headers: { ...headers }
+                                });
+                                queryClient.invalidateQueries({ queryKey: ['/api/admin/reviews'] });
+                                toast({ title: 'Review approved successfully' });
+                              } catch (error) {
+                                toast({ title: 'Failed to approve review', variant: 'destructive' });
+                              }
+                            }}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                        )}
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={async () => {
+                            if (confirm('Are you sure you want to delete this review?')) {
+                              try {
+                                await fetch(`/api/admin/reviews/${review.id}`, {
+                                  method: 'DELETE',
+                                  headers: { ...headers }
+                                });
+                                queryClient.invalidateQueries({ queryKey: ['/api/admin/reviews'] });
+                                toast({ title: 'Review deleted successfully' });
+                              } catch (error) {
+                                toast({ title: 'Failed to delete review', variant: 'destructive' });
+                              }
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              {reviews.length === 0 && (
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <MessageCircle className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                    <p className="text-gray-500">No reviews yet</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="social" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                Social Sharing Analytics
+              </h3>
+              <Badge variant="secondary">
+                {socialShares.reduce((total, share) => total + share.shareCount, 0)} Total Shares
+              </Badge>
+            </div>
+            <div className="space-y-4">
+              {socialShares.map((share) => (
+                <Card key={share.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                          <Share2 className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">{share.platform}</h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Menu Item: {share.menuItemId}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Last shared: {new Date(share.lastSharedAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-primary">{share.shareCount}</div>
+                        <div className="text-sm text-gray-500">shares</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              {socialShares.length === 0 && (
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <Share2 className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                    <p className="text-gray-500">No social shares yet</p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </TabsContent>
 

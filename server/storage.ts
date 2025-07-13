@@ -1,10 +1,11 @@
 import { nanoid } from 'nanoid';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { db } from './db';
 import {
   User, InsertUser, Flavor, InsertFlavor, Spiciness, InsertSpiciness,
   Promo, InsertPromo, MenuItem, InsertMenuItem, Theme, InsertTheme,
-  Hotkey, InsertHotkey, users, flavors, spiciness, promos, menuItems, themes, hotkeys
+  Hotkey, InsertHotkey, Review, InsertReview, SocialShare, InsertSocialShare,
+  users, flavors, spiciness, promos, menuItems, themes, hotkeys, reviews, socialShares
 } from '@shared/schema';
 
 export interface IStorage {
@@ -54,6 +55,23 @@ export interface IStorage {
   createHotkey(hotkey: InsertHotkey): Promise<Hotkey>;
   updateHotkey(id: string, hotkey: Partial<InsertHotkey>): Promise<Hotkey | null>;
   deleteHotkey(id: string): Promise<boolean>;
+  
+  // Review methods
+  getReviews(): Promise<Review[]>;
+  getReviewsByMenuItem(menuItemId: string): Promise<Review[]>;
+  getReview(id: string): Promise<Review | null>;
+  createReview(review: InsertReview): Promise<Review>;
+  updateReview(id: string, review: Partial<InsertReview>): Promise<Review | null>;
+  deleteReview(id: string): Promise<boolean>;
+  approveReview(id: string): Promise<boolean>;
+  
+  // Social sharing methods
+  getSocialShares(): Promise<SocialShare[]>;
+  getSocialSharesByMenuItem(menuItemId: string): Promise<SocialShare[]>;
+  getSocialShare(id: string): Promise<SocialShare | null>;
+  createSocialShare(socialShare: InsertSocialShare): Promise<SocialShare>;
+  incrementShareCount(menuItemId: string, platform: string): Promise<SocialShare | null>;
+  deleteSocialShare(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -177,10 +195,10 @@ export class DatabaseStorage implements IStorage {
     const newMenuItem = {
       id: nanoid(),
       ...menuItem,
-      flavors: menuItem.flavors as string[],
+      flavors: Array.isArray(menuItem.flavors) ? menuItem.flavors : [],
     };
     
-    const [created] = await db.insert(menuItems).values([newMenuItem]).returning();
+    const [created] = await db.insert(menuItems).values(newMenuItem).returning();
     return created;
   }
 
@@ -249,6 +267,108 @@ export class DatabaseStorage implements IStorage {
 
   async deleteHotkey(id: string): Promise<boolean> {
     const result = await db.delete(hotkeys).where(eq(hotkeys.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Review methods
+  async getReviews(): Promise<Review[]> {
+    return await db.select().from(reviews);
+  }
+
+  async getReviewsByMenuItem(menuItemId: string): Promise<Review[]> {
+    return await db.select().from(reviews).where(eq(reviews.menuItemId, menuItemId));
+  }
+
+  async getReview(id: string): Promise<Review | null> {
+    const [review] = await db.select().from(reviews).where(eq(reviews.id, id));
+    return review || null;
+  }
+
+  async createReview(review: InsertReview): Promise<Review> {
+    const reviewId = `review-${nanoid()}`;
+    const [newReview] = await db
+      .insert(reviews)
+      .values({ ...review, id: reviewId })
+      .returning();
+    return newReview;
+  }
+
+  async updateReview(id: string, review: Partial<InsertReview>): Promise<Review | null> {
+    const [updatedReview] = await db
+      .update(reviews)
+      .set(review)
+      .where(eq(reviews.id, id))
+      .returning();
+    return updatedReview || null;
+  }
+
+  async deleteReview(id: string): Promise<boolean> {
+    const result = await db.delete(reviews).where(eq(reviews.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async approveReview(id: string): Promise<boolean> {
+    const [updatedReview] = await db
+      .update(reviews)
+      .set({ isApproved: true })
+      .where(eq(reviews.id, id))
+      .returning();
+    return !!updatedReview;
+  }
+
+  // Social sharing methods
+  async getSocialShares(): Promise<SocialShare[]> {
+    return await db.select().from(socialShares);
+  }
+
+  async getSocialSharesByMenuItem(menuItemId: string): Promise<SocialShare[]> {
+    return await db.select().from(socialShares).where(eq(socialShares.menuItemId, menuItemId));
+  }
+
+  async getSocialShare(id: string): Promise<SocialShare | null> {
+    const [share] = await db.select().from(socialShares).where(eq(socialShares.id, id));
+    return share || null;
+  }
+
+  async createSocialShare(socialShare: InsertSocialShare): Promise<SocialShare> {
+    const shareId = `share-${nanoid()}`;
+    const [newShare] = await db
+      .insert(socialShares)
+      .values({ ...socialShare, id: shareId })
+      .returning();
+    return newShare;
+  }
+
+  async incrementShareCount(menuItemId: string, platform: string): Promise<SocialShare | null> {
+    // First, try to find existing share record
+    const existingShares = await db
+      .select()
+      .from(socialShares)
+      .where(and(
+        eq(socialShares.menuItemId, menuItemId),
+        eq(socialShares.platform, platform)
+      ));
+
+    if (existingShares.length > 0) {
+      const existingShare = existingShares[0];
+      // Update existing record
+      const [updatedShare] = await db
+        .update(socialShares)
+        .set({ 
+          shareCount: (existingShare.shareCount || 0) + 1,
+          lastSharedAt: new Date()
+        })
+        .where(eq(socialShares.id, existingShare.id))
+        .returning();
+      return updatedShare;
+    } else {
+      // Create new record
+      return await this.createSocialShare({ menuItemId, platform });
+    }
+  }
+
+  async deleteSocialShare(id: string): Promise<boolean> {
+    const result = await db.delete(socialShares).where(eq(socialShares.id, id));
     return (result.rowCount ?? 0) > 0;
   }
 }
