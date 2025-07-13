@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import logoPath from "@assets/logo_1752417164635.png";
+import logoPath from "@assets/logo_1752432788529.png";
 
 export function Header() {
   const { language, changeLanguage, t } = useLanguage();
@@ -25,9 +25,11 @@ export function Header() {
           
           {/* Centered Logo */}
           <Link href="/" className="flex items-center justify-center">
-            <div className="text-3xl font-bold text-primary transition-transform duration-500 hover:scale-110 cursor-pointer">
-              🌮 TasteMate
-            </div>
+            <img 
+              src={logoPath} 
+              alt="TasteMate - A Flavor Companion" 
+              className="h-16 w-auto transition-transform duration-500 hover:scale-110 cursor-pointer"
+            />
           </Link>
 
           {/* Right Controls */}
