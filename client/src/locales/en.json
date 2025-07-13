@@ -6,10 +6,11 @@
   "home": {
     "title": "What are you craving?",
     "subtitle": "Let our AI chef find the perfect dish for you",
-    "spiceLevel": "Spice Level",
+    "spiceLevel": "How Spicy?",
     "flavorPreferences": "Flavor Preferences",
     "surpriseMe": "Surprise Me!",
-    "chatPlaceholder": "I'm craving something...",
+    "chatPlaceholder": "Tell me what you're craving...",
+    "chatbotIntro": "Hi! I'm TasteMate, your flavor buddy, let me help you choose the perfect meal!",
     "recommendationsTitle": "Perfect Matches for You",
     "spiceLevels": {
       "mild": "😊 Mild",

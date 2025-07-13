@@ -52,7 +52,7 @@ export default function Home() {
             <div className="text-center mb-8">
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 mb-6">
                 <p className="text-lg text-blue-800 dark:text-blue-200">
-                  👋 Hi! I'm TasteMate, your flavor buddy, let me help you choose the perfect meal!
+                  👋 {t("home.chatbotIntro")}
                 </p>
               </div>
               

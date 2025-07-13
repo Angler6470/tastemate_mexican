@@ -35,7 +35,7 @@ export function SpiceSlider({ value, onChange }: SpiceSliderProps) {
   return (
     <div className="spice-slider mb-8">
       <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 text-left">
-        How Spicy?
+        {t("home.spiceLevel")}
       </h2>
       
       {/* Range slider for spice level, with dynamic color */}

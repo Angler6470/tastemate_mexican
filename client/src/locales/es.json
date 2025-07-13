@@ -6,10 +6,11 @@
   "home": {
     "title": "¿Qué se te antoja?",
     "subtitle": "Deja que nuestro chef de IA encuentre el plato perfecto para ti",
-    "spiceLevel": "Nivel de Picante",
+    "spiceLevel": "¿Qué tan picante?",
     "flavorPreferences": "Preferencias de Sabor",
     "surpriseMe": "¡Sorpréndeme!",
-    "chatPlaceholder": "Se me antoja algo...",
+    "chatPlaceholder": "Dime qué se te antoja...",
+    "chatbotIntro": "¡Hola! Soy TasteMate, tu compañero de sabores, ¡déjame ayudarte a elegir la comida perfecta!",
     "recommendationsTitle": "Combinaciones Perfectas para Ti",
     "spiceLevels": {
       "mild": "😊 Suave",

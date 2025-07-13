@@ -129,7 +129,7 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations }
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Tell me what you're craving..."
+          placeholder={t("home.chatPlaceholder")}
           className="flex-1"
           disabled={chatMutation.isPending}
         />
