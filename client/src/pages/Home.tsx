@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useI18n } from "@/hooks/useI18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Header } from "@/components/Header";
 import { PromoCarousel } from "@/components/PromoCarousel";
 import { SpiceSlider } from "@/components/SpiceSlider";
@@ -14,7 +14,7 @@ import { apiRequest } from "@/lib/queryClient";
 import type { ChatResponse } from "@shared/schema";
 
 export default function Home() {
-  const { language, t } = useI18n();
+  const { language, t } = useLanguage();
   const [spiceLevel, setSpiceLevel] = useState(1);
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<string[]>([]);

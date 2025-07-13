@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useI18n } from "@/hooks/useI18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import type { Flavor } from "@shared/schema";
@@ -10,7 +10,7 @@ type FlavorPillsProps = {
 };
 
 export function FlavorPills({ selectedFlavors, onChange }: FlavorPillsProps) {
-  const { language, t } = useI18n();
+  const { language, t } = useLanguage();
   
   const { data: flavors = [] } = useQuery<Flavor[]>({
     queryKey: ["/api/flavors"],

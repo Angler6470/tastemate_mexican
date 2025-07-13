@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useI18n } from "@/hooks/useI18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Palette, Settings } from "lucide-react";
@@ -13,7 +13,7 @@ import {
 import logoPath from "@assets/logo_1752417164635.png";
 
 export function Header() {
-  const { language, changeLanguage, t } = useI18n();
+  const { language, changeLanguage, t } = useLanguage();
   const { isDarkMode, toggleDarkMode, availableThemes, setTheme, currentTheme } = useTheme();
 
   return (

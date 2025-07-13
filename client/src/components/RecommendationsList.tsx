@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useI18n } from "@/hooks/useI18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
@@ -10,7 +10,7 @@ type RecommendationsListProps = {
 };
 
 export function RecommendationsList({ recommendedIds }: RecommendationsListProps) {
-  const { language, t } = useI18n();
+  const { language, t } = useLanguage();
   
   const { data: allMenuItems = [] } = useQuery<MenuItem[]>({
     queryKey: ["/api/menuitems"],

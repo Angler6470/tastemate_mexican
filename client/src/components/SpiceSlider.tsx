@@ -1,4 +1,4 @@
-import { useI18n } from "@/hooks/useI18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type SpiceSliderProps = {
   value: number;
@@ -6,7 +6,7 @@ type SpiceSliderProps = {
 };
 
 export function SpiceSlider({ value, onChange }: SpiceSliderProps) {
-  const { t } = useI18n();
+  const { t } = useLanguage();
 
   // Helper function to get color classes for each spice level
   const getSpiceGlow = (level: number, current: number) => {

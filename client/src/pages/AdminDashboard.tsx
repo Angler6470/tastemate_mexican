@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
-import { useI18n } from "@/hooks/useI18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Header } from "@/components/Header";
 import { AdminTabs } from "@/components/AdminTabs";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { BarChart3, LogOut } from "lucide-react";
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const { user, logout } = useAuth();
-  const { t } = useI18n();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!user) {

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useI18n } from "@/hooks/useI18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { Promo } from "@shared/schema";
 
 export function PromoCarousel() {
-  const { language } = useI18n();
+  const { language } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   
   const { data: promos = [], isLoading } = useQuery<Promo[]>({

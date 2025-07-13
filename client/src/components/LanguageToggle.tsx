@@ -1,8 +1,8 @@
-import { useI18n } from "@/hooks/useI18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 
 export function LanguageToggle() {
-  const { language, changeLanguage } = useI18n();
+  const { language, changeLanguage } = useLanguage();
 
   return (
     <div className="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 rounded-full p-1">

@@ -7,11 +7,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useI18n } from "@/hooks/useI18n";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function ThemeToggle() {
   const { isDarkMode, toggleDarkMode, availableThemes, setTheme, currentTheme } = useTheme();
-  const { t } = useI18n();
+  const { t } = useLanguage();
 
   return (
     <div className="flex items-center space-x-2">
