@@ -14,7 +14,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [currentTheme, setCurrentTheme] = useState(() => {
-    return localStorage.getItem("colorTheme") || "default";
+    return localStorage.getItem("colorTheme") || "ocean";
   });
   
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -46,9 +46,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       
       // Apply theme class
       document.body.className = document.body.className.replace(/theme-\w+/g, "");
-      if (currentTheme !== "default") {
-        document.body.classList.add(`theme-${currentTheme}`);
-      }
+      document.body.classList.add(`theme-${currentTheme}`);
+      
+      console.log(`Theme changed to: ${currentTheme}`, theme.colors);
     }
   }, [currentTheme, themes]);
 

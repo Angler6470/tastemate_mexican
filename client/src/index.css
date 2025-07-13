@@ -340,6 +340,49 @@ body {
   border: none;
 }
 
+/* Theme-specific styles using CSS custom properties */
+.theme-ocean {
+  --primary: var(--theme-primary);
+  --secondary: var(--theme-secondary);
+  --accent: var(--theme-accent);
+}
+
+.theme-minty {
+  --primary: var(--theme-primary);
+  --secondary: var(--theme-secondary);
+  --accent: var(--theme-accent);
+}
+
+.theme-sunset {
+  --primary: var(--theme-primary);
+  --secondary: var(--theme-secondary);
+  --accent: var(--theme-accent);
+}
+
+.theme-crimson {
+  --primary: var(--theme-primary);
+  --secondary: var(--theme-secondary);
+  --accent: var(--theme-accent);
+}
+
+/* Apply theme colors to key elements */
+.theme-ocean header,
+.theme-minty header,
+.theme-sunset header,
+.theme-crimson header {
+  background-color: var(--theme-primary);
+  color: white;
+}
+
+.theme-ocean .flavor-pill.selected,
+.theme-minty .flavor-pill.selected,
+.theme-sunset .flavor-pill.selected,
+.theme-crimson .flavor-pill.selected {
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px rgba(var(--theme-primary), 0.3);
+}
+
 /* Wiggle animation for spice levels */
 @keyframes wiggle {
   0%, 100% { transform: rotate(0deg); }
