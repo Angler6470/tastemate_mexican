@@ -12,12 +12,22 @@ export function SpiceSlider({ value, onChange }: SpiceSliderProps) {
   const getSpiceGlow = (level: number, current: number) => {
     if (current === 0 && level === 0) return 'text-blue-500';
     if (current < level) return 'text-gray-400';
-    // Gradually increase from orange to red
+    // Gradually increase from orange to red - only add glow to current level
+    if (current === level) {
+      switch (level) {
+        case 1: return 'text-orange-400 spice-glow-1';
+        case 2: return 'text-orange-500 spice-glow-2';
+        case 3: return 'text-orange-600 spice-glow-3';
+        case 4: return 'text-red-500 spice-glow-4';
+        default: return 'text-red-500';
+      }
+    }
+    // For completed levels (current > level), show solid color without glow
     switch (level) {
-      case 1: return 'text-orange-400 spice-glow-1';
-      case 2: return 'text-orange-500 spice-glow-2';
-      case 3: return 'text-orange-600 spice-glow-3';
-      case 4: return 'text-red-500 spice-glow-4';
+      case 1: return 'text-orange-400';
+      case 2: return 'text-orange-500';
+      case 3: return 'text-orange-600';
+      case 4: return 'text-red-500';
       default: return 'text-red-500';
     }
   };

@@ -305,7 +305,7 @@ body {
   transition: none;
 }
 
-/* Dynamic slider colors for each spice level (0-4) */
+/* Dynamic slider colors for each spice level (0-4) - NO GLOW EFFECTS */
 .slider-color-0 {
   accent-color: #38bdf8;
 }
@@ -324,6 +324,20 @@ body {
 
 .slider-color-4 {
   accent-color: #b91c1c;
+}
+
+/* Remove any glow/pulsing effects from slider track and thumb */
+.slider::-webkit-slider-track {
+  background: #ddd;
+  border-radius: 5px;
+  height: 6px;
+}
+
+.slider::-moz-range-track {
+  background: #ddd;
+  border-radius: 5px;
+  height: 6px;
+  border: none;
 }
 
 /* Wiggle animation for spice levels */
