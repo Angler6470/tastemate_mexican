@@ -43,7 +43,7 @@ export function FlavorPills({ selectedFlavors, onChange }: FlavorPillsProps) {
             onClick={() => toggleFlavor(flavor.id)}
           >
             <span className="mr-2">{flavor.emoji}</span>
-            {flavor.name}
+            {flavor.translations[language] || flavor.name}
             {flavor.hotkey && (
               <span className="ml-2 text-xs opacity-60">
                 ({flavor.hotkey})

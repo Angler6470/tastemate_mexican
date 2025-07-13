@@ -115,7 +115,7 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations }
             <div className="flex items-center space-x-2">
               <Loader2 className="h-4 w-4 animate-spin" />
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                {language === "es" ? "La IA está cocinando tus recomendaciones..." : "AI is cooking up your recommendations..."}
+                {t("home.aiCooking")}
               </span>
             </div>
           </div>
