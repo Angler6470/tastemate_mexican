@@ -36,6 +36,7 @@ export function useI18n() {
   };
 
   const changeLanguage = (newLanguage: Language) => {
+    console.log(`Language changing from ${language} to ${newLanguage}`);
     setLanguage(newLanguage);
   };
 
