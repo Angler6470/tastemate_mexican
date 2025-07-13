@@ -45,7 +45,7 @@ export function PromoCarousel() {
       >
         {promos.map((promo, index) => (
           <div
-            key={promo._id}
+            key={promo.id}
             className="carousel-slide flex items-center justify-center text-white relative min-w-full"
           >
             <img

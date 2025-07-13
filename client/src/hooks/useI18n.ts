@@ -21,6 +21,7 @@ export function useI18n() {
   }, [language]);
 
   const t = (key: TranslationKey): string => {
+    console.log(`Translation requested: ${key} for language: ${language}`);
     const keys = key.split(".");
     let value: any = translations[language];
     
@@ -32,6 +33,7 @@ export function useI18n() {
       }
     }
     
+    console.log(`Translation result: ${value}`);
     return value;
   };
 
