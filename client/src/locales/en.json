@@ -1,0 +1,61 @@
+{
+  "header": {
+    "title": "TasteMate",
+    "admin": "Admin Access"
+  },
+  "home": {
+    "title": "What are you craving?",
+    "subtitle": "Let our AI chef find the perfect dish for you",
+    "spiceLevel": "Spice Level",
+    "flavorPreferences": "Flavor Preferences",
+    "surpriseMe": "Surprise Me! 🎲",
+    "chatPlaceholder": "I'm craving something...",
+    "recommendationsTitle": "Perfect Matches for You",
+    "spiceLevels": {
+      "mild": "😊 Mild",
+      "medium": "🌶️ Medium",
+      "hot": "🔥 Hot",
+      "spicy": "🌋 Spicy", 
+      "extreme": "💀 Extreme",
+      "insane": "☠️ Insane"
+    }
+  },
+  "admin": {
+    "login": {
+      "title": "Admin Access",
+      "username": "Username",
+      "password": "Password",
+      "loginButton": "Login",
+      "logout": "Logout"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "tabs": {
+        "menu": "Menu Items",
+        "promos": "Promos",
+        "themes": "Themes",
+        "hotkeys": "Hotkeys",
+        "stats": "Stats"
+      },
+      "actions": {
+        "add": "Add Item",
+        "edit": "Edit",
+        "delete": "Delete",
+        "save": "Save",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!",
+    "close": "Close"
+  },
+  "themes": {
+    "default": "Default",
+    "minty": "Minty",
+    "sunset": "Sunset",
+    "inferno": "Inferno"
+  }
+}

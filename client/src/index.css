@@ -1,0 +1,442 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(11, 100%, 60%);
+  --primary-foreground: hsl(60, 9.1%, 97.8%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(43, 100%, 64%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* TasteMate Custom Colors */
+  --primary-orange: hsl(11, 100%, 60%);
+  --primary-dark: hsl(1, 72%, 56%);
+  --secondary-green: hsl(106, 37%, 25%);
+  --accent-yellow: hsl(43, 100%, 64%);
+  --accent-dark: hsl(27, 100%, 50%);
+  --fresh-orange: hsl(27, 100%, 50%);
+  --neutral-light: hsl(210, 17%, 98%);
+  --neutral-dark: hsl(210, 11%, 15%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(11, 100%, 60%);
+  --primary-foreground: hsl(60, 9.1%, 97.8%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+/* Theme Variants */
+.theme-minty {
+  --primary: hsl(169, 100%, 39%);
+  --primary-dark: hsl(169, 100%, 36%);
+  --accent: hsl(147, 50%, 73%);
+}
+
+.theme-sunset {
+  --primary: hsl(14, 77%, 69%);
+  --primary-dark: hsl(14, 77%, 63%);
+  --accent: hsl(45, 100%, 66%);
+}
+
+.theme-inferno {
+  --primary: hsl(0, 70%, 50%);
+  --primary-dark: hsl(0, 70%, 42%);
+  --accent: hsl(14, 100%, 56%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .font-poppins {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .font-fredoka {
+    font-family: 'Fredoka One', cursive;
+  }
+}
+
+@layer components {
+  /* Carousel Styles */
+  .carousel-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+
+  .carousel-slide {
+    min-width: 100%;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  /* Flavor Pills */
+  .flavor-pill {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .flavor-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px hsla(11, 100%, 60%, 0.3);
+  }
+
+  .flavor-pill.active {
+    background: linear-gradient(45deg, hsl(11, 100%, 60%), hsl(1, 72%, 56%));
+    color: white;
+    border-color: hsl(43, 100%, 64%);
+  }
+
+  /* Spice Slider Glow Effect */
+  .spice-slider {
+    position: relative;
+  }
+
+  .spice-slider .relative {
+    position: relative;
+  }
+
+  .spice-slider input[type="range"] {
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(to right, 
+      hsl(120, 61%, 50%) 0%, 
+      hsl(60, 100%, 50%) 25%, 
+      hsl(39, 100%, 50%) 50%, 
+      hsl(16, 100%, 50%) 75%, 
+      hsl(0, 100%, 50%) 100%
+    );
+    border-radius: 4px;
+    outline: none;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .spice-slider input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(45deg, hsl(11, 100%, 60%), hsl(1, 72%, 56%));
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 15px hsla(11, 100%, 60%, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .spice-slider input[type="range"]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 25px hsla(11, 100%, 60%, 0.8);
+    transform: scale(1.1);
+  }
+
+  .spice-slider input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(45deg, hsl(11, 100%, 60%), hsl(1, 72%, 56%));
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 15px hsla(11, 100%, 60%, 0.5);
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  /* Chat Interface */
+  .chat-bubble {
+    animation: slideIn 0.5s ease-out;
+  }
+
+  .typing-indicator {
+    animation: pulse 1.5s infinite;
+  }
+
+  /* Admin Cards */
+  .admin-card {
+    backdrop-filter: blur(10px);
+    background: hsla(0, 0%, 100%, 0.95);
+    border: 1px solid hsla(0, 0%, 100%, 0.2);
+  }
+
+  .dark .admin-card {
+    background: hsla(210, 11%, 15%, 0.95);
+    border-color: hsla(0, 0%, 100%, 0.1);
+  }
+
+  /* Language Flags */
+  .language-flag {
+    transition: all 0.3s ease;
+  }
+
+  .language-flag:hover {
+    transform: scale(1.1);
+  }
+
+  /* Surprise Button */
+  .surprise-button {
+    background: linear-gradient(45deg, hsl(43, 100%, 64%), hsl(27, 100%, 50%));
+    transition: all 0.3s ease;
+  }
+
+  .surprise-button:hover {
+    background: linear-gradient(45deg, hsl(27, 100%, 50%), hsl(43, 100%, 64%));
+    transform: scale(1.05);
+  }
+
+  /* Utility Classes */
+  .bg-neutral {
+    background-color: hsl(210, 17%, 98%);
+  }
+
+  .bg-neutral-dark {
+    background-color: hsl(210, 11%, 15%);
+  }
+
+  .text-primary {
+    color: hsl(11, 100%, 60%);
+  }
+
+  .text-primary-dark {
+    color: hsl(1, 72%, 56%);
+  }
+
+  .text-secondary {
+    color: hsl(106, 37%, 25%);
+  }
+
+  .text-accent {
+    color: hsl(43, 100%, 64%);
+  }
+
+  .text-accent-dark {
+    color: hsl(27, 100%, 50%);
+  }
+
+  .bg-primary {
+    background-color: hsl(11, 100%, 60%);
+  }
+
+  .bg-primary-dark {
+    background-color: hsl(1, 72%, 56%);
+  }
+
+  .bg-secondary {
+    background-color: hsl(106, 37%, 25%);
+  }
+
+  .bg-accent {
+    background-color: hsl(43, 100%, 64%);
+  }
+
+  .bg-accent-dark {
+    background-color: hsl(27, 100%, 50%);
+  }
+}
+
+@layer utilities {
+  /* Animations */
+  @keyframes glow {
+    0% {
+      box-shadow: 0 0 20px hsl(11, 100%, 60%);
+    }
+    100% {
+      box-shadow: 0 0 30px hsl(1, 72%, 56%), 0 0 40px hsl(11, 100%, 60%);
+    }
+  }
+
+  @keyframes slideIn {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.5s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(0, 0%, 95%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(11, 100%, 60%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(1, 72%, 56%);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: hsl(240, 3.7%, 15.9%);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(11, 100%, 60%);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(1, 72%, 56%);
+}
+
+/* Focus States */
+.focus-visible:focus {
+  outline: 2px solid hsl(11, 100%, 60%);
+  outline-offset: 2px;
+}
+
+/* Loading States */
+.loading-shimmer {
+  background: linear-gradient(90deg, 
+    hsl(0, 0%, 95%) 0%, 
+    hsl(0, 0%, 90%) 50%, 
+    hsl(0, 0%, 95%) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.dark .loading-shimmer {
+  background: linear-gradient(90deg, 
+    hsl(240, 3.7%, 15.9%) 0%, 
+    hsl(240, 3.7%, 20%) 50%, 
+    hsl(240, 3.7%, 15.9%) 100%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Responsive Design Enhancements */
+@media (max-width: 768px) {
+  .carousel-container {
+    height: 200px;
+  }
+  
+  .flavor-pill {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  .surprise-button {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .flavor-pill {
+    border-width: 3px;
+  }
+  
+  .spice-slider input[type="range"]::-webkit-slider-thumb {
+    border: 2px solid hsl(0, 0%, 100%);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-glow,
+  .animate-slide-in,
+  .animate-fade-in,
+  .animate-pulse-soft {
+    animation: none;
+  }
+  
+  .flavor-pill:hover {
+    transform: none;
+  }
+  
+  .surprise-button:hover {
+    transform: none;
+  }
+}

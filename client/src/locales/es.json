@@ -1,0 +1,61 @@
+{
+  "header": {
+    "title": "TasteMate",
+    "admin": "Acceso de Administrador"
+  },
+  "home": {
+    "title": "¿Qué se te antoja?",
+    "subtitle": "Deja que nuestro chef de IA encuentre el plato perfecto para ti",
+    "spiceLevel": "Nivel de Picante",
+    "flavorPreferences": "Preferencias de Sabor",
+    "surpriseMe": "¡Sorpréndeme! 🎲",
+    "chatPlaceholder": "Se me antoja algo...",
+    "recommendationsTitle": "Combinaciones Perfectas para Ti",
+    "spiceLevels": {
+      "mild": "😊 Suave",
+      "medium": "🌶️ Medio",
+      "hot": "🔥 Picante",
+      "spicy": "🌋 Muy Picante",
+      "extreme": "💀 Extremo",
+      "insane": "☠️ Loco"
+    }
+  },
+  "admin": {
+    "login": {
+      "title": "Acceso de Administrador",
+      "username": "Usuario",
+      "password": "Contraseña",
+      "loginButton": "Iniciar Sesión",
+      "logout": "Cerrar Sesión"
+    },
+    "dashboard": {
+      "title": "Panel de Administración",
+      "tabs": {
+        "menu": "Elementos del Menú",
+        "promos": "Promociones",
+        "themes": "Temas",
+        "hotkeys": "Teclas Rápidas",
+        "stats": "Estadísticas"
+      },
+      "actions": {
+        "add": "Agregar Elemento",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "save": "Guardar",
+        "cancel": "Cancelar"
+      }
+    }
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "success": "¡Éxito!",
+    "close": "Cerrar"
+  },
+  "themes": {
+    "default": "Predeterminado",
+    "minty": "Menta",
+    "sunset": "Atardecer",
+    "inferno": "Infierno"
+  }
+}
