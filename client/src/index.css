@@ -271,6 +271,38 @@ body {
   box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.3);
 }
 
+/* Range slider styling */
+.slider {
+  height: 6px;
+  border-radius: 5px;
+  background: #ddd;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: currentColor;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: currentColor;
+  cursor: pointer;
+  border: none;
+}
+
 /* Dynamic slider colors for each spice level (0-4) */
 .slider-color-0 {
   accent-color: #38bdf8;
@@ -290,6 +322,17 @@ body {
 
 .slider-color-4 {
   accent-color: #b91c1c;
+}
+
+/* Wiggle animation for spice levels */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
 }
 
 /* Mobile responsive spacing */

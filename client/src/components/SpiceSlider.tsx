@@ -1,8 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
 import { useI18n } from "@/hooks/useI18n";
-import { Slider } from "@/components/ui/slider";
-import { Label } from "@/components/ui/label";
-import type { Spiciness } from "@shared/schema";
 
 type SpiceSliderProps = {
   value: number;
@@ -10,57 +6,64 @@ type SpiceSliderProps = {
 };
 
 export function SpiceSlider({ value, onChange }: SpiceSliderProps) {
-  const { language, t } = useI18n();
-  
-  const { data: spiciness = [] } = useQuery<Spiciness[]>({
-    queryKey: ["/api/spiciness"],
-  });
+  const { t } = useI18n();
 
-  const currentSpice = spiciness.find(s => s.level === value);
+  // Helper function to get color classes for each spice level
+  const getSpiceGlow = (level: number, current: number) => {
+    if (current === 0 && level === 0) return 'text-blue-500';
+    if (current < level) return 'text-gray-400';
+    // Gradually increase from orange to red
+    switch (level) {
+      case 1: return 'text-orange-400 spice-glow-1';
+      case 2: return 'text-orange-500 spice-glow-2';
+      case 3: return 'text-orange-600 spice-glow-3';
+      case 4: return 'text-red-500 spice-glow-4';
+      default: return 'text-red-500';
+    }
+  };
 
   return (
-    <div className="mb-8">
-      <Label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 text-left">
+    <div className="spice-slider mb-8">
+      <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 text-left">
         How Spicy?
-      </Label>
+      </h2>
       
-      <div className="relative bg-gray-100 dark:bg-gray-800 rounded-lg p-6">
-        {/* Horizontal spice level buttons */}
-        <div className="flex justify-between items-center mb-4">
-          {spiciness.map((spice) => (
-            <button
-              key={spice.id}
-              onClick={() => onChange(spice.level)}
-              className={`
-                spice-button flex flex-col items-center p-3 rounded-lg transition-all duration-300 cursor-pointer hover:animate-wiggle
-                ${value === spice.level ? 'active' : ''}
-                ${spice.level > 0 ? `spice-glow-${spice.level}` : ''}
-              `}
-            >
-              <span className="text-2xl mb-1">{spice.emoji}</span>
-              <span className="text-xs font-medium text-center whitespace-nowrap">
-                {spice.translations[language]}
-              </span>
-            </button>
-          ))}
-        </div>
-        
-        {/* Visual progress bar */}
-        <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-blue-400 via-yellow-400 via-orange-400 to-red-600 transition-all duration-300"
-            style={{ width: `${(value / 4) * 100}%` }}
-          />
-        </div>
-        
-        {/* Current selection display */}
-        {currentSpice && (
-          <div className="text-center mt-4">
-            <span className="inline-flex items-center px-4 py-2 bg-primary/10 text-primary rounded-full font-semibold">
-              {currentSpice.emoji} {currentSpice.translations[language]}
-            </span>
-          </div>
-        )}
+      {/* Range slider for spice level, with dynamic color */}
+      <input
+        type="range"
+        min="0"
+        max="4"
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        aria-label={`Set spice level to ${value === 0 ? 'mild' : value} out of 4`}
+        className={`slider slider-color-${value} w-full mb-4`}
+        style={{
+          accentColor: [
+            '#38bdf8', // blue for 0
+            '#fdba74', // orange-300 for 1
+            '#fb923c', // orange-400 for 2
+            '#ea580c', // orange-600 for 3
+            '#b91c1c'  // red-800 for 4
+          ][value]
+        }}
+      />
+      
+      {/* Spice icons for each level */}
+      <div className="flex justify-around items-center">
+        {[0, 1, 2, 3, 4].map((level) => (
+          <span
+            key={level}
+            className={`cursor-pointer text-2xl transition-all duration-300 ${getSpiceGlow(level, value)} ${value === level ? 'animate-wiggle' : ''}`}
+            onClick={() => onChange(level)}
+            role="button"
+            tabIndex={0}
+            aria-label={`Set spice level to ${level === 0 ? 'mild' : level} ${level === 0 ? '(snowflake)' : '(chili)'}`}
+            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onChange(level)}
+          >
+            {/* Snowflake for 0, chili for others */}
+            {level === 0 ? '❄️' : '🌶️'}
+          </span>
+        ))}
       </div>
     </div>
   );
