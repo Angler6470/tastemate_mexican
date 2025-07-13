@@ -298,12 +298,12 @@ async function seedDatabase() {
     await db.insert(themes).values([
       {
         id: 'theme-1',
-        name: 'default',
-        displayName: { en: 'Default', es: 'Predeterminado' },
+        name: 'ocean',
+        displayName: { en: 'Ocean', es: 'Océano' },
         colors: {
-          primary: '#FF6B35',
-          secondary: '#2D5A27',
-          accent: '#FFD23F',
+          primary: '#0891b2',
+          secondary: '#0e7490',
+          accent: '#67e8f9',
         },
         active: true,
       },

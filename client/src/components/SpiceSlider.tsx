@@ -29,14 +29,11 @@ export function SpiceSlider({ value, onChange }: SpiceSliderProps) {
         <div className="flex justify-between items-center mb-4">
           {spiciness.map((spice) => (
             <button
-              key={spice._id}
+              key={spice.id}
               onClick={() => onChange(spice.level)}
               className={`
-                flex flex-col items-center p-3 rounded-lg transition-all duration-300 cursor-pointer
-                ${value === spice.level 
-                  ? 'bg-primary text-white shadow-lg shadow-primary/50 scale-105' 
-                  : 'bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:scale-105'
-                }
+                spice-button flex flex-col items-center p-3 rounded-lg transition-all duration-300 cursor-pointer
+                ${value === spice.level ? 'active' : ''}
               `}
             >
               <span className="text-2xl mb-1">{spice.emoji}</span>

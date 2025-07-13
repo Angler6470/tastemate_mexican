@@ -46,7 +46,7 @@ export default function Home() {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <PromoCarousel />
         
-        <Card className="mb-8">
+        <Card className="mb-8 ocean-card">
           <CardContent className="p-8">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">
@@ -75,12 +75,9 @@ export default function Home() {
               <Button
                 onClick={handleSurpriseMe}
                 disabled={surpriseMutation.isPending}
-                className="surprise-button px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                style={{
-                  background: 'linear-gradient(45deg, #FFD23F, #FB8500)',
-                }}
+                className="ocean-button px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
-                🎲 {t("home.surpriseMe")}
+                🎲 {t("home.surpriseMe")} {surpriseMutation.isPending && "..."}
               </Button>
             </div>
           </CardContent>

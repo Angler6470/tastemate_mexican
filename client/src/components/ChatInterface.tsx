@@ -105,7 +105,7 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations }
 
   return (
     <div className="mb-6">
-      <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 mb-4 h-64 overflow-y-auto transition-colors duration-300">
+      <div className="ocean-card rounded-xl p-4 mb-4 h-64 overflow-y-auto transition-colors duration-300">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -145,7 +145,7 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations }
         <Button
           onClick={handleSend}
           disabled={chatMutation.isPending || !message.trim()}
-          className="px-6"
+          className="ocean-button px-6"
         >
           <Send className="h-4 w-4" />
         </Button>
