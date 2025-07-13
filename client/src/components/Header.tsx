@@ -77,7 +77,7 @@ export function Header() {
                     <DropdownMenuItem
                       key={theme.id}
                       onClick={() => setTheme(theme.name)}
-                      className={currentTheme === theme.name ? "bg-primary/10" : ""}
+                      className="relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-[#AFF0ED]"
                     >
                       <span
                         className="inline-block w-4 h-4 rounded-full mr-2"
