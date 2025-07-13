@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+
 import type { Flavor } from "@shared/schema";
 
 type FlavorPillsProps = {
@@ -35,9 +35,9 @@ export function FlavorPills({ selectedFlavors, onChange, onShortcutClick }: Flav
 
   return (
     <div className="mb-8">
-      <Label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 text-center">
+      <div className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 text-center">
         ❤️ {t("home.flavorPreferences")}
-      </Label>
+      </div>
       
       <div className="flex flex-wrap gap-3 justify-center">
         {flavors.map((flavor) => (
