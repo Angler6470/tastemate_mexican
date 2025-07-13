@@ -1,224 +1,171 @@
 import { z } from "zod";
+import { pgTable, text, timestamp, integer, real, boolean, json } from 'drizzle-orm/pg-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 
-// User schema for admin authentication
-export const users = z.object({
-  _id: z.string(),
-  username: z.string(),
-  password: z.string(),
-  role: z.enum(['admin']).default('admin'),
-  createdAt: z.date().default(() => new Date()),
+// Users table
+export const users = pgTable('users', {
+  id: text('id').primaryKey(),
+  username: text('username').notNull().unique(),
+  passwordHash: text('password_hash').notNull(),
+  role: text('role').notNull().default('admin'),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const insertUserSchema = z.object({
-  username: z.string().min(3),
-  password: z.string().min(6),
-  role: z.enum(['admin']).default('admin'),
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
 });
 
-export type User = z.infer<typeof users>;
+export const selectUserSchema = createSelectSchema(users);
+
+export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
-// Flavor schema
-export const flavors = z.object({
-  _id: z.string(),
-  name: z.string(),
-  emoji: z.string(),
-  hotkey: z.string().optional(),
-  translations: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  active: z.boolean().default(true),
-  createdAt: z.date().default(() => new Date()),
+// Flavors table
+export const flavors = pgTable('flavors', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  emoji: text('emoji').notNull(),
+  hotkey: text('hotkey'),
+  translations: json('translations').$type<{
+    en: string;
+    es: string;
+  }>().notNull(),
+  active: boolean('active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const insertFlavorSchema = z.object({
-  name: z.string().min(1),
-  emoji: z.string().min(1),
-  hotkey: z.string().optional(),
-  translations: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  active: z.boolean().default(true),
+export const insertFlavorSchema = createInsertSchema(flavors).omit({
+  id: true,
+  createdAt: true,
 });
 
-export type Flavor = z.infer<typeof flavors>;
+export type Flavor = typeof flavors.$inferSelect;
 export type InsertFlavor = z.infer<typeof insertFlavorSchema>;
 
-// Spiciness schema
-export const spiciness = z.object({
-  _id: z.string(),
-  level: z.number().min(0).max(5),
-  name: z.string(),
-  emoji: z.string(),
-  translations: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  active: z.boolean().default(true),
-  createdAt: z.date().default(() => new Date()),
+// Spiciness table
+export const spiciness = pgTable('spiciness', {
+  id: text('id').primaryKey(),
+  level: integer('level').notNull(),
+  name: text('name').notNull(),
+  emoji: text('emoji').notNull(),
+  translations: json('translations').$type<{
+    en: string;
+    es: string;
+  }>().notNull(),
+  active: boolean('active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const insertSpicinessSchema = z.object({
-  level: z.number().min(0).max(5),
-  name: z.string(),
-  emoji: z.string(),
-  translations: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  active: z.boolean().default(true),
+export const insertSpicinessSchema = createInsertSchema(spiciness).omit({
+  id: true,
+  createdAt: true,
 });
 
-export type Spiciness = z.infer<typeof spiciness>;
+export type Spiciness = typeof spiciness.$inferSelect;
 export type InsertSpiciness = z.infer<typeof insertSpicinessSchema>;
 
-// Promo schema
-export const promos = z.object({
-  _id: z.string(),
-  title: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  description: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  imageUrl: z.string().url(),
-  active: z.boolean().default(true),
-  order: z.number().default(0),
-  createdAt: z.date().default(() => new Date()),
+// Promos table
+export const promos = pgTable('promos', {
+  id: text('id').primaryKey(),
+  title: json('title').$type<{
+    en: string;
+    es: string;
+  }>().notNull(),
+  description: json('description').$type<{
+    en: string;
+    es: string;
+  }>().notNull(),
+  imageUrl: text('image_url').notNull(),
+  active: boolean('active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const insertPromoSchema = z.object({
-  title: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  description: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  imageUrl: z.string().url(),
-  active: z.boolean().default(true),
-  order: z.number().default(0),
+export const insertPromoSchema = createInsertSchema(promos).omit({
+  id: true,
+  createdAt: true,
 });
 
-export type Promo = z.infer<typeof promos>;
+export type Promo = typeof promos.$inferSelect;
 export type InsertPromo = z.infer<typeof insertPromoSchema>;
 
-// MenuItem schema
-export const menuItems = z.object({
-  _id: z.string(),
-  name: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  description: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  price: z.number().positive(),
-  imageUrl: z.string().url(),
-  spiceLevel: z.number().min(0).max(5),
-  flavors: z.array(z.string()),
-  category: z.string(),
-  ingredients: z.array(z.string()),
-  rating: z.number().min(0).max(5).default(0),
-  active: z.boolean().default(true),
-  createdAt: z.date().default(() => new Date()),
+// Menu Items table
+export const menuItems = pgTable('menu_items', {
+  id: text('id').primaryKey(),
+  name: json('name').$type<{
+    en: string;
+    es: string;
+  }>().notNull(),
+  description: json('description').$type<{
+    en: string;
+    es: string;
+  }>().notNull(),
+  price: real('price').notNull(),
+  imageUrl: text('image_url').notNull(),
+  spiceLevel: integer('spice_level').notNull(),
+  flavors: json('flavors').$type<string[]>().notNull(),
+  category: text('category').notNull(),
+  ingredients: json('ingredients').$type<string[]>().notNull(),
+  rating: real('rating').notNull(),
+  active: boolean('active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const insertMenuItemSchema = z.object({
-  name: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  description: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  price: z.number().positive(),
-  imageUrl: z.string().url(),
-  spiceLevel: z.number().min(0).max(5),
-  flavors: z.array(z.string()),
-  category: z.string(),
-  ingredients: z.array(z.string()),
-  rating: z.number().min(0).max(5).default(0),
-  active: z.boolean().default(true),
+export const insertMenuItemSchema = createInsertSchema(menuItems).omit({
+  id: true,
+  createdAt: true,
 });
 
-export type MenuItem = z.infer<typeof menuItems>;
+export type MenuItem = typeof menuItems.$inferSelect;
 export type InsertMenuItem = z.infer<typeof insertMenuItemSchema>;
 
-// Theme schema
-export const themes = z.object({
-  _id: z.string(),
-  name: z.string(),
-  displayName: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  colors: z.object({
-    primary: z.string(),
-    'primary-dark': z.string(),
-    secondary: z.string(),
-    accent: z.string(),
-    'accent-dark': z.string(),
-  }),
-  active: z.boolean().default(true),
-  isDefault: z.boolean().default(false),
-  createdAt: z.date().default(() => new Date()),
+// Themes table
+export const themes = pgTable('themes', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  displayName: json('display_name').$type<{
+    en: string;
+    es: string;
+  }>().notNull(),
+  colors: json('colors').$type<{
+    primary: string;
+    secondary: string;
+    accent: string;
+  }>().notNull(),
+  active: boolean('active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const insertThemeSchema = z.object({
-  name: z.string(),
-  displayName: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  colors: z.object({
-    primary: z.string(),
-    'primary-dark': z.string(),
-    secondary: z.string(),
-    accent: z.string(),
-    'accent-dark': z.string(),
-  }),
-  active: z.boolean().default(true),
-  isDefault: z.boolean().default(false),
+export const insertThemeSchema = createInsertSchema(themes).omit({
+  id: true,
+  createdAt: true,
 });
 
-export type Theme = z.infer<typeof themes>;
+export type Theme = typeof themes.$inferSelect;
 export type InsertTheme = z.infer<typeof insertThemeSchema>;
 
-// Hotkey schema
-export const hotkeys = z.object({
-  _id: z.string(),
-  key: z.string(),
-  action: z.string(),
-  description: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  active: z.boolean().default(true),
-  createdAt: z.date().default(() => new Date()),
+// Hotkeys table
+export const hotkeys = pgTable('hotkeys', {
+  id: text('id').primaryKey(),
+  key: text('key').notNull(),
+  action: text('action').notNull(),
+  description: json('description').$type<{
+    en: string;
+    es: string;
+  }>().notNull(),
+  active: boolean('active').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const insertHotkeySchema = z.object({
-  key: z.string(),
-  action: z.string(),
-  description: z.object({
-    en: z.string(),
-    es: z.string(),
-  }),
-  active: z.boolean().default(true),
+export const insertHotkeySchema = createInsertSchema(hotkeys).omit({
+  id: true,
+  createdAt: true,
 });
 
-export type Hotkey = z.infer<typeof hotkeys>;
+export type Hotkey = typeof hotkeys.$inferSelect;
 export type InsertHotkey = z.infer<typeof insertHotkeySchema>;
 
-// Chat request schema
+// Chat Request/Response schemas (for API)
 export const chatRequestSchema = z.object({
   message: z.string().min(1),
   spiceLevel: z.number().min(0).max(5),
@@ -228,11 +175,9 @@ export const chatRequestSchema = z.object({
 
 export type ChatRequest = z.infer<typeof chatRequestSchema>;
 
-// Chat response schema
 export const chatResponseSchema = z.object({
   message: z.string(),
   recommendations: z.array(z.string()),
-  confidence: z.number().min(0).max(1),
 });
 
 export type ChatResponse = z.infer<typeof chatResponseSchema>;

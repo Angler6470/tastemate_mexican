@@ -27,13 +27,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      const isValidPassword = await comparePassword(password, user.password);
+      const isValidPassword = await comparePassword(password, user.passwordHash);
       if (!isValidPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
       const token = generateToken(user);
-      res.json({ token, user: { _id: user._id, username: user.username, role: user.role } });
+      res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
     } catch (error) {
       res.status(500).json({ message: "Login failed" });
     }

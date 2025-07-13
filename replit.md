@@ -22,7 +22,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js
-- **Database**: PostgreSQL with Drizzle ORM
+- **Database**: PostgreSQL with Drizzle ORM (successfully migrated from MongoDB)
 - **Authentication**: JWT-based authentication with bcrypt password hashing
 - **API Design**: RESTful API with proper error handling
 - **External AI Integration**: OpenAI API for food recommendations
@@ -40,10 +40,10 @@ Preferred communication style: Simple, everyday language.
 - **AdminTabs**: Full CRUD interface for managing app content
 
 ### Backend Services
-- **Storage Layer**: Abstracted database operations with fallback demo data
+- **Storage Layer**: PostgreSQL database operations with Drizzle ORM type safety
 - **Authentication Middleware**: JWT token validation and role-based access
 - **OpenAI Service**: AI-powered recommendation generation
-- **MongoDB Integration**: Database connection with auto-seeding capabilities
+- **Database Integration**: PostgreSQL connection with auto-seeding capabilities
 
 ### Database Schema
 - **Users**: Admin authentication with role-based access
