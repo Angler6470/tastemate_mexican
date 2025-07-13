@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Header } from "@/components/Header";
@@ -9,7 +9,7 @@ import { ChatInterface } from "@/components/ChatInterface";
 import { RecommendationsList } from "@/components/RecommendationsList";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dice6 } from "lucide-react";
+import { Dice6, Send } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import type { ChatResponse } from "@shared/schema";
 
@@ -19,6 +19,10 @@ export default function Home() {
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [autoSubmitMessage, setAutoSubmitMessage] = useState<string>("");
+  const [currentMessage, setCurrentMessage] = useState<string>("");
+  
+  // Refs to access ChatInterface functions
+  const sendRef = useRef<(() => void) | null>(null);
 
   const surpriseMutation = useMutation({
     mutationFn: async () => {
@@ -190,8 +194,8 @@ export default function Home() {
                   selectedFlavors={selectedFlavors}
                   onRecommendations={setRecommendations}
                   autoSubmitMessage={autoSubmitMessage}
-                  onSurpriseMe={handleSurpriseMe}
-                  isSurpriseLoading={surpriseMutation.isPending}
+                  onSendRef={sendRef}
+                  onMessageChange={setCurrentMessage}
                 />
               </div>
             </div>
@@ -210,6 +214,26 @@ export default function Home() {
               />
             </div>
             
+            {/* Bottom Button Row - Surprise Me and Send */}
+            <div className="flex justify-center gap-4 mt-6">
+              <Button
+                onClick={handleSurpriseMe}
+                disabled={surpriseMutation.isPending}
+                className="surprise-button px-6 py-3 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              >
+                <Dice6 className="h-4 w-4 mr-2" />
+                {t("home.surpriseMe")}{surpriseMutation.isPending && "..."}
+              </Button>
+              
+              <Button
+                onClick={() => sendRef.current?.()}
+                disabled={!currentMessage?.trim()}
+                className="send-button px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                {t("home.send") || "Send"}
+              </Button>
+            </div>
 
           </CardContent>
         </Card>

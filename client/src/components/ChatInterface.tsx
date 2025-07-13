@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -20,13 +20,21 @@ type ChatInterfaceProps = {
   selectedFlavors: string[];
   onRecommendations: (recommendations: string[]) => void;
   autoSubmitMessage?: string;
-  onSurpriseMe?: () => void;
-  isSurpriseLoading?: boolean;
+  onSendRef?: React.MutableRefObject<(() => void) | null>;
+  onMessageChange?: (message: string) => void;
 };
 
-export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, autoSubmitMessage, onSurpriseMe, isSurpriseLoading }: ChatInterfaceProps) {
+export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, autoSubmitMessage, onSendRef, onMessageChange }: ChatInterfaceProps) {
   const { language, t } = useLanguage();
   const [message, setMessage] = useState("");
+  
+  // Expose message and send function to parent
+  React.useEffect(() => {
+    if (onMessageChange) {
+      onMessageChange(message);
+    }
+  }, [message, onMessageChange]);
+  
   const getIntroMessage = () => ({
     id: 'intro',
     content: language === 'es' 
@@ -93,7 +101,8 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, 
     },
   });
 
-  const handleSend = (messageToSend?: string) => {
+  // Define handleSend after all dependencies are initialized
+  const handleSend = useCallback((messageToSend?: string) => {
     const textToSend = messageToSend || message;
     if (!textToSend || !textToSend.trim()) return;
 
@@ -114,7 +123,13 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, 
     });
 
     setMessage("");
-  };
+  }, [message, spiceLevel, selectedFlavors, language, chatMutation]);
+
+  React.useEffect(() => {
+    if (onSendRef) {
+      onSendRef.current = handleSend;
+    }
+  }, [onSendRef, handleSend]);
 
   // Auto-submit when message is provided
   useEffect(() => {
@@ -123,7 +138,7 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, 
       setIsAutoSubmitting(true);
       handleSend(autoSubmitMessage);
     }
-  }, [autoSubmitMessage]);
+  }, [autoSubmitMessage, handleSend]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -187,23 +202,6 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations, 
           className="flex-1"
           disabled={chatMutation.isPending}
         />
-        {onSurpriseMe && (
-          <Button
-            onClick={onSurpriseMe}
-            disabled={isSurpriseLoading || chatMutation.isPending}
-            className="surprise-button px-4 py-2 rounded-full text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-          >
-            <Dice6 className="h-4 w-4 mr-2" />
-            {t("home.surpriseMe")}
-          </Button>
-        )}
-        <Button
-          onClick={handleSend}
-          disabled={chatMutation.isPending || !message.trim()}
-          className="send-button px-6"
-        >
-          <Send className="h-4 w-4" />
-        </Button>
       </div>
     </div>
   );
