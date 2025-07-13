@@ -7,9 +7,10 @@ import type { Flavor } from "@shared/schema";
 type FlavorPillsProps = {
   selectedFlavors: string[];
   onChange: (flavors: string[]) => void;
+  onShortcutClick?: (flavor: Flavor) => void;
 };
 
-export function FlavorPills({ selectedFlavors, onChange }: FlavorPillsProps) {
+export function FlavorPills({ selectedFlavors, onChange, onShortcutClick }: FlavorPillsProps) {
   const { language, t } = useLanguage();
   
   const { data: flavors = [] } = useQuery<Flavor[]>({
@@ -21,6 +22,14 @@ export function FlavorPills({ selectedFlavors, onChange }: FlavorPillsProps) {
       onChange(selectedFlavors.filter(f => f !== flavorId));
     } else {
       onChange([...selectedFlavors, flavorId]);
+    }
+  };
+
+  const handleFlavorClick = (flavor: Flavor) => {
+    if (onShortcutClick) {
+      onShortcutClick(flavor);
+    } else {
+      toggleFlavor(flavor.id);
     }
   };
 
@@ -40,7 +49,7 @@ export function FlavorPills({ selectedFlavors, onChange }: FlavorPillsProps) {
               shortcut-button flavor-pill px-4 py-2 rounded-full transition-all duration-300 hover:scale-105
               ${selectedFlavors.includes(flavor.id) ? 'selected' : ''}
             `}
-            onClick={() => toggleFlavor(flavor.id)}
+            onClick={() => handleFlavorClick(flavor)}
           >
             <span className="mr-2">{flavor.emoji}</span>
             {flavor.translations[language] || flavor.name}

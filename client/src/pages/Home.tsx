@@ -18,6 +18,7 @@ export default function Home() {
   const [spiceLevel, setSpiceLevel] = useState(1);
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
   const [recommendations, setRecommendations] = useState<string[]>([]);
+  const [autoSubmitMessage, setAutoSubmitMessage] = useState<string>("");
 
   const surpriseMutation = useMutation({
     mutationFn: async () => {
@@ -37,6 +38,108 @@ export default function Home() {
 
   const handleSurpriseMe = () => {
     surpriseMutation.mutate();
+  };
+
+  // Generate witty prompts for each flavor
+  const generateFlavorPrompt = (flavorName: string, emoji: string) => {
+    const prompts = {
+      en: {
+        spicy: [
+          "🔥 I'm feeling like a fire-breathing dragon today! Show me something that'll make me breathe smoke!",
+          "🌶️ My taste buds are begging for adventure! Hit me with your spiciest recommendations!",
+          "🌋 I want food so hot, it needs its own warning label! What do you got?",
+          "🔥 Let's turn up the heat! I'm ready to sweat for flavor!"
+        ],
+        sweet: [
+          "🍯 My sweet tooth is calling! I need something that'll make me smile with every bite!",
+          "🧁 I'm craving something sweeter than a summer sunset! What's your magic?",
+          "🍭 Sugar rush incoming! Show me your most delightful treats!",
+          "🍰 Life's too short for bitter! Give me pure sweetness!"
+        ],
+        salty: [
+          "🧂 I'm feeling like the ocean today - salty and deep! What's on the menu?",
+          "🥨 My cravings are as salty as my attitude! Feed my soul!",
+          "🧀 I need something with enough salt to make me thirsty for more!",
+          "🥓 Salty goodness is calling my name! What's your best shot?"
+        ],
+        sour: [
+          "🍋 I want my face to pucker with pure joy! Hit me with that tang!",
+          "🍏 Sour power activate! Show me something that'll make me wake up!",
+          "🥒 I'm ready to embrace the pucker! What's your sourest delight?",
+          "🍋 Tart and tangy is my jam! Give me that citrus kick!"
+        ],
+        savory: [
+          "🍄 I'm craving something rich and complex! Feed my sophisticated side!",
+          "🥩 Umami is my love language! Show me your most savory creations!",
+          "🧄 I want flavors that'll make me close my eyes and say 'mmm'!",
+          "🍖 Savory satisfaction is what I need! What's your masterpiece?"
+        ],
+        cheesy: [
+          "🧀 I'm having a cheese emergency! Lactose tolerance is overrated!",
+          "🍕 Cheese is my religion and I'm ready to worship! What's divine?",
+          "🧀 I want so much cheese, I'll need a nap after! Bring it on!",
+          "🥛 Dairy dreams are calling! Show me your cheesiest creations!"
+        ]
+      },
+      es: {
+        spicy: [
+          "🔥 ¡Soy un dragón escupefuego hoy! ¡Muéstrame algo que me haga echar humo!",
+          "🌶️ ¡Mis papilas gustativas ruegan por aventura! ¡Dame tus recomendaciones más picantes!",
+          "🌋 ¡Quiero comida tan picante que necesite su propia advertencia! ¿Qué tienes?",
+          "🔥 ¡Subamos la temperatura! ¡Estoy listo para sudar por el sabor!"
+        ],
+        sweet: [
+          "🍯 ¡Mi diente dulce está gritando! ¡Necesito algo que me haga sonreír con cada bocado!",
+          "🧁 ¡Antojo algo más dulce que un atardecer de verano! ¿Cuál es tu magia?",
+          "🍭 ¡Subidón de azúcar en camino! ¡Muéstrame tus delicias más encantadoras!",
+          "🍰 ¡La vida es muy corta para lo amargo! ¡Dame dulzura pura!"
+        ],
+        salty: [
+          "🧂 ¡Me siento como el océano hoy - salado y profundo! ¿Qué hay en el menú?",
+          "🥨 ¡Mis antojos están tan salados como mi actitud! ¡Alimenta mi alma!",
+          "🧀 ¡Necesito algo con suficiente sal para darme sed de más!",
+          "🥓 ¡La bondad salada está llamando mi nombre! ¿Cuál es tu mejor opción?"
+        ],
+        sour: [
+          "🍋 ¡Quiero que mi cara se frunza de pura alegría! ¡Dame ese sabor agrio!",
+          "🍏 ¡Poder agrio, actívate! ¡Muéstrame algo que me despierte!",
+          "🥒 ¡Estoy listo para abrazar el fruncimiento! ¿Cuál es tu delicia más agria?",
+          "🍋 ¡Agrio y cítrico es mi pasión! ¡Dame esa patada cítrica!"
+        ],
+        savory: [
+          "🍄 ¡Antojo algo rico y complejo! ¡Alimenta mi lado sofisticado!",
+          "🥩 ¡Umami es mi lenguaje del amor! ¡Muéstrame tus creaciones más sabrosas!",
+          "🧄 ¡Quiero sabores que me hagan cerrar los ojos y decir 'mmm'!",
+          "🍖 ¡Satisfacción salada es lo que necesito! ¿Cuál es tu obra maestra?"
+        ],
+        cheesy: [
+          "🧀 ¡Tengo una emergencia de queso! ¡La intolerancia a la lactosa está sobrevalorada!",
+          "🍕 ¡El queso es mi religión y estoy listo para adorar! ¿Qué es divino?",
+          "🧀 ¡Quiero tanto queso que necesitaré una siesta después! ¡Vamos!",
+          "🥛 ¡Los sueños lácteos están llamando! ¡Muéstrame tus creaciones más quesudas!"
+        ]
+      }
+    };
+
+    const flavorKey = flavorName.toLowerCase();
+    const langPrompts = prompts[language as keyof typeof prompts];
+    const flavorPrompts = langPrompts[flavorKey as keyof typeof langPrompts];
+    
+    if (flavorPrompts) {
+      return flavorPrompts[Math.floor(Math.random() * flavorPrompts.length)];
+    }
+    
+    // Fallback prompt
+    return language === "es" 
+      ? `${emoji} ¡Estoy antojando algo ${flavorName}! ¿Qué me recomiendas?`
+      : `${emoji} I'm craving something ${flavorName}! What do you recommend?`;
+  };
+
+  const handleFlavorShortcut = (flavor: any) => {
+    const prompt = generateFlavorPrompt(flavor.name, flavor.emoji);
+    setAutoSubmitMessage(prompt);
+    // Clear after setting to allow re-triggering
+    setTimeout(() => setAutoSubmitMessage(""), 100);
   };
 
   return (
@@ -62,6 +165,7 @@ export default function Home() {
                   spiceLevel={spiceLevel}
                   selectedFlavors={selectedFlavors}
                   onRecommendations={setRecommendations}
+                  autoSubmitMessage={autoSubmitMessage}
                 />
               </div>
             </div>
@@ -75,7 +179,8 @@ export default function Home() {
             <div className="mb-6">
               <FlavorPills 
                 selectedFlavors={selectedFlavors} 
-                onChange={setSelectedFlavors} 
+                onChange={setSelectedFlavors}
+                onShortcutClick={handleFlavorShortcut}
               />
             </div>
             
