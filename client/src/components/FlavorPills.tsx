@@ -27,8 +27,7 @@ export function FlavorPills({ selectedFlavors, onChange }: FlavorPillsProps) {
   return (
     <div className="mb-8">
       <Label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 text-center">
-        <i className="fas fa-heart text-primary mr-2"></i>
-        {t("home.flavorPreferences")}
+        ❤️ {t("home.flavorPreferences")}
       </Label>
       
       <div className="flex flex-wrap gap-3 justify-center">
@@ -37,10 +36,22 @@ export function FlavorPills({ selectedFlavors, onChange }: FlavorPillsProps) {
             key={flavor._id}
             variant={selectedFlavors.includes(flavor._id) ? "default" : "outline"}
             size="sm"
-            className="flavor-pill px-4 py-2 rounded-full transition-all duration-300 hover:scale-105"
+            className={`
+              flavor-pill px-4 py-2 rounded-full transition-all duration-300 hover:scale-105
+              ${selectedFlavors.includes(flavor._id) 
+                ? 'bg-primary text-white shadow-lg shadow-primary/30 animate-pulse' 
+                : 'hover:bg-primary/10 hover:border-primary/50'
+              }
+            `}
             onClick={() => toggleFlavor(flavor._id)}
           >
-            {flavor.emoji} {flavor.translations[language]}
+            <span className="mr-2">{flavor.emoji}</span>
+            {flavor.translations[language]}
+            {flavor.hotkey && (
+              <span className="ml-2 text-xs opacity-60">
+                ({flavor.hotkey})
+              </span>
+            )}
           </Button>
         ))}
       </div>

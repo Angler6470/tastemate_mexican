@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import logoPath from "@assets/logo_1752417164635.png";
 
 export function Header() {
   const { language, changeLanguage, t } = useI18n();
@@ -20,11 +21,12 @@ export function Header() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <i className="fas fa-utensils text-2xl text-primary"></i>
-            <h1 className="text-2xl font-bold text-primary" style={{ fontFamily: 'Fredoka One, cursive' }}>
-              {t("header.title")}
-            </h1>
+          <Link href="/" className="flex items-center justify-center flex-1">
+            <img 
+              src={logoPath} 
+              alt="TasteMate Logo" 
+              className="h-12 w-auto transition-transform duration-300 hover:animate-spin-slow cursor-pointer"
+            />
           </Link>
 
           {/* Controls */}

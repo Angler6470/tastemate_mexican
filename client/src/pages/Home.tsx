@@ -75,13 +75,12 @@ export default function Home() {
               <Button
                 onClick={handleSurpriseMe}
                 disabled={surpriseMutation.isPending}
-                className="surprise-button px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                className="surprise-button px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 style={{
                   background: 'linear-gradient(45deg, #FFD23F, #FB8500)',
                 }}
               >
-                <Dice6 className="mr-2 h-5 w-5" />
-                {t("home.surpriseMe")}
+                🎲 {t("home.surpriseMe")}
               </Button>
             </div>
           </CardContent>

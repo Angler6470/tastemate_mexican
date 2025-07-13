@@ -440,3 +440,61 @@
     transform: none;
   }
 }
+
+/* Mexican Restaurant Theme Animations */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 2s linear infinite;
+}
+
+/* Theme-specific variables for future restaurant types */
+:root {
+  /* Mexican theme (default) */
+  --restaurant-primary: #FF6B35;
+  --restaurant-secondary: #2D5A27;
+  --restaurant-accent: #FFD23F;
+  --restaurant-warm: #FB8500;
+  --restaurant-cool: #219EBC;
+}
+
+/* Future Italian theme */
+[data-restaurant-theme="italian"] {
+  --restaurant-primary: #C8102E;
+  --restaurant-secondary: #009246;
+  --restaurant-accent: #F4F5F0;
+  --restaurant-warm: #FFB800;
+  --restaurant-cool: #87CEEB;
+}
+
+/* Future Indian theme */
+[data-restaurant-theme="indian"] {
+  --restaurant-primary: #FF9933;
+  --restaurant-secondary: #138808;
+  --restaurant-accent: #000080;
+  --restaurant-warm: #FF6600;
+  --restaurant-cool: #4B0082;
+}
+
+/* Future BBQ theme */
+[data-restaurant-theme="bbq"] {
+  --restaurant-primary: #8B4513;
+  --restaurant-secondary: #2F4F4F;
+  --restaurant-accent: #FFD700;
+  --restaurant-warm: #FF4500;
+  --restaurant-cool: #1E90FF;
+}
+
+/* Spice level animations */
+.spice-glow {
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+  transition: all 0.3s ease;
+}
+
+.spice-glow:hover {
+  box-shadow: 0 0 30px rgba(255, 107, 53, 0.8);
+  transform: scale(1.05);
+}

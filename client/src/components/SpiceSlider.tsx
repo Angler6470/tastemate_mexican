@@ -21,36 +21,49 @@ export function SpiceSlider({ value, onChange }: SpiceSliderProps) {
   return (
     <div className="mb-8">
       <Label className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4 text-center">
-        <i className="fas fa-pepper-hot text-primary mr-2"></i>
-        {t("home.spiceLevel")}
+        🌶️ {t("home.spiceLevel")}
       </Label>
       
-      <div className="relative">
-        <Slider
-          value={[value]}
-          onValueChange={(values) => onChange(values[0])}
-          max={5}
-          min={0}
-          step={1}
-          className="w-full"
-        />
-        
-        <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mt-2">
+      <div className="relative bg-gray-100 dark:bg-gray-800 rounded-lg p-6">
+        {/* Horizontal spice level buttons */}
+        <div className="flex justify-between items-center mb-4">
           {spiciness.map((spice) => (
-            <span key={spice._id} className="flex-1 text-center">
-              {spice.emoji} {spice.translations[language]}
-            </span>
+            <button
+              key={spice._id}
+              onClick={() => onChange(spice.level)}
+              className={`
+                flex flex-col items-center p-3 rounded-lg transition-all duration-300 cursor-pointer
+                ${value === spice.level 
+                  ? 'bg-primary text-white shadow-lg shadow-primary/50 scale-105' 
+                  : 'bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 hover:scale-105'
+                }
+              `}
+            >
+              <span className="text-2xl mb-1">{spice.emoji}</span>
+              <span className="text-xs font-medium text-center whitespace-nowrap">
+                {spice.translations[language]}
+              </span>
+            </button>
           ))}
         </div>
-      </div>
-      
-      {currentSpice && (
-        <div className="text-center mt-2">
-          <span className="text-primary font-semibold">
-            {currentSpice.emoji} {currentSpice.translations[language]}
-          </span>
+        
+        {/* Visual progress bar */}
+        <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-blue-400 via-yellow-400 via-orange-400 to-red-600 transition-all duration-300"
+            style={{ width: `${(value / 5) * 100}%` }}
+          />
         </div>
-      )}
+        
+        {/* Current selection display */}
+        {currentSpice && (
+          <div className="text-center mt-4">
+            <span className="inline-flex items-center px-4 py-2 bg-primary/10 text-primary rounded-full font-semibold">
+              {currentSpice.emoji} {currentSpice.translations[language]}
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
