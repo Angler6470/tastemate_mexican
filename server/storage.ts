@@ -177,9 +177,10 @@ export class DatabaseStorage implements IStorage {
     const newMenuItem = {
       id: nanoid(),
       ...menuItem,
+      flavors: menuItem.flavors as string[],
     };
     
-    const [created] = await db.insert(menuItems).values(newMenuItem).returning();
+    const [created] = await db.insert(menuItems).values([newMenuItem]).returning();
     return created;
   }
 

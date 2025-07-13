@@ -75,7 +75,7 @@ export function Header() {
                 <DropdownMenuContent>
                   {availableThemes.map((theme) => (
                     <DropdownMenuItem
-                      key={theme._id}
+                      key={theme.id}
                       onClick={() => setTheme(theme.name)}
                       className={currentTheme === theme.name ? "bg-primary/10" : ""}
                     >

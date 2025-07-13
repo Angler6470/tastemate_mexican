@@ -39,9 +39,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const theme = themes.find(t => t.name === currentTheme);
     if (theme) {
       const root = document.documentElement;
-      Object.entries(theme.colors).forEach(([key, value]) => {
-        root.style.setProperty(`--theme-${key}`, value);
-      });
+      // Apply theme colors using the correct property names from schema
+      root.style.setProperty(`--theme-primary`, theme.colors.primary);
+      root.style.setProperty(`--theme-secondary`, theme.colors.secondary);
+      root.style.setProperty(`--theme-accent`, theme.colors.accent);
       
       // Apply theme class
       document.body.className = document.body.className.replace(/theme-\w+/g, "");
