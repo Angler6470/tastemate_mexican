@@ -226,12 +226,16 @@ export default function Home() {
               </Button>
               
               <Button
-                onClick={() => sendRef.current?.()}
-                disabled={!currentMessage?.trim()}
+                onClick={() => {
+                  if (sendRef.current) {
+                    sendRef.current();
+                  }
+                }}
+                disabled={!currentMessage || !currentMessage.trim()}
                 className="send-button px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 <Send className="h-4 w-4 mr-2" />
-                {t("home.send") || "Send"}
+                Send
               </Button>
             </div>
 

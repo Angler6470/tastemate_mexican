@@ -47,8 +47,8 @@ export function FlavorPills({ selectedFlavors, onChange, onShortcutClick }: Flav
             size="sm"
             className={`
               px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 hover:brightness-110
-              bg-primary/10 hover:bg-primary/20 border-none
-              ${selectedFlavors.includes(flavor.id) ? 'bg-primary/30 text-primary-foreground' : 'text-primary'}
+              bg-primary/10 hover:bg-primary/20 border border-primary/30
+              ${selectedFlavors.includes(flavor.id) ? 'bg-primary/30 text-primary-foreground border-primary' : 'text-primary'}
             `}
             onClick={() => handleFlavorClick(flavor)}
           >
