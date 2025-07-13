@@ -374,6 +374,7 @@ body {
   color: white;
 }
 
+/* Flavor pills with theme colors */
 .theme-ocean .flavor-pill.selected,
 .theme-minty .flavor-pill.selected,
 .theme-sunset .flavor-pill.selected,
@@ -381,6 +382,84 @@ body {
   background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
   border-color: var(--theme-primary);
   box-shadow: 0 0 0 3px rgba(var(--theme-primary), 0.3);
+}
+
+/* Send button and shortcut buttons with theme colors */
+.theme-ocean .send-button,
+.theme-minty .send-button,
+.theme-sunset .send-button,
+.theme-crimson .send-button {
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+  border-color: var(--theme-primary);
+}
+
+.theme-ocean .send-button:hover,
+.theme-minty .send-button:hover,
+.theme-sunset .send-button:hover,
+.theme-crimson .send-button:hover {
+  background: linear-gradient(135deg, var(--theme-secondary), var(--theme-primary));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--theme-primary), 0.3);
+}
+
+/* Shortcut buttons with theme colors - minty theme uses soft teal */
+.theme-ocean .shortcut-button,
+.theme-sunset .shortcut-button,
+.theme-crimson .shortcut-button {
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+  border-color: var(--theme-primary);
+  color: white;
+}
+
+.theme-minty .shortcut-button,
+.theme-minty .send-button {
+  background: linear-gradient(135deg, #5EEAD4, #14B8A6);
+  border-color: #14B8A6;
+  color: white;
+}
+
+.theme-minty .shortcut-button:hover,
+.theme-minty .send-button:hover {
+  background: linear-gradient(135deg, #14B8A6, #0D9488);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+}
+
+/* Primary buttons with theme colors */
+.theme-ocean .btn-primary,
+.theme-minty .btn-primary,
+.theme-sunset .btn-primary,
+.theme-crimson .btn-primary {
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
+  color: white;
+}
+
+.theme-ocean .btn-primary:hover,
+.theme-minty .btn-primary:hover,
+.theme-sunset .btn-primary:hover,
+.theme-crimson .btn-primary:hover {
+  background: var(--theme-secondary);
+  border-color: var(--theme-secondary);
+}
+
+/* Surprise Me button with theme colors */
+.theme-ocean .surprise-button,
+.theme-minty .surprise-button,
+.theme-sunset .surprise-button,
+.theme-crimson .surprise-button {
+  background: linear-gradient(135deg, var(--theme-accent), var(--theme-primary));
+  border-color: var(--theme-accent);
+  color: white;
+}
+
+.theme-ocean .surprise-button:hover,
+.theme-minty .surprise-button:hover,
+.theme-sunset .surprise-button:hover,
+.theme-crimson .surprise-button:hover {
+  background: linear-gradient(135deg, var(--theme-primary), var(--theme-accent));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--theme-accent), 0.3);
 }
 
 /* Wiggle animation for spice levels */

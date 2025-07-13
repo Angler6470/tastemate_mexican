@@ -84,7 +84,7 @@ export default function Home() {
               <Button
                 onClick={handleSurpriseMe}
                 disabled={surpriseMutation.isPending}
-                className="ocean-button px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="surprise-button px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 🎲 {t("home.surpriseMe")} {surpriseMutation.isPending && "..."}
               </Button>

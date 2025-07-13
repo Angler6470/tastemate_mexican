@@ -37,7 +37,7 @@ export function FlavorPills({ selectedFlavors, onChange }: FlavorPillsProps) {
             variant="outline"
             size="sm"
             className={`
-              flavor-pill px-4 py-2 rounded-full transition-all duration-300 hover:scale-105
+              shortcut-button flavor-pill px-4 py-2 rounded-full transition-all duration-300 hover:scale-105
               ${selectedFlavors.includes(flavor.id) ? 'selected' : ''}
             `}
             onClick={() => toggleFlavor(flavor.id)}

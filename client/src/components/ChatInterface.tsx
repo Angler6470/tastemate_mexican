@@ -136,7 +136,7 @@ export function ChatInterface({ spiceLevel, selectedFlavors, onRecommendations }
         <Button
           onClick={handleSend}
           disabled={chatMutation.isPending || !message.trim()}
-          className="ocean-button px-6"
+          className="send-button px-6"
         >
           <Send className="h-4 w-4" />
         </Button>
