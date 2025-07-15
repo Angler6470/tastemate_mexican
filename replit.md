@@ -20,6 +20,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **2025-07-15**: Implemented restaurant settings feature with admin customization
+- **2025-07-15**: Added restaurant_settings database table and complete CRUD operations
+- **2025-07-15**: Updated social sharing messages to include custom restaurant name
+- **2025-07-15**: Modified theme colors - softer minty teal and more yellowish-orange sunset
+- **2025-07-15**: Created text-based dynamic header showing restaurant name
+- **2025-07-15**: Added debounced admin settings updates for better UX
 - **2025-07-15**: Created comprehensive README.md with beginner-friendly documentation
 - **2025-07-15**: Added custom favicon.ico to app branding
 - **2025-07-15**: Implemented frosted glass header effect with 1px blur on scroll
