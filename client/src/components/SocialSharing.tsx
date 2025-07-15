@@ -37,6 +37,16 @@ export function SocialSharing({ menuItemId, itemName, itemDescription }: SocialS
     }
   });
 
+  // Fetch restaurant settings for restaurant name
+  const { data: restaurantSettings } = useQuery({
+    queryKey: ['/api/restaurant-settings'],
+    queryFn: async () => {
+      const response = await fetch('/api/restaurant-settings');
+      if (!response.ok) throw new Error('Failed to fetch restaurant settings');
+      return response.json();
+    }
+  });
+
   // Increment share count mutation
   const incrementShareMutation = useMutation({
     mutationFn: async (platform: string) => {
@@ -67,7 +77,8 @@ export function SocialSharing({ menuItemId, itemName, itemDescription }: SocialS
   };
 
   const handleShare = async (platform: string) => {
-    const shareText = `${t('checkOut')} ${itemName} - ${itemDescription}`;
+    const restaurantName = restaurantSettings?.restaurantName || 'TasteMate';
+    const shareText = `${t('checkOut')} ${itemName} at ${restaurantName}! ${itemDescription}`;
     const shareUrl = window.location.href;
     
     // Increment share count

@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { protectRoute, adminOnly, comparePassword, generateToken, hashPassword } from "./middleware/auth";
 import { generateFoodRecommendations, generateSurpriseRecommendation } from "./services/openai";
-import { insertUserSchema, insertFlavorSchema, insertSpicinessSchema, insertPromoSchema, insertMenuItemSchema, insertThemeSchema, insertHotkeySchema, insertReviewSchema, insertSocialShareSchema, chatRequestSchema } from "@shared/schema";
+import { insertUserSchema, insertFlavorSchema, insertSpicinessSchema, insertPromoSchema, insertMenuItemSchema, insertThemeSchema, insertHotkeySchema, insertReviewSchema, insertSocialShareSchema, insertRestaurantSettingsSchema, chatRequestSchema } from "@shared/schema";
 import type { AuthenticatedRequest } from "./middleware/auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -380,6 +380,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(share);
     } catch (error) {
       res.status(500).json({ message: "Failed to increment share count" });
+    }
+  });
+
+  // Restaurant settings routes
+  app.get("/api/restaurant-settings", async (req, res) => {
+    try {
+      const settings = await storage.getRestaurantSettings();
+      res.json(settings || { restaurantName: "TasteMate", description: null, websiteUrl: null });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch restaurant settings" });
+    }
+  });
+
+  app.put("/api/admin/restaurant-settings", protectRoute, adminOnly, async (req: AuthenticatedRequest, res) => {
+    try {
+      const validatedData = insertRestaurantSettingsSchema.parse(req.body);
+      const settings = await storage.updateRestaurantSettings(validatedData);
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update restaurant settings" });
     }
   });
 

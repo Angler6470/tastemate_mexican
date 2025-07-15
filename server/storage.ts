@@ -5,7 +5,8 @@ import {
   User, InsertUser, Flavor, InsertFlavor, Spiciness, InsertSpiciness,
   Promo, InsertPromo, MenuItem, InsertMenuItem, Theme, InsertTheme,
   Hotkey, InsertHotkey, Review, InsertReview, SocialShare, InsertSocialShare,
-  users, flavors, spiciness, promos, menuItems, themes, hotkeys, reviews, socialShares
+  RestaurantSettings, InsertRestaurantSettings,
+  users, flavors, spiciness, promos, menuItems, themes, hotkeys, reviews, socialShares, restaurantSettings
 } from '@shared/schema';
 
 export interface IStorage {
@@ -72,6 +73,10 @@ export interface IStorage {
   createSocialShare(socialShare: InsertSocialShare): Promise<SocialShare>;
   incrementShareCount(menuItemId: string, platform: string): Promise<SocialShare | null>;
   deleteSocialShare(id: string): Promise<boolean>;
+  
+  // Restaurant settings methods
+  getRestaurantSettings(): Promise<RestaurantSettings | null>;
+  updateRestaurantSettings(settings: Partial<InsertRestaurantSettings>): Promise<RestaurantSettings | null>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -371,6 +376,34 @@ export class DatabaseStorage implements IStorage {
     const result = await db.delete(socialShares).where(eq(socialShares.id, id));
     return (result.rowCount ?? 0) > 0;
   }
+
+  // Restaurant settings methods
+  async getRestaurantSettings(): Promise<RestaurantSettings | null> {
+    const [settings] = await db.select().from(restaurantSettings).limit(1);
+    return settings || null;
+  }
+
+  async updateRestaurantSettings(settings: Partial<InsertRestaurantSettings>): Promise<RestaurantSettings | null> {
+    // First check if settings exist
+    const existingSettings = await this.getRestaurantSettings();
+    
+    if (existingSettings) {
+      // Update existing settings
+      const [updatedSettings] = await db
+        .update(restaurantSettings)
+        .set({ ...settings, updatedAt: new Date() })
+        .where(eq(restaurantSettings.id, 'settings-1'))
+        .returning();
+      return updatedSettings;
+    } else {
+      // Create new settings
+      const [newSettings] = await db
+        .insert(restaurantSettings)
+        .values({ ...settings, id: 'settings-1' })
+        .returning();
+      return newSettings;
+    }
+  }
 }
 
 // Seed the database with initial data
@@ -387,6 +420,7 @@ async function seedDatabase() {
     await db.delete(flavors);
     await db.delete(spiciness);
     await db.delete(users);
+    await db.delete(restaurantSettings);
 
     // Demo admin user
     await db.insert(users).values({
@@ -394,6 +428,14 @@ async function seedDatabase() {
       username: 'admin',
       passwordHash: '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password = 'password'
       role: 'admin',
+    });
+
+    // Demo restaurant settings
+    await db.insert(restaurantSettings).values({
+      id: 'settings-1',
+      restaurantName: 'Casa Mexicana',
+      description: 'Authentic Mexican cuisine with traditional flavors and modern twists.',
+      websiteUrl: 'https://casa-mexicana.com',
     });
 
     // Demo spiciness levels (Mexican restaurant theme) - 5 levels (0-4)

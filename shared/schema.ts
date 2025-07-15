@@ -219,3 +219,20 @@ export const insertSocialShareSchema = createInsertSchema(socialShares).omit({
 
 export type SocialShare = typeof socialShares.$inferSelect;
 export type InsertSocialShare = z.infer<typeof insertSocialShareSchema>;
+
+// Restaurant settings schema
+export const restaurantSettings = pgTable('restaurant_settings', {
+  id: text('id').primaryKey().default('settings-1'),
+  restaurantName: text('restaurant_name').notNull().default('TasteMate'),
+  description: text('description'),
+  websiteUrl: text('website_url'),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export const insertRestaurantSettingsSchema = createInsertSchema(restaurantSettings).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export type RestaurantSettings = typeof restaurantSettings.$inferSelect;
+export type InsertRestaurantSettings = z.infer<typeof insertRestaurantSettingsSchema>;

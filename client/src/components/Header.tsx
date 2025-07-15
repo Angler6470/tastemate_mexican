@@ -10,13 +10,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import logoPath from "@assets/logo_1752432788529.png";
+// import logoPath from "../../../attached_assets/logo_1752432788529.png";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export function Header() {
   const { language, changeLanguage, t } = useLanguage();
   const { isDarkMode, toggleDarkMode, availableThemes, setTheme, currentTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // Fetch restaurant settings for the restaurant name
+  const { data: restaurantSettings } = useQuery({
+    queryKey: ['/api/restaurant-settings'],
+    queryFn: async () => {
+      const response = await fetch('/api/restaurant-settings');
+      if (!response.ok) throw new Error('Failed to fetch restaurant settings');
+      return response.json();
+    }
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,12 +55,14 @@ export function Header() {
           
           {/* Centered Logo */}
           <Link href="/" className="flex items-center justify-center">
-            <img 
-              src={logoPath} 
-              alt="TasteMate - A Flavor Companion" 
-              className="h-32 w-auto transition-transform duration-500 hover:scale-110 hover:animate-spin cursor-pointer"
-              style={{ animationDuration: '0.5s' }}
-            />
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-primary dark:text-white transition-transform duration-500 hover:scale-110 cursor-pointer">
+                {restaurantSettings?.restaurantName || 'TasteMate'}
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                A Flavor Companion
+              </p>
+            </div>
           </Link>
 
           {/* Right Controls */}

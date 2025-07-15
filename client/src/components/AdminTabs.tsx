@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Plus, Edit2, Trash2, Save, X, MessageCircle, Share2, Star, Check, User } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { MenuItem, Promo, Theme, Flavor, Hotkey, Review, SocialShare } from "@shared/schema";
+import type { MenuItem, Promo, Theme, Flavor, Hotkey, Review, SocialShare, RestaurantSettings } from "@shared/schema";
 
 export function AdminTabs() {
   const { token } = useAuth();
@@ -53,6 +53,10 @@ export function AdminTabs() {
 
   const { data: socialShares = [] } = useQuery<SocialShare[]>({
     queryKey: ["/api/social-shares"],
+  });
+
+  const { data: restaurantSettings } = useQuery<RestaurantSettings>({
+    queryKey: ["/api/restaurant-settings"],
   });
 
   // Mutations
@@ -135,11 +139,43 @@ export function AdminTabs() {
     }
   };
 
+  // Debounced update for restaurant settings
+  const [settingsTimeoutId, setSettingsTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
+  const updateRestaurantSettingsMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch("/api/admin/restaurant-settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", ...headers },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to update restaurant settings");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/restaurant-settings"] });
+      toast({ title: "Success", description: "Restaurant settings updated" });
+    },
+  });
+
+  const debouncedUpdateSettings = useCallback((newSettings: any) => {
+    if (settingsTimeoutId) {
+      clearTimeout(settingsTimeoutId);
+    }
+    
+    const timeoutId = setTimeout(() => {
+      updateRestaurantSettingsMutation.mutate(newSettings);
+    }, 800); // 800ms debounce
+    
+    setSettingsTimeoutId(timeoutId);
+  }, [settingsTimeoutId, updateRestaurantSettingsMutation]);
+
   return (
     <Card>
       <CardContent className="p-6">
-        <Tabs defaultValue="menu" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+        <Tabs defaultValue="settings" className="w-full">
+          <TabsList className="grid w-full grid-cols-8">
+            <TabsTrigger value="settings">Settings</TabsTrigger>
             <TabsTrigger value="menu">{t("admin.dashboard.tabs.menu")}</TabsTrigger>
             <TabsTrigger value="promos">{t("admin.dashboard.tabs.promos")}</TabsTrigger>
             <TabsTrigger value="themes">{t("admin.dashboard.tabs.themes")}</TabsTrigger>
@@ -154,6 +190,88 @@ export function AdminTabs() {
             </TabsTrigger>
             <TabsTrigger value="stats">{t("admin.dashboard.tabs.stats")}</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="settings" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                Restaurant Settings
+              </h3>
+            </div>
+            <Card>
+              <CardContent className="p-6">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="restaurant-name">Restaurant Name</Label>
+                    <Input
+                      id="restaurant-name"
+                      value={restaurantSettings?.restaurantName || ""}
+                      onChange={(e) => {
+                        const newSettings = { 
+                          ...restaurantSettings, 
+                          restaurantName: e.target.value 
+                        };
+                        debouncedUpdateSettings(newSettings);
+                      }}
+                      placeholder="Enter restaurant name"
+                    />
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      This name will appear in social sharing messages and throughout the app.
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="restaurant-description">Description</Label>
+                    <Textarea
+                      id="restaurant-description"
+                      value={restaurantSettings?.description || ""}
+                      onChange={(e) => {
+                        const newSettings = { 
+                          ...restaurantSettings, 
+                          description: e.target.value 
+                        };
+                        debouncedUpdateSettings(newSettings);
+                      }}
+                      placeholder="Enter restaurant description"
+                      rows={3}
+                    />
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Optional description for your restaurant.
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="website-url">Website URL</Label>
+                    <Input
+                      id="website-url"
+                      value={restaurantSettings?.websiteUrl || ""}
+                      onChange={(e) => {
+                        const newSettings = { 
+                          ...restaurantSettings, 
+                          websiteUrl: e.target.value 
+                        };
+                        debouncedUpdateSettings(newSettings);
+                      }}
+                      placeholder="https://your-restaurant.com"
+                    />
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Optional website URL for your restaurant.
+                    </p>
+                  </div>
+                  
+                  <div className="pt-4 border-t">
+                    <h4 className="font-medium mb-2">Social Sharing Preview</h4>
+                    <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                      <p className="text-sm font-medium">Example sharing message:</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        "Check out Spicy Tacos at {restaurantSettings?.restaurantName || 'TasteMate'}! 
+                        Delicious tacos with the perfect amount of spice."
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="menu" className="space-y-4">
             <div className="flex justify-between items-center">
