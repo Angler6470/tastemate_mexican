@@ -11,13 +11,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import logoPath from "@assets/logo_1752432788529.png";
+import { useState, useEffect } from "react";
 
 export function Header() {
   const { language, changeLanguage, t } = useLanguage();
   const { isDarkMode, toggleDarkMode, availableThemes, setTheme, currentTheme } = useTheme();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50 transition-colors duration-300">
+    <header className={`sticky top-0 z-50 transition-all duration-300 ${
+      isScrolled 
+        ? 'bg-white/85 dark:bg-gray-800/85 backdrop-blur-[1px] shadow-xl border-b border-white/20' 
+        : 'bg-white dark:bg-gray-800 shadow-lg'
+    }`}>
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Left spacer */}
