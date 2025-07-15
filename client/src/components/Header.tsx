@@ -21,9 +21,7 @@ export function Header() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const shouldBlur = scrollTop > 20;
-      console.log('Scroll:', scrollTop, 'Should blur:', shouldBlur);
-      setIsScrolled(shouldBlur);
+      setIsScrolled(scrollTop > 20);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });

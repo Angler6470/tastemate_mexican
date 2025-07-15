@@ -8,6 +8,13 @@ TasteMate is a full-stack web application that provides AI-powered food recommen
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+- **2025-07-15**: Added custom favicon.ico to app branding
+- **2025-07-15**: Implemented frosted glass header effect with 1px blur on scroll
+- **2025-07-15**: Fixed Send button functionality and styling
+- **2025-07-15**: Updated flavor buttons with thin borders and theme colors (no gradients)
+
 ## System Architecture
 
 ### Frontend Architecture
