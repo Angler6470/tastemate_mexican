@@ -1,89 +1,112 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Home, Settings, HelpCircle, Palette } from "lucide-react";
-import { Link } from "wouter";
-import { useAuth } from "@/contexts/AuthContext";
-import { useTheme } from "@/contexts/ThemeContext";
-import { HelpDialog } from "./HelpDialog";
+import { Menu, X, Utensils, Coffee } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useLanguage } from "@/contexts/LanguageContext";
+import type { MenuItem } from "@shared/schema";
 
 export function FloatingMenu() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useAuth();
-  const { availableThemes, setTheme } = useTheme();
+  const { language } = useLanguage();
+
+  const { data: menuItems = [] } = useQuery<MenuItem[]>({
+    queryKey: ["/api/menuitems"],
+  });
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const menuItems = [
-    {
-      icon: Home,
-      label: "Home",
-      href: "/",
-      onClick: () => setIsOpen(false),
-    },
-    ...(user ? [
-      {
-        icon: Settings,
-        label: "Admin",
-        href: "/admin/dashboard",
-        onClick: () => setIsOpen(false),
-      }
-    ] : []),
-  ];
+  // Group menu items by category
+  const foodItems = menuItems.filter(item => item.category === 'food');
+  const drinkItems = menuItems.filter(item => item.category === 'drink');
 
   return (
     <>
       {/* Backdrop overlay when menu is open */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+          className="fixed inset-0 bg-black/20 z-40"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Floating menu items */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 flex flex-col gap-3">
-          {/* Help Dialog */}
-          <div className="flex justify-end">
-            <HelpDialog />
-          </div>
-
-          {/* Theme selector */}
-          <div className="flex justify-end">
-            <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-full p-2 shadow-xl border border-white/20">
-              <div className="flex gap-2">
-                {availableThemes.map((theme) => (
-                  <button
-                    key={theme.name}
-                    onClick={() => {
-                      setTheme(theme.name);
-                      setIsOpen(false);
-                    }}
-                    className="w-8 h-8 rounded-full border-2 border-white/50 hover:border-white/80 transition-all duration-200 hover:scale-110"
-                    style={{ backgroundColor: theme.colors.primary }}
-                    title={theme.displayName.en}
-                  />
-                ))}
+        <div className="fixed bottom-24 right-6 z-50 flex flex-col gap-3 max-h-96 overflow-y-auto">
+          {/* Food Section */}
+          {foodItems.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                <Utensils className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                  {language === 'es' ? 'Comida' : 'Food'}
+                </span>
               </div>
-            </div>
-          </div>
-
-          {/* Menu items */}
-          {menuItems.map((item, index) => (
-            <div key={index} className="flex justify-end">
-              <Link href={item.href}>
-                <Button
-                  onClick={item.onClick}
-                  className="w-14 h-14 rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-xl border border-white/20 hover:bg-white dark:hover:bg-gray-700 transition-all duration-200 hover:scale-110"
-                  variant="ghost"
+              {foodItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex flex-col gap-1 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow max-w-xs"
                 >
-                  <item.icon className="h-6 w-6 text-gray-700 dark:text-gray-200" />
-                </Button>
-              </Link>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{item.emoji}</span>
+                    <span className="font-medium text-gray-800 dark:text-gray-100">
+                      {item.name[language]}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                    {item.description[language]}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-primary">
+                      ${item.price}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs">🌶️</span>
+                      <span className="text-xs text-gray-500">{item.spiceLevel}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+
+          {/* Drink Section */}
+          {drinkItems.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                <Coffee className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                  {language === 'es' ? 'Bebidas' : 'Drinks'}
+                </span>
+              </div>
+              {drinkItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex flex-col gap-1 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow max-w-xs"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">{item.emoji}</span>
+                    <span className="font-medium text-gray-800 dark:text-gray-100">
+                      {item.name[language]}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                    {item.description[language]}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-primary">
+                      ${item.price}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs">🌶️</span>
+                      <span className="text-xs text-gray-500">{item.spiceLevel}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -91,7 +114,7 @@ export function FloatingMenu() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={toggleMenu}
-          className="w-16 h-16 rounded-full bg-primary/90 backdrop-blur-md shadow-2xl border border-white/20 hover:bg-primary transition-all duration-300 hover:scale-105 active:scale-95"
+          className="w-16 h-16 rounded-full bg-primary shadow-2xl hover:bg-primary/90 transition-all duration-300 hover:scale-105 active:scale-95"
         >
           {isOpen ? (
             <X className="h-8 w-8 text-white" />
