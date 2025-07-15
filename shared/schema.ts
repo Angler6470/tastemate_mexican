@@ -107,6 +107,7 @@ export const menuItems = pgTable('menu_items', {
   category: text('category').notNull(),
   ingredients: json('ingredients').$type<string[]>().notNull(),
   rating: real('rating').notNull(),
+  emoji: text('emoji').default('🍽️'),
   active: boolean('active').default(true),
   createdAt: timestamp('created_at').defaultNow(),
 });

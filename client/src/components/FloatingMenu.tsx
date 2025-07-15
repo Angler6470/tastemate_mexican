@@ -17,9 +17,19 @@ export function FloatingMenu() {
     setIsOpen(!isOpen);
   };
 
-  // Group menu items by category
-  const foodItems = menuItems.filter(item => item.category === 'food');
-  const drinkItems = menuItems.filter(item => item.category === 'drink');
+  // Group menu items by category (debug logging)
+  console.log('Menu items:', menuItems);
+  const foodItems = menuItems.filter(item => 
+    item.category === 'food' || 
+    item.category === 'Main Course' || 
+    item.category === 'Appetizer' || 
+    item.category === 'Dessert'
+  );
+  const drinkItems = menuItems.filter(item => 
+    item.category === 'drink' || 
+    item.category === 'Beverage' || 
+    item.category === 'Drinks'
+  );
 
   return (
     <>
