@@ -21,19 +21,24 @@ export function Header() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      setIsScrolled(scrollTop > 50);
+      const shouldBlur = scrollTop > 20;
+      console.log('Scroll:', scrollTop, 'Should blur:', shouldBlur);
+      setIsScrolled(shouldBlur);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/85 dark:bg-gray-800/85 backdrop-blur-[1px] shadow-xl border-b border-white/20' 
-        : 'bg-white dark:bg-gray-800 shadow-lg'
-    }`}>
+    <header 
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-2xl' 
+          : 'bg-white dark:bg-gray-800 shadow-lg'
+      }`}
+      style={isScrolled ? { backdropFilter: 'blur(1px)' } : {}}
+    >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Left spacer */}
