@@ -4,12 +4,23 @@
 
 TasteMate is a full-stack web application that provides AI-powered food recommendations based on user preferences. The app features a modern, responsive design with internationalization support (English/Spanish), dynamic theming, and an admin dashboard for content management.
 
+**Key Features:**
+- AI-powered chat interface for personalized food recommendations
+- Spice level slider and flavor selection system
+- "Surprise Me" feature for discovering new dishes
+- Multi-language support (English/Spanish)
+- Admin dashboard for content management
+- Review and social sharing systems
+- Responsive design with custom theming
+- PostgreSQL database with comprehensive data seeding
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **2025-07-15**: Created comprehensive README.md with beginner-friendly documentation
 - **2025-07-15**: Added custom favicon.ico to app branding
 - **2025-07-15**: Implemented frosted glass header effect with 1px blur on scroll
 - **2025-07-15**: Fixed Send button functionality and styling
