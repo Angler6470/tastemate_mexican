@@ -56,7 +56,7 @@ export function Header() {
           {/* Centered Logo */}
           <Link href="/" className="flex items-center justify-center">
             <div className="text-center">
-              <h1 className="text-4xl font-bold text-primary dark:text-white transition-transform duration-500 hover:scale-110 cursor-pointer">
+              <h1 className="text-4xl font-bold dark:text-white transition-transform duration-500 hover:scale-110 cursor-pointer text-[#d6d6d6]">
                 {restaurantSettings?.restaurantName || 'TasteMate'}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
