@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { FloatingMenu } from "@/components/FloatingMenu";
 import Home from "@/pages/Home";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -31,6 +32,7 @@ function App() {
             <ThemeProvider>
               <Toaster />
               <Router />
+              <FloatingMenu />
             </ThemeProvider>
           </LanguageProvider>
         </AuthProvider>
