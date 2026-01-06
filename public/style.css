@@ -1,20 +1,20 @@
 :root {
-  --bg-body: #FDFBF8;
+  --bg-body: #FBF9F6;
   --bg-container: #FFFFFF;
   --bg-card: #F8F9FA;
   --bg-card-header: #F1F3F5;
 
   --accent-primary: #8EE4C4; 
   --accent-primary-hover: #7ACBB3;
-  --accent-secondary: #E9ECEF;
-  --accent-secondary-hover: #DEE2E6;
+  --accent-secondary: #E87A5D;
+  --accent-secondary-hover: #D96C50;
 
   --text-dark: #212529;
   --text-light: #495057;
   --text-on-primary: #212529;
 
   --border-color: #E9ECEF;
-  --shadow-color: rgba(0, 0, 0, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.1);
 
   --space-xs: 4px;
   --space-sm: 8px;
@@ -33,7 +33,9 @@
 
 body {
   margin: 0;
-  background: var(--bg-body);
+  background-color: var(--bg-body); /* Solid color as base */
+  background-image: url('assets/mexican_pattern.svg');
+  background-repeat: repeat;
   font-family: var(--font-body);
   display: flex;
   justify-content: center;
@@ -44,52 +46,53 @@ body {
 .container {
   width: 100%;
   max-width: 720px;
-  background: transparent;
-}
-
-h1, h2 {
-  font-family: var(--font-heading);
-  color: var(--text-dark);
-  margin: 0;
-}
-
-p {
-  color: var(--text-light);
-  margin: var(--space-sm) 0 0 0;
-  line-height: 1.5;
+  background: var(--bg-container);
+  padding: var(--space-lg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 30px var(--shadow-color);
 }
 
 /* Header Card */
 .header-card {
+  position: relative; /* For positioning the pseudo-element */
   text-align: center;
-  padding: var(--space-lg);
-  border-radius: var(--border-radius);
-  background: var(--bg-container);
+  padding: 0 0 var(--space-lg) 0;
   margin-bottom: var(--space-lg);
 }
 
+.header-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-image: url('assets/header_border.svg');
+  background-repeat: repeat-x;
+}
+
 .header-card .logo {
-  max-width: 200px;
+  max-width: 220px; /* Increased logo size */
   margin-bottom: var(--space-md);
 }
 
 .header-card h1 {
   font-size: 2.25rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--space-lg);
 }
 
 .header-card .tagline {
-  font-size: 1rem;
+  font-size: 0.8rem; /* Smaller font size */
   margin-top: var(--space-xs);
+  color: var(--text-light); /* Less prominent color */
+  font-weight: 400; /* Lighter font weight */
 }
 
 /* Helper Card */
 .helper-card {
   text-align: center;
-  padding: var(--space-xl);
-  border-radius: var(--border-radius);
-  background: var(--bg-container);
-  box-shadow: var(--shadow-elevation);
-  margin-bottom: var(--space-lg);
+  padding: var(--space-lg) 0;
 }
 
 .helper-card h2 {
