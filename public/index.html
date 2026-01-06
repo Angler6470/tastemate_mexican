@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TasteMate Mexican</title>
+  <link rel="icon" type="image/png" href="assets/logo/logo-square.png" />
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
@@ -12,23 +13,43 @@
     <header class="header-card">
       <img src="assets/logo/logo-dark.png" alt="TasteMate Logo" class="logo">
       <h1>Mexican</h1>
+      <p class="tagline">Your guide to the best flavors</p>
 
     </header>
 
     <main>
       <section class="helper-card">
         <h2>Not sure what to get?</h2>
-        <p>Let us help you find the perfect dish.</p>
-        <button class="btn btn-primary">Help Me Choose</button>
+        <p>Let us help you find the perfect dish. Or search for a dish, ingredient, or tag below.</p>
+        
+        <div class="search-container">
+          <input type="search" id="search-input" class="search-input" placeholder="e.g., Tacos, Spicy, Beef..." />
+          <div class="search-suggestions" id="search-suggestions"></div>
+        </div>
+
         <div class="quick-actions">
-          <button class="btn btn-pill">Spicy</button>
-          <button class="btn btn-pill">Fast</button>
-          <button class="btn btn-pill">Surprise</button>
+          <button class="btn btn-pill" data-category="Popular">Popular</button>
+          <button class="btn btn-pill" data-category="Meal">Meals</button>
+          <button class="btn btn-pill" data-category="Vegetarian">Vegetarian</button>
+          <button class="btn btn-pill" data-category="Dessert">Desserts</button>
+          <button class="btn btn-pill" data-category="Drink">Drinks</button>
+          <button class="btn btn-pill" data-category="Spicy">Spicy</button>
+          <button class="btn btn-pill" data-category="surprise">Surprise Me!</button>
+        </div>
+        <div id="loading-dots-container" class="loading-dots-container" hidden>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
         </div>
       </section>
 
       <section class="menu-list" id="menu-list">
         <!-- Menu items will be injected here by script.js -->
+      </section>
+
+      <section class="no-results" id="no-results" hidden>
+        <h3>No Dishes Found</h3>
+        <p>We couldn't find any dishes matching your search. Try a different search term or clear the filters.</p>
       </section>
     </main>
   </div>

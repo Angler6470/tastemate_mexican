@@ -8,6 +8,10 @@
   --accent-primary-hover: #7ACBB3;
   --accent-secondary: #E87A5D;
   --accent-secondary-hover: #D96C50;
+  --accent-tertiary: #5DADE2; /* Blue */
+  --accent-quaternary: #AF7AC5; /* Purple */
+  --accent-fifth: #FFD700; /* Gold */
+  --accent-sixth: #20B2AA; /* Light Sea Green */
 
   --text-dark: #212529;
   --text-light: #495057;
@@ -101,14 +105,84 @@ body {
 }
 
 .helper-card p {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
+  max-width: 500px; /* Constrain line length for readability */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .quick-actions {
   display: flex;
   justify-content: center;
   gap: var(--space-sm);
-  margin-top: var(--space-md);
+  margin-top: var(--space-xl); /* More space above quick actions */
+}
+
+/* Search Container */
+.search-container {
+  position: relative;
+  margin-bottom: var(--space-lg);
+}
+
+.search-input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: var(--space-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 20%, transparent);
+}
+
+.search-suggestions {
+  display: none; /* Hidden by default */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-container);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  box-shadow: 0 8px 16px var(--shadow-color);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.suggestion-item {
+  padding: var(--space-md);
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item.is-active {
+  background-color: var(--bg-card);
+}
+
+.suggestion-item .highlight {
+  background-color: color-mix(in srgb, var(--accent-primary) 30%, transparent);
+  font-weight: 600;
+  border-radius: 2px;
+}
+
+.suggestion-type-label {
+  font-size: 0.7em;
+  opacity: 0.7;
+  font-weight: 400;
+  margin-left: var(--space-xs);
 }
 
 /* Buttons */
@@ -117,41 +191,64 @@ body {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 1rem;
-  border: none;
+  border: 1px solid transparent;
   border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: all 0.2s ease;
   padding: var(--space-md) var(--space-lg);
 }
 
 .btn:active {
-  transform: translateY(1px);
+  transform: translateY(2px);
+  filter: brightness(0.95);
 }
 
 .btn-primary {
   background-color: var(--accent-primary);
   color: var(--text-on-primary);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-primary) 40%, transparent);
 }
 
 .btn-primary:hover {
   background-color: var(--accent-primary-hover);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent-primary) 45%, transparent);
+  transform: translateY(-1px);
 }
 
 .btn-pill {
-  background-color: var(--accent-secondary);
-  color: var(--text-dark);
+  background-color: var(--bg-card);
+  color: var(--text-light);
+  border-color: var(--border-color);
   padding: var(--space-sm) var(--space-md);
   border-radius: 50px; /* Pill shape */
 }
 
 .btn-pill:hover {
   background-color: var(--accent-secondary-hover);
+  border-color: var(--accent-secondary-hover);
+  color: #fff;
+}
+
+.btn-pill.active {
+  background-color: var(--accent-secondary);
+  border-color: var(--accent-secondary);
+  color: #fff;
+  font-weight: 700;
+}
+
+
+.menu-list h2 {
+  font-size: 1.5rem;
+  margin-top: var(--space-lg);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: var(--space-sm);
 }
 
 /* Menu List */
 .menu-list {
   display: grid;
   gap: var(--space-md);
+  position: relative; /* For smooth transitions */
 }
 
 .menu-item-card {
@@ -166,6 +263,22 @@ body {
   background: var(--bg-container);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-elevation);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.menu-item-card.is-faded {
+  opacity: 0.3;
+}
+
+.menu-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--shadow-color);
+}
+
+.menu-item-card.is-highlighted {
+  background-color: color-mix(in srgb, var(--accent-primary) 30%, var(--bg-container));
+  box-shadow: 0 0 15px var(--accent-primary);
+  /* You can add a subtle animation or border here too */
 }
 
 .menu-item-card h3 {
@@ -188,6 +301,7 @@ body {
   grid-area: tags;
   margin-top: var(--space-md);
   display: flex;
+  flex-wrap: wrap; /* Allow tags to wrap */
   gap: var(--space-sm);
 }
 
@@ -195,10 +309,38 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   padding: var(--space-xs) var(--space-sm);
-  background-color: var(--accent-secondary);
-  color: var(--text-light);
+  background-color: var(--accent-secondary); /* Default, will be overridden */
+  color: #fff;
   border-radius: 50px;
+  transition: all 0.2s ease;
 }
+
+/* Specific tag colors - flavor-based */
+.menu-item-card .tag.tag-spicy { background-color: #DC2626; } /* Red for spicy */
+.menu-item-card .tag.tag-sweet { background-color: #EC4899; } /* Pink for sweet */
+.menu-item-card .tag.tag-vegetarian { background-color: #10B981; } /* Green for vegetarian */
+.menu-item-card .tag.tag-healthy { background-color: #34D399; } /* Light green for healthy */
+.menu-item-card .tag.tag-popular { background-color: #F59E0B; } /* Gold for popular */
+.menu-item-card .tag.tag-meal { background-color: #F97316; } /* Orange for meals */
+.menu-item-card .tag.tag-cheesy { background-color: #FBBF24; } /* Yellow for cheesy */
+.menu-item-card .tag.tag-meat { background-color: #991B1B; } /* Dark red for meat */
+.menu-item-card .tag.tag-chicken { background-color: #FB923C; } /* Light orange for chicken */
+.menu-item-card .tag.tag-seafood { background-color: #3B82F6; } /* Blue for seafood */
+.menu-item-card .tag.tag-dessert { background-color: #A855F7; } /* Purple for dessert */
+.menu-item-card .tag.tag-drink { background-color: #06B6D4; } /* Cyan for drinks */
+.menu-item-card .tag.tag-refreshing { background-color: #22D3EE; } /* Light blue for refreshing */
+.menu-item-card .tag.tag-shareable { background-color: #8B5CF6; } /* Purple for shareable */
+.menu-item-card .tag.tag-comfort { background-color: #92400E; } /* Brown for comfort food */
+.menu-item-card .tag.tag-mocktail { background-color: #A78BFA; } /* Light purple for mocktail */
+.menu-item-card .tag.tag-fizzy { background-color: #67E8F9; } /* Light cyan for fizzy */
+
+/* Fallback tag colors (for unmapped tags) */
+.menu-item-card .tag.tag-color-0 { background-color: var(--accent-primary); }
+.menu-item-card .tag.tag-color-1 { background-color: var(--accent-secondary); }
+.menu-item-card .tag.tag-color-2 { background-color: var(--accent-tertiary); }
+.menu-item-card .tag.tag-color-3 { background-color: var(--accent-quaternary); }
+.menu-item-card .tag.tag-color-4 { background-color: var(--accent-fifth); }
+.menu-item-card .tag.tag-color-5 { background-color: var(--accent-sixth); }
 
 .menu-item-card .price {
   grid-area: price;
@@ -208,4 +350,61 @@ body {
   color: var(--text-dark);
   align-self: center;
   justify-self: end;
+}
+
+/* No Results Section */
+.no-results {
+  text-align: center;
+  padding: var(--space-xl) var(--space-lg);
+  background: var(--bg-card);
+  border-radius: var(--border-radius);
+  margin-top: var(--space-lg);
+}
+
+.no-results h3 {
+  font-family: var(--font-heading);
+  color: var(--text-dark);
+  font-size: 1.5rem;
+}
+
+.no-results p {
+  color: var(--text-light);
+  max-width: 400px;
+  margin: var(--space-xs) auto 0 auto;
+}
+
+/* Loading Dots Animation */
+.loading-dots-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-xs); /* Space between dots */
+  padding: var(--space-md) 0;
+  min-height: 40px; /* Reserve space to prevent layout shift */
+}
+
+.loading-dots-container[hidden] {
+  display: none;
+}
+
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background-color: var(--text-dark); /* Black dots */
+  border-radius: 50%;
+  animation: bounce-animation 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) { animation-delay: 0s; }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce-animation {
+  0%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-12px);
+  }
 }
