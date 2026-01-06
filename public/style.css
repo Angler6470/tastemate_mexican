@@ -1,0 +1,208 @@
+:root {
+  --bg-body: #FDFBF8;
+  --bg-container: #FFFFFF;
+  --bg-card: #F8F9FA;
+  --bg-card-header: #F1F3F5;
+
+  --accent-primary: #8EE4C4; 
+  --accent-primary-hover: #7ACBB3;
+  --accent-secondary: #E9ECEF;
+  --accent-secondary-hover: #DEE2E6;
+
+  --text-dark: #212529;
+  --text-light: #495057;
+  --text-on-primary: #212529;
+
+  --border-color: #E9ECEF;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  --font-heading: 'Fraunces', serif;
+  --font-body: 'Manrope', sans-serif;
+
+  --border-radius: 12px;
+  --shadow-elevation: 0 4px 12px var(--shadow-color);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg-body);
+  font-family: var(--font-body);
+  display: flex;
+  justify-content: center;
+  padding: var(--space-lg) 0;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 720px;
+  background: transparent;
+}
+
+h1, h2 {
+  font-family: var(--font-heading);
+  color: var(--text-dark);
+  margin: 0;
+}
+
+p {
+  color: var(--text-light);
+  margin: var(--space-sm) 0 0 0;
+  line-height: 1.5;
+}
+
+/* Header Card */
+.header-card {
+  text-align: center;
+  padding: var(--space-lg);
+  border-radius: var(--border-radius);
+  background: var(--bg-container);
+  margin-bottom: var(--space-lg);
+}
+
+.header-card .logo {
+  max-width: 200px;
+  margin-bottom: var(--space-md);
+}
+
+.header-card h1 {
+  font-size: 2.25rem;
+}
+
+.header-card .tagline {
+  font-size: 1rem;
+  margin-top: var(--space-xs);
+}
+
+/* Helper Card */
+.helper-card {
+  text-align: center;
+  padding: var(--space-xl);
+  border-radius: var(--border-radius);
+  background: var(--bg-container);
+  box-shadow: var(--shadow-elevation);
+  margin-bottom: var(--space-lg);
+}
+
+.helper-card h2 {
+  font-size: 1.75rem;
+  margin-bottom: var(--space-sm);
+}
+
+.helper-card p {
+  margin-bottom: var(--space-lg);
+}
+
+.quick-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  padding: var(--space-md) var(--space-lg);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--text-on-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+.btn-pill {
+  background-color: var(--accent-secondary);
+  color: var(--text-dark);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 50px; /* Pill shape */
+}
+
+.btn-pill:hover {
+  background-color: var(--accent-secondary-hover);
+}
+
+/* Menu List */
+.menu-list {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.menu-item-card {
+  display: grid;
+  grid-template-areas:
+    "name price"
+    "desc price"
+    "tags price";
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  padding: var(--space-lg);
+  background: var(--bg-container);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-elevation);
+}
+
+.menu-item-card h3 {
+  grid-area: name;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.menu-item-card .description {
+  grid-area: desc;
+  margin: var(--space-xs) 0 0 0;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  max-width: 400px;
+}
+
+.menu-item-card .tags {
+  grid-area: tags;
+  margin-top: var(--space-md);
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.menu-item-card .tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: var(--space-xs) var(--space-sm);
+  background-color: var(--accent-secondary);
+  color: var(--text-light);
+  border-radius: 50px;
+}
+
+.menu-item-card .price {
+  grid-area: price;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  align-self: center;
+  justify-self: end;
+}

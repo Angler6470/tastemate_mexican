@@ -1,0 +1,66 @@
+[
+  {
+    "id": "m1",
+    "name": "Carne Asada Tacos",
+    "description": "Three corn tortillas with marinated grilled steak, onions, cilantro, and a side of salsa verde.",
+    "price": 14.99,
+    "type": "main",
+    "tags": ["Popular", "Meal", "Spicy", "Meat"]
+  },
+  {
+    "id": "m2",
+    "name": "Chiles Rellenos",
+    "description": "Two poblano peppers filled with cheese, battered and fried, topped with a mild tomato sauce. Served with rice and beans.",
+    "price": 16.50,
+    "type": "main",
+    "tags": ["Vegetarian Option", "Meal", "Cheesy"]
+  },
+  {
+    "id": "m3",
+    "name": "Enchiladas Suizas",
+    "description": "Chicken enchiladas smothered in a creamy green tomatillo sauce, melted Swiss cheese, and sour cream.",
+    "price": 15.75,
+    "type": "main",
+    "tags": ["Popular", "Meal", "Cheesy", "Chicken"]
+  },
+  {
+    "id": "d1",
+    "name": "Churros with Chocolate Sauce",
+    "description": "Crispy fried dough pastries dusted with cinnamon sugar, served with a rich chocolate dipping sauce.",
+    "price": 6.99,
+    "type": "dessert",
+    "tags": ["Popular", "Dessert", "Sweet"]
+  },
+  {
+    "id": "d2",
+    "name": "Flan Napolitano",
+    "description": "Classic Mexican caramel custard with a creamy, smooth texture.",
+    "price": 5.50,
+    "type": "dessert",
+    "tags": ["Dessert", "Sweet"]
+  },
+  {
+    "id": "b1",
+    "name": "Horchata",
+    "description": "Traditional Mexican rice milk beverage, sweetened with cinnamon.",
+    "price": 3.50,
+    "type": "drink",
+    "tags": ["Drink", "Sweet", "Popular"]
+  },
+  {
+    "id": "b2",
+    "name": "Agua Fresca de Jamaica",
+    "description": "Refreshing hibiscus flower iced tea, lightly sweetened.",
+    "price": 3.75,
+    "type": "drink",
+    "tags": ["Drink", "Refreshing"]
+  },
+  {
+    "id": "b3",
+    "name": "Mexican Coca-Cola",
+    "description": "Coca-Cola made with real cane sugar for an authentic taste.",
+    "price": 2.99,
+    "type": "drink",
+    "tags": ["Drink"]
+  }
+]
