@@ -62,5 +62,53 @@
     "price": 2.99,
     "type": "drink",
     "tags": ["Drink"]
+  },
+  {
+    "id": "m4",
+    "name": "Fish Tacos",
+    "description": "Lightly battered fish, cabbage slaw, and chipotle crema in warm corn tortillas.",
+    "price": 15.50,
+    "type": "main",
+    "tags": ["Popular", "Seafood", "Spicy"]
+  },
+  {
+    "id": "m5",
+    "name": "Vegetable Fajitas",
+    "description": "Sizzling platter of seasoned mixed vegetables, served with warm tortillas, guacamole, and salsa.",
+    "price": 13.99,
+    "type": "main",
+    "tags": ["Vegetarian", "Meal", "Healthy"]
+  },
+  {
+    "id": "d3",
+    "name": "Churro Bites",
+    "description": "Smaller, bite-sized churros perfect for sharing, served with dulce de leche.",
+    "price": 7.50,
+    "type": "dessert",
+    "tags": ["Dessert", "Sweet", "Shareable"]
+  },
+  {
+    "id": "d4",
+    "name": "Arroz con Leche",
+    "description": "Creamy rice pudding with cinnamon and a hint of vanilla.",
+    "price": 5.00,
+    "type": "dessert",
+    "tags": ["Dessert", "Sweet", "Comfort Food"]
+  },
+  {
+    "id": "b4",
+    "name": "Margarita (Non-Alcoholic)",
+    "description": "Classic lime margarita, refreshing and tangy, without the alcohol.",
+    "price": 6.00,
+    "type": "drink",
+    "tags": ["Drink", "Refreshing", "Mocktail"]
+  },
+  {
+    "id": "b5",
+    "name": "Jarritos (Assorted Flavors)",
+    "description": "Authentic Mexican sodas in various fruit flavors.",
+    "price": 3.25,
+    "type": "drink",
+    "tags": ["Drink", "Sweet", "Fizzy"]
   }
 ]
