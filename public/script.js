@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     minimumLoadingTime: 250, // milliseconds (1/4 second)
     loadingStartTime: 0,
     searchTimeout: null, // Add searchTimeout for debouncing
+    helpModeActive: false, // Track if help tooltips are active
+    activeTooltip: null, // Track currently active tooltip
+    activeMenuTab: 'all', // Track active menu tab
 
     elements: {
       menuList: document.getElementById('menu-list'),
@@ -16,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
       loadingDotsContainer: document.getElementById('loading-dots-container'),
       searchInput: document.getElementById('search-input'), // Reintroduce searchInput
       suggestionsContainer: document.getElementById('search-suggestions'), // Reintroduce suggestionsContainer
+      helpToggle: document.getElementById('help-toggle'),
+      menuTabs: document.getElementById('menu-tabs'),
     },
 
     init() {
@@ -42,6 +47,22 @@ document.addEventListener('DOMContentLoaded', () => {
           this.hideSuggestions();
         }
       });
+
+      // Help tooltip toggle
+      if (this.elements.helpToggle) {
+        this.elements.helpToggle.addEventListener('click', this.toggleHelpMode.bind(this));
+      }
+
+      // Menu tabs
+      if (this.elements.menuTabs) {
+        const tabButtons = this.elements.menuTabs.querySelectorAll('.menu-tab');
+        tabButtons.forEach(button => {
+          button.addEventListener('click', () => this.handleMenuTabClick(button));
+        });
+      }
+
+      // Initialize tooltips
+      this.initTooltips();
     },
 
     fetchMenuData() {
@@ -84,38 +105,38 @@ document.addEventListener('DOMContentLoaded', () => {
       this.elements.menuList.innerHTML = '';
       const fragment = document.createDocumentFragment();
 
-      const categoryOrder = ['main', 'dessert', 'drink'];
-      const categoryNames = {
-        main: 'Main Dishes',
-        dessert: 'Desserts',
-        drink: 'Drinks'
-      };
+      // Filter by active tab if not "all"
+      let itemsToShow = items;
+      if (this.activeMenuTab !== 'all') {
+        itemsToShow = items.filter(item => (item.type || 'main') === this.activeMenuTab);
+      }
 
-      const grouped = items.reduce((acc, item) => {
-        const type = item.type || 'main';
-        if (!acc[type]) {
-          acc[type] = [];
-        }
-        acc[type].push(item);
-        return acc;
-      }, {});
-
-      categoryOrder.forEach(categoryKey => {
-        if (grouped[categoryKey] && grouped[categoryKey].length > 0) {
-          const header = document.createElement('h2');
-          header.textContent = categoryNames[categoryKey];
-          fragment.appendChild(header);
-          
-          grouped[categoryKey].forEach(item => {
-            const card = this.createMenuItemCard(item);
-            fragment.appendChild(card);
-          });
-        }
+      // Render items without category headers (tabs handle navigation)
+      itemsToShow.forEach(item => {
+        const card = this.createMenuItemCard(item);
+        fragment.appendChild(card);
       });
 
       this.elements.menuList.appendChild(fragment);
-      this.elements.noResults.hidden = items.length > 0;
+      this.elements.noResults.hidden = itemsToShow.length > 0;
       this.hideLoadingDots();
+    },
+
+    handleMenuTabClick(button) {
+      // Update active tab
+      const tabButtons = this.elements.menuTabs.querySelectorAll('.menu-tab');
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      this.activeMenuTab = button.dataset.tab;
+      
+      // Re-render menu with new tab filter
+      this.renderCategorizedItems(this.filteredItems);
+      
+      // Smooth scroll to menu section
+      if (this.elements.menuList) {
+        this.elements.menuList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     },
 
     // --- Search Specific Methods ---
@@ -383,6 +404,111 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const colorIndex = Math.abs(hash) % 6;
       return `tag-color-${colorIndex}`;
+    },
+
+    // Tooltip functionality
+    initTooltips() {
+      const elementsWithTooltips = document.querySelectorAll('[data-tooltip]');
+      
+      elementsWithTooltips.forEach(element => {
+        element.addEventListener('mouseenter', (e) => {
+          if (this.helpModeActive) {
+            this.showTooltip(e.target, e.target.dataset.tooltip);
+          }
+        });
+
+        element.addEventListener('mouseleave', () => {
+          this.hideTooltip();
+        });
+
+        element.addEventListener('focus', (e) => {
+          if (this.helpModeActive) {
+            this.showTooltip(e.target, e.target.dataset.tooltip);
+          }
+        });
+
+        element.addEventListener('blur', () => {
+          this.hideTooltip();
+        });
+      });
+    },
+
+    toggleHelpMode() {
+      this.helpModeActive = !this.helpModeActive;
+      
+      if (this.elements.helpToggle) {
+        this.elements.helpToggle.classList.toggle('active', this.helpModeActive);
+        this.elements.helpToggle.setAttribute('title', 
+          this.helpModeActive ? 'Hide help tooltips' : 'Show help tooltips');
+      }
+
+      if (!this.helpModeActive) {
+        this.hideTooltip();
+      }
+    },
+
+    showTooltip(element, text) {
+      // Hide any existing tooltip
+      this.hideTooltip();
+
+      if (!text) return;
+
+      // Create tooltip element
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip tooltip-top';
+      tooltip.textContent = text;
+      document.body.appendChild(tooltip);
+
+      // Position tooltip
+      const rect = element.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+      
+      // Check if tooltip should be above or below
+      const spaceAbove = rect.top;
+      const spaceBelow = window.innerHeight - rect.bottom;
+      
+      let top, left;
+      
+      if (spaceBelow < tooltipRect.height + 20 && spaceAbove > spaceBelow) {
+        tooltip.classList.remove('tooltip-top');
+        tooltip.classList.add('tooltip-bottom');
+        top = rect.bottom + 8;
+      } else {
+        top = rect.top - tooltipRect.height - 8;
+      }
+
+      // Position horizontally centered
+      left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+      
+      // Keep tooltip within viewport bounds
+      const padding = 10;
+      if (left < padding) left = padding;
+      if (left + tooltipRect.width > window.innerWidth - padding) {
+        left = window.innerWidth - tooltipRect.width - padding;
+      }
+
+      tooltip.style.position = 'fixed';
+      tooltip.style.top = `${top}px`;
+      tooltip.style.left = `${left}px`;
+
+      // Show tooltip with animation
+      requestAnimationFrame(() => {
+        tooltip.classList.add('show');
+      });
+
+      this.activeTooltip = tooltip;
+    },
+
+    hideTooltip() {
+      if (this.activeTooltip) {
+        this.activeTooltip.classList.remove('show');
+        setTimeout(() => {
+          if (this.activeTooltip && this.activeTooltip.parentNode) {
+            this.activeTooltip.parentNode.removeChild(this.activeTooltip);
+          }
+          this.activeTooltip = null;
+        }, 200);
+      }
     }
   };
 
