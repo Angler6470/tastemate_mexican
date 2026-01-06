@@ -1,0 +1,73 @@
+/* CSS Variables */
+:root {
+    /* Colors */
+    --color-background-body: #FBF3E8; /* Parchment */
+    --color-background-app: #FBF3E8; /* Parchment for app container background */
+    --color-accent-primary: #C65A3A; /* Terracotta */
+    --color-accent-secondary: #1F6F78; /* Deep teal */
+    --color-highlight: #E2B65C; /* Muted gold */
+    --color-text-contrast: #2A2A2A; /* Charcoal */
+    --color-background-header-footer: var(--color-accent-primary); /* Terracotta for header/footer */
+
+    /* Spacing */
+    --spacing-unit: 8px;
+    --spacing-small: var(--spacing-unit); /* 8px */
+    --spacing-medium: calc(var(--spacing-unit) * 2); /* 16px */
+    --spacing-large: calc(var(--spacing-unit) * 3); /* 24px */
+
+    /* Fonts */
+    --font-family-heading: 'Fraunces', serif;
+    --font-family-body: 'Manrope', sans-serif;
+}
+
+/* Global Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Base Styles */
+body {
+    margin: 0;
+    font-family: var(--font-family-body);
+    background-color: var(--color-background-body); /* Parchment */
+    background-image: url('./assets/mexican_pattern.svg'); /* Geometric tile pattern */
+    background-repeat: repeat;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh; /* Ensure body takes full viewport height */
+}
+
+/* App Container */
+.app-container {
+    width: 100%; /* Full width on small screens */
+    max-width: 720px; /* Max width for larger screens */
+    background-color: var(--color-background-app); /* Parchment background */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for definition */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    width: 100%;
+    height: 70px;
+    background-color: var(--color-background-header-footer); /* Terracotta */
+    display: flex; /* Enable flexbox */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+}
+
+header img {
+    height: 100%; /* Make the image take full height of the header */
+    object-fit: contain; /* Ensure the image fits within the bounds without cropping */
+    max-width: 100%; /* Ensure the image does not overflow horizontally */
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3)); /* Add a subtle drop shadow */
+}
+
+/* Footer */
+footer {
+    width: 100%;
+    height: 70px;
+    background-color: var(--color-background-header-footer); /* Terracotta */
+    margin-top: auto; /* Pushes footer to the bottom */
+}
