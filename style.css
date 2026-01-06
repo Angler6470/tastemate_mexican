@@ -62,6 +62,7 @@ header img {
     object-fit: contain; /* Ensure the image fits within the bounds without cropping */
     max-width: 100%; /* Ensure the image does not overflow horizontally */
     filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3)); /* Add a subtle drop shadow */
+    padding: var(--spacing-small);
 }
 
 /* Footer */
