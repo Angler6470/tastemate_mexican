@@ -1,114 +1,114 @@
 [
-  {
-    "id": "m1",
-    "name": "Carne Asada Tacos",
-    "description": "Three corn tortillas with marinated grilled steak, onions, cilantro, and a side of salsa verde.",
-    "price": 14.99,
-    "type": "main",
-    "tags": ["Popular", "Meal", "Spicy", "Meat"]
-  },
-  {
-    "id": "m2",
-    "name": "Chiles Rellenos",
-    "description": "Two poblano peppers filled with cheese, battered and fried, topped with a mild tomato sauce. Served with rice and beans.",
-    "price": 16.50,
-    "type": "main",
-    "tags": ["Vegetarian Option", "Meal", "Cheesy"]
-  },
-  {
-    "id": "m3",
-    "name": "Enchiladas Suizas",
-    "description": "Chicken enchiladas smothered in a creamy green tomatillo sauce, melted Swiss cheese, and sour cream.",
-    "price": 15.75,
-    "type": "main",
-    "tags": ["Popular", "Meal", "Cheesy", "Chicken"]
-  },
-  {
-    "id": "d1",
-    "name": "Churros with Chocolate Sauce",
-    "description": "Crispy fried dough pastries dusted with cinnamon sugar, served with a rich chocolate dipping sauce.",
-    "price": 6.99,
-    "type": "dessert",
-    "tags": ["Popular", "Dessert", "Sweet"]
-  },
-  {
-    "id": "d2",
-    "name": "Flan Napolitano",
-    "description": "Classic Mexican caramel custard with a creamy, smooth texture.",
-    "price": 5.50,
-    "type": "dessert",
-    "tags": ["Dessert", "Sweet"]
-  },
-  {
-    "id": "b1",
-    "name": "Horchata",
-    "description": "Traditional Mexican rice milk beverage, sweetened with cinnamon.",
-    "price": 3.50,
-    "type": "drink",
-    "tags": ["Drink", "Sweet", "Popular"]
-  },
-  {
-    "id": "b2",
-    "name": "Agua Fresca de Jamaica",
-    "description": "Refreshing hibiscus flower iced tea, lightly sweetened.",
-    "price": 3.75,
-    "type": "drink",
-    "tags": ["Drink", "Refreshing"]
-  },
-  {
-    "id": "b3",
-    "name": "Mexican Coca-Cola",
-    "description": "Coca-Cola made with real cane sugar for an authentic taste.",
-    "price": 2.99,
-    "type": "drink",
-    "tags": ["Drink"]
-  },
-  {
-    "id": "m4",
-    "name": "Fish Tacos",
-    "description": "Lightly battered fish, cabbage slaw, and chipotle crema in warm corn tortillas.",
-    "price": 15.50,
-    "type": "main",
-    "tags": ["Popular", "Seafood", "Spicy"]
-  },
-  {
-    "id": "m5",
-    "name": "Vegetable Fajitas",
-    "description": "Sizzling platter of seasoned mixed vegetables, served with warm tortillas, guacamole, and salsa.",
-    "price": 13.99,
-    "type": "main",
-    "tags": ["Vegetarian", "Meal", "Healthy"]
-  },
-  {
-    "id": "d3",
-    "name": "Churro Bites",
-    "description": "Smaller, bite-sized churros perfect for sharing, served with dulce de leche.",
-    "price": 7.50,
-    "type": "dessert",
-    "tags": ["Dessert", "Sweet", "Shareable"]
-  },
-  {
-    "id": "d4",
-    "name": "Arroz con Leche",
-    "description": "Creamy rice pudding with cinnamon and a hint of vanilla.",
-    "price": 5.00,
-    "type": "dessert",
-    "tags": ["Dessert", "Sweet", "Comfort Food"]
-  },
-  {
-    "id": "b4",
-    "name": "Margarita (Non-Alcoholic)",
-    "description": "Classic lime margarita, refreshing and tangy, without the alcohol.",
-    "price": 6.00,
-    "type": "drink",
-    "tags": ["Drink", "Refreshing", "Mocktail"]
-  },
-  {
-    "id": "b5",
-    "name": "Jarritos (Assorted Flavors)",
-    "description": "Authentic Mexican sodas in various fruit flavors.",
-    "price": 3.25,
-    "type": "drink",
-    "tags": ["Drink", "Sweet", "Fizzy"]
-  }
+	{
+		"id": "m1",
+		"name": "Carne Asada Tacos",
+		"description": "Three corn tortillas with marinated grilled steak, onions, cilantro, and a side of salsa verde.",
+		"price": 14.99,
+		"type": "main",
+		"tags": ["Popular", "Meal", "Spicy", "Meat"]
+	},
+	{
+		"id": "m2",
+		"name": "Chiles Rellenos",
+		"description": "Two poblano peppers filled with cheese, battered and fried, topped with a mild tomato sauce. Served with rice and beans.",
+		"price": 16.5,
+		"type": "main",
+		"tags": ["Vegetarian Option", "Meal", "Cheesy"]
+	},
+	{
+		"id": "m3",
+		"name": "Enchiladas Suizas",
+		"description": "Chicken enchiladas smothered in a creamy green tomatillo sauce, melted Swiss cheese, and sour cream.",
+		"price": 15.75,
+		"type": "main",
+		"tags": ["Popular", "Meal", "Cheesy", "Chicken"]
+	},
+	{
+		"id": "d1",
+		"name": "Churros with Chocolate Sauce",
+		"description": "Crispy fried dough pastries dusted with cinnamon sugar, served with a rich chocolate dipping sauce.",
+		"price": 6.99,
+		"type": "dessert",
+		"tags": ["Popular", "Dessert", "Sweet"]
+	},
+	{
+		"id": "d2",
+		"name": "Flan Napolitano",
+		"description": "Classic Mexican caramel custard with a creamy, smooth texture.",
+		"price": 5.5,
+		"type": "dessert",
+		"tags": ["Dessert", "Sweet"]
+	},
+	{
+		"id": "b1",
+		"name": "Horchata",
+		"description": "Traditional Mexican rice milk beverage, sweetened with cinnamon.",
+		"price": 3.5,
+		"type": "drink",
+		"tags": ["Drink", "Sweet", "Popular"]
+	},
+	{
+		"id": "b2",
+		"name": "Agua Fresca de Jamaica",
+		"description": "Refreshing hibiscus flower iced tea, lightly sweetened.",
+		"price": 3.75,
+		"type": "drink",
+		"tags": ["Drink", "Refreshing"]
+	},
+	{
+		"id": "b3",
+		"name": "Mexican Coca-Cola",
+		"description": "Coca-Cola made with real cane sugar for an authentic taste.",
+		"price": 2.99,
+		"type": "drink",
+		"tags": ["Drink"]
+	},
+	{
+		"id": "m4",
+		"name": "Fish Tacos",
+		"description": "Lightly battered fish, cabbage slaw, and chipotle crema in warm corn tortillas.",
+		"price": 15.5,
+		"type": "main",
+		"tags": ["Popular", "Seafood", "Spicy"]
+	},
+	{
+		"id": "m5",
+		"name": "Vegetable Fajitas",
+		"description": "Sizzling platter of seasoned mixed vegetables, served with warm tortillas, guacamole, and salsa.",
+		"price": 13.99,
+		"type": "main",
+		"tags": ["Vegetarian", "Meal", "Healthy"]
+	},
+	{
+		"id": "d3",
+		"name": "Churro Bites",
+		"description": "Smaller, bite-sized churros perfect for sharing, served with dulce de leche.",
+		"price": 7.5,
+		"type": "dessert",
+		"tags": ["Dessert", "Sweet", "Shareable"]
+	},
+	{
+		"id": "d4",
+		"name": "Arroz con Leche",
+		"description": "Creamy rice pudding with cinnamon and a hint of vanilla.",
+		"price": 5.0,
+		"type": "dessert",
+		"tags": ["Dessert", "Sweet", "Comfort Food"]
+	},
+	{
+		"id": "b4",
+		"name": "Margarita (Non-Alcoholic)",
+		"description": "Classic lime margarita, refreshing and tangy, without the alcohol.",
+		"price": 6.0,
+		"type": "drink",
+		"tags": ["Drink", "Refreshing", "Mocktail"]
+	},
+	{
+		"id": "b5",
+		"name": "Jarritos (Assorted Flavors)",
+		"description": "Authentic Mexican sodas in various fruit flavors.",
+		"price": 3.25,
+		"type": "drink",
+		"tags": ["Drink", "Sweet", "Fizzy"]
+	}
 ]
