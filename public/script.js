@@ -3,12 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     menuItems: [],
     filteredItems: [],
     currentCategory: null,
-    currentSearch: '', // Reintroduce currentSearch
-    activeSuggestionIndex: -1, // Reintroduce activeSuggestionIndex
-    minimumLoadingTime: 250, // milliseconds (1/4 second)
+    minimumLoadingTime: 800, // milliseconds (0.8 seconds)
     loadingStartTime: 0,
-    searchTimeout: null, // Add searchTimeout for debouncing
-    helpModeActive: false, // Track if help tooltips are active
     activeTooltip: null, // Track currently active tooltip
     activeMenuTab: 'all', // Track active menu tab
 
@@ -17,15 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
       noResults: document.getElementById('no-results'),
       categoryButtons: document.querySelectorAll('.quick-actions .btn-pill'),
       loadingDotsContainer: document.getElementById('loading-dots-container'),
-      searchInput: document.getElementById('search-input'), // Reintroduce searchInput
-      suggestionsContainer: document.getElementById('search-suggestions'), // Reintroduce suggestionsContainer
-      helpToggle: document.getElementById('help-toggle'),
       menuTabs: document.getElementById('menu-tabs'),
+      legendContainer: document.getElementById('legend-items'),
     },
 
     init() {
       this.cacheDomElements();
       this.attachListeners();
+      // Start with menu list hidden
+      if (this.elements.menuList) {
+        this.elements.menuList.style.opacity = '0';
+      }
+      this.createTagLegend();
       this.fetchMenuData();
     },
 
@@ -34,24 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
     },
 
     attachListeners() {
-      this.elements.searchInput.addEventListener('input', this.handleSearchInput.bind(this));
-      this.elements.searchInput.addEventListener('keydown', this.handleSearchKeyDown.bind(this));
-      this.elements.suggestionsContainer.addEventListener('click', this.handleSuggestionClick.bind(this));
-      
       this.elements.categoryButtons.forEach(button => {
         button.addEventListener('click', () => this.handleCategoryClick(button));
       });
-
-      document.addEventListener('click', (e) => {
-        if (!this.elements.suggestionsContainer.contains(e.target) && e.target !== this.elements.searchInput) {
-          this.hideSuggestions();
-        }
-      });
-
-      // Help tooltip toggle
-      if (this.elements.helpToggle) {
-        this.elements.helpToggle.addEventListener('click', this.toggleHelpMode.bind(this));
-      }
 
       // Menu tabs
       if (this.elements.menuTabs) {
@@ -66,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
 
     fetchMenuData() {
+      this.showLoadingDots();
       fetch('menu.json')
         .then(response => {
           if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -74,11 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(menuData => {
           this.menuItems = menuData;
           this.filteredItems = menuData;
+          this.createTagLegend(); // Update legend with actual menu data
           this.renderAllItemsOnce();
         })
         .catch(error => {
           console.error('Error fetching or parsing menu data:', error);
           this.elements.menuList.innerHTML = '<p class="error-state">Could not load menu. Please try again later.</p>';
+          this.hideLoadingDots(() => {
+            this.elements.menuList.style.opacity = '1';
+          });
         });
     },
 
@@ -97,11 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
       
       this.filteredItems = items;
       this.renderCategorizedItems(this.filteredItems); // This will still handle the main menu display
-      this.renderSuggestions(); // Call renderSuggestions after filtering
     },
 
 
     renderCategorizedItems(items) {
+      // Hide menu list while loading
+      this.elements.menuList.style.opacity = '0';
       this.elements.menuList.innerHTML = '';
       const fragment = document.createDocumentFragment();
 
@@ -119,7 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       this.elements.menuList.appendChild(fragment);
       this.elements.noResults.hidden = itemsToShow.length > 0;
-      this.hideLoadingDots();
+      
+      // Hide loading dots and show content after minimum loading time
+      this.hideLoadingDots(() => {
+        this.elements.menuList.style.opacity = '1';
+      });
     },
 
     handleMenuTabClick(button) {
@@ -132,158 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Re-render menu with new tab filter
       this.renderCategorizedItems(this.filteredItems);
-      
-      // Smooth scroll to menu section
-      if (this.elements.menuList) {
-        this.elements.menuList.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
     },
-
-    // --- Search Specific Methods ---
-    renderSuggestions() {
-      const query = this.currentSearch.trim().toLowerCase();
-      if (!query) {
-        this.hideSuggestions();
-        return;
-      }
-
-      const suggestions = [];
-      const addedItemIds = new Set(); // To prevent duplicate items in suggestions
-
-      // Prioritize exact name matches
-      this.menuItems.forEach(item => {
-        if (item.name.toLowerCase().includes(query) && !addedItemIds.has(item.id)) {
-          suggestions.push({ type: 'Dish', text: item.name, item: item });
-          addedItemIds.add(item.id);
-        }
-      });
-
-      // Then tag matches
-      this.menuItems.forEach(item => {
-        item.tags.forEach(tag => {
-          if (tag.toLowerCase().includes(query) && !addedItemIds.has(item.id)) {
-            suggestions.push({ type: 'Tag', text: tag, item: item });
-            addedItemIds.add(item.id);
-          }
-        });
-      });
-
-      // Then description matches
-      this.menuItems.forEach(item => {
-        if (item.description.toLowerCase().includes(query) && !addedItemIds.has(item.id)) {
-          suggestions.push({ type: 'Description', text: item.description, item: item });
-          addedItemIds.add(item.id);
-        }
-      });
-      
-
-      if (suggestions.length > 0) {
-        const suggestionHtml = suggestions.slice(0, 5).map(suggestion => {
-          const highlightedName = this.getHighlightedHTML(suggestion.item.name, query);
-          const highlightedDesc = this.getHighlightedHTML(suggestion.item.description, query);
-          const priceFormatted = `$${suggestion.item.price.toFixed(2)}`;
-          return `
-            <div class="suggestion-item" data-id="${suggestion.item.id}" data-name="${suggestion.item.name}">
-              <div class="suggestion-text">
-                <strong>${highlightedName}</strong> - ${priceFormatted} <span class="suggestion-type-label">(${suggestion.type})</span>
-                <p class="suggestion-description">${highlightedDesc}</p>
-              </div>
-            </div>
-          `;
-        }).join('');
-        this.elements.suggestionsContainer.innerHTML = suggestionHtml;
-        this.showSuggestions();
-      } else {
-        this.hideSuggestions();
-      }
-    },
-    
-    handleSearchInput() {
-      this.currentSearch = this.elements.searchInput.value;
-      
-      // Debounce the search input
-      if (this.searchTimeout) {
-        clearTimeout(this.searchTimeout);
-      }
-      this.searchTimeout = setTimeout(() => {
-        this.renderSuggestions();
-      }, 250); // 250ms debounce delay
-    },
-    
-    handleSearchKeyDown(e) {
-      const suggestions = this.elements.suggestionsContainer.querySelectorAll('.suggestion-item');
-      if (e.key === 'Escape') {
-        this.elements.searchInput.value = '';
-        this.currentSearch = '';
-        this.hideSuggestions();
-        this.renderSuggestions(); // Clear suggestions
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        if (this.activeSuggestionIndex > -1 && suggestions[this.activeSuggestionIndex]) {
-          this.selectSuggestion(suggestions[this.activeSuggestionIndex].dataset.name);
-        } else if (suggestions.length > 0 && this.currentSearch.trim() !== '') {
-          // If no suggestion is active but there's a search term, select the first one
-          this.selectSuggestion(suggestions[0].dataset.name);
-        }
-      } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        if(suggestions.length > 0) {
-            this.activeSuggestionIndex = (this.activeSuggestionIndex + (e.key === 'ArrowDown' ? 1 : -1) + suggestions.length) % suggestions.length;
-            suggestions.forEach((s, i) => s.classList.toggle('is-active', i === this.activeSuggestionIndex));
-            this.elements.searchInput.value = suggestions[this.activeSuggestionIndex].dataset.name; // Update search input with selected suggestion
-            // Scroll selected suggestion into view if needed
-            suggestions[this.activeSuggestionIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      }
-    },
-
-    handleSuggestionClick(e) {
-        const suggestionEl = e.target.closest('.suggestion-item');
-        if (suggestionEl) {
-            this.selectSuggestion(suggestionEl.dataset.name);
-        }
-    },
-
-    selectSuggestion(suggestionText) {
-      this.elements.searchInput.value = suggestionText;
-      this.currentSearch = suggestionText;
-      this.hideSuggestions();
-      
-      // Find the first matching item in the full menu to scroll to and highlight
-      const firstMatch = this.menuItems.find(item => 
-        item.name === suggestionText || 
-        (Array.isArray(item.tags) && item.tags.includes(suggestionText)) ||
-        item.description === suggestionText
-      );
-
-      if (firstMatch) {
-          const card = this.elements.menuList.querySelector(`[data-id="${firstMatch.id}"]`);
-          if (card) {
-              card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              card.classList.add('is-highlighted');
-              setTimeout(() => {
-                  card.classList.remove('is-highlighted');
-              }, 1500); // Highlight for 1.5 seconds
-          }
-      }
-    },
-
-    showSuggestions() { this.elements.suggestionsContainer.style.display = 'block'; },
-    hideSuggestions() { 
-      this.elements.suggestionsContainer.style.display = 'none'; 
-      this.activeSuggestionIndex = -1; // Reset active suggestion
-    },
-
-    getHighlightedHTML(text, query) {
-      if (!query) return text;
-      const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'); // Escape regex special chars
-      return text.replace(regex, '<span class="highlight">$1</span>');
-    },
-    
 
     handleCategoryClick(button) {
-      this.elements.searchInput.value = '';
-      this.currentSearch = '';
       this.showLoadingDots();
       const newCategory = button.dataset.category;
 
@@ -337,13 +182,14 @@ document.addEventListener('DOMContentLoaded', () => {
       this.loadingStartTime = Date.now();
     },
 
-    hideLoadingDots() {
-      // Ensure loading animation shows for at least minimumLoadingTime (250ms)
+    hideLoadingDots(callback) {
+      // Ensure loading animation shows for at least minimumLoadingTime (0.8 seconds)
       const elapsedTime = Date.now() - (this.loadingStartTime || Date.now());
       const delay = Math.max(0, this.minimumLoadingTime - elapsedTime);
 
       setTimeout(() => {
         this.elements.loadingDotsContainer.hidden = true;
+        if (callback) callback();
       }, delay);
     },
     
@@ -406,46 +252,51 @@ document.addEventListener('DOMContentLoaded', () => {
       return `tag-color-${colorIndex}`;
     },
 
-    // Tooltip functionality
+    // Tooltip functionality (removed - no longer needed)
     initTooltips() {
-      const elementsWithTooltips = document.querySelectorAll('[data-tooltip]');
-      
-      elementsWithTooltips.forEach(element => {
-        element.addEventListener('mouseenter', (e) => {
-          if (this.helpModeActive) {
-            this.showTooltip(e.target, e.target.dataset.tooltip);
-          }
-        });
-
-        element.addEventListener('mouseleave', () => {
-          this.hideTooltip();
-        });
-
-        element.addEventListener('focus', (e) => {
-          if (this.helpModeActive) {
-            this.showTooltip(e.target, e.target.dataset.tooltip);
-          }
-        });
-
-        element.addEventListener('blur', () => {
-          this.hideTooltip();
-        });
-      });
+      // Tooltips removed per user request
     },
 
-    toggleHelpMode() {
-      this.helpModeActive = !this.helpModeActive;
-      
-      if (this.elements.helpToggle) {
-        this.elements.helpToggle.classList.toggle('active', this.helpModeActive);
-        this.elements.helpToggle.setAttribute('title', 
-          this.helpModeActive ? 'Hide help tooltips' : 'Show help tooltips');
-      }
+    createTagLegend() {
+      if (!this.elements.legendContainer) return;
 
-      if (!this.helpModeActive) {
-        this.hideTooltip();
-      }
+      // Only show 6 most important/common tags
+      const tagLegend = {
+        'Popular': 'Most loved dishes',
+        'Spicy': 'Has heat',
+        'Vegetarian': 'Vegetarian friendly',
+        'Sweet': 'Sweet treat',
+        'Meal': 'Complete meal',
+        'Healthy': 'Nutritious choice'
+      };
+
+      const tagColorMap = {
+        'Popular': 'tag-popular',
+        'Spicy': 'tag-spicy',
+        'Vegetarian': 'tag-vegetarian',
+        'Sweet': 'tag-sweet',
+        'Meal': 'tag-meal',
+        'Meals': 'tag-meal',
+        'Healthy': 'tag-healthy'
+      };
+
+      // Create legend items for only the 6 selected tags
+      const selectedTags = Object.keys(tagLegend);
+      const legendItems = selectedTags
+        .map(tag => {
+          const colorClass = tagColorMap[tag] || 'tag-color-0';
+          return `
+            <div class="legend-item">
+              <span class="legend-dot ${colorClass}"></span>
+              <span class="legend-text">${tagLegend[tag]}</span>
+            </div>
+          `;
+        })
+        .join('');
+
+      this.elements.legendContainer.innerHTML = legendItems;
     },
+
 
     showTooltip(element, text) {
       // Hide any existing tooltip
