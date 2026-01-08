@@ -1,621 +1,504 @@
 document.addEventListener("DOMContentLoaded", () => {
 	const app = {
 		menuItems: [],
-		filteredItems: [],
-		currentCategory: null,
-		activeTooltip: null, // Track currently active tooltip
-		activeMenuTab: "all", // Track active menu tab
-		isLoading: false, // Track loading state
-		promoData: null, // Promo data from menu.json
-		itemsLimit: 9, // Show 9 items (3 rows) by default
-		itemsIncrement: 9, // Increment by 9 when "Show More" is clicked
+		recommendedItems: [],
+		selectedCategory: "meal",
+		selectedFlavors: [],
+		selectedStyles: [],
+		excludedIngredients: [],
+		allIngredients: [],
+		spicinessValue: 0.5,
+		isLoading: false,
+		promoData: null,
+		isMenuExpanded: false,
+		primaryMatch: null,
+		modalCategory: "meal",
+
+		categoryConfig: {
+			meal: {
+				flavors: ["Savory", "Spicy", "Rich"],
+				styles: ["Crunchy", "Creamy", "Hearty"],
+				spiciness: { enabled: true, weight: 1 }
+			},
+			dessert: {
+				flavors: ["Sweet", "Rich", "Fruity"],
+				styles: ["Creamy", "Crunchy", "Light"],
+				spiciness: { enabled: true, weight: 0.3 }
+			},
+			drink: {
+				flavors: ["Sweet", "Refreshing", "Rich"],
+				styles: ["Icy", "Smooth", "Fizzy"],
+				spiciness: { enabled: false }
+			}
+		},
 
 		elements: {
 			menuList: document.getElementById("menu-list"),
-			noResults: document.getElementById("no-results"),
-			loadMoreContainer: document.getElementById("load-more-container"),
-			categoryButtons: document.querySelectorAll(
-				".filter-btn--chip[data-category]",
-			),
+			categorySelector: document.getElementById("category-selector"),
+			spicinessMeter: document.getElementById("spiciness-meter"),
+			spicinessContainer: document.getElementById("spiciness-container"),
+			spicinessLabel: document.getElementById("spiciness-value"),
+			meterHint: document.getElementById("meter-hint"),
+			helpMeChooseBtn: document.getElementById("help-me-choose"),
 			loadingDotsContainer: document.getElementById("loading-dots-container"),
-			menuTabs: document.querySelectorAll(".filter-btn--segmented[data-tab]"),
-			legendContainer: document.getElementById("legend-items"),
-			legendToggle: document.getElementById("tag-guide-toggle"),
-			legend: document.getElementById("tag-legend"),
-			primaryAction: document.querySelector(".btn-primary-action"),
 			promoShowcase: document.getElementById("promo-showcase"),
 			featuredDish: document.getElementById("featured-dish"),
+			spotlightContainer: document.getElementById("spotlight-container"),
+			menuToggleBtn: document.getElementById("menu-toggle"),
+			menuModal: document.getElementById("menu-modal"),
+			modalClose: document.getElementById("modal-close"),
+			modalTabsContainer: document.getElementById("modal-category-tabs"),
+			exclusionToggle: document.getElementById("exclusion-toggle"),
+			exclusionPanel: document.getElementById("exclusion-panel"),
+			exclusionInput: document.getElementById("exclusion-input"),
+			exclusionSuggestions: document.getElementById("exclusion-suggestions"),
+			exclusionChips: document.getElementById("exclusion-chips"),
+			exclusionFeedback: document.getElementById("exclusion-feedback"),
+			howItWorksToggle: document.getElementById("how-it-works-toggle"),
+			howItWorksContent: document.getElementById("how-it-works-content"),
+			flavorSelectorFlavors: document.getElementById("flavor-selector-flavors"),
+			flavorSelectorTextures: document.getElementById("flavor-selector-textures"),
 		},
 
 		init() {
-			this.cacheDomElements();
 			this.attachListeners();
-			// Start with menu list hidden
-			if (this.elements.menuList) {
-				this.elements.menuList.style.opacity = "0";
-			}
 			this.fetchMenuData();
-		},
-
-		cacheDomElements() {
-			// The `elements` property is already populated, this is for clarity
+			this.renderCategoryControls();
 		},
 
 		attachListeners() {
-			this.elements.categoryButtons.forEach((button) => {
-				button.addEventListener("click", () =>
-					this.handleCategoryClick(button),
-				);
+			// Category Selection
+			this.elements.categorySelector.addEventListener("click", (e) => {
+				const btn = e.target.closest(".selector-btn");
+				if (!btn) return;
+
+				this.selectedCategory = btn.dataset.type;
+				this.selectedFlavors = [];
+				this.selectedStyles = [];
+				this.updateActiveSelectors(this.elements.categorySelector, [this.selectedCategory], "type");
+				this.renderCategoryControls();
+				this.getRecommendations();
 			});
 
-			// Menu tabs (now using filter-btn class)
-			this.elements.menuTabs.forEach((button) => {
-				button.addEventListener("click", () => this.handleMenuTabClick(button));
-			});
+			// Flavor & Style Selection
+			const handleTraitClick = (e, type) => {
+				const btn = e.target.closest(".flavor-btn");
+				if (!btn) return;
 
-			// Primary action button
-			if (this.elements.primaryAction) {
-				this.elements.primaryAction.addEventListener("click", () => {
-					this.showRandomItem();
+				const val = btn.dataset.trait;
+				const targetArray = type === "flavor" ? this.selectedFlavors : this.selectedStyles;
+				const index = targetArray.indexOf(val);
+
+				if (index > -1) {
+					targetArray.splice(index, 1);
+				} else if (targetArray.length < 2) {
+					targetArray.push(val);
+				}
+
+				this.updateActiveSelectors(this.elements.flavorSelectorFlavors, this.selectedFlavors, "trait");
+				this.updateActiveSelectors(this.elements.flavorSelectorTextures, this.selectedStyles, "trait");
+				this.getRecommendations();
+			};
+
+			this.elements.flavorSelectorFlavors.addEventListener("click", (e) => handleTraitClick(e, "flavor"));
+			this.elements.flavorSelectorTextures.addEventListener("click", (e) => handleTraitClick(e, "style"));
+
+			// How it works toggle
+			if (this.elements.howItWorksToggle) {
+				this.elements.howItWorksToggle.addEventListener("click", () => {
+					this.elements.howItWorksContent.hidden = !this.elements.howItWorksContent.hidden;
 				});
 			}
 
-			// Legend toggle
-			if (this.elements.legendToggle) {
-				this.elements.legendToggle.addEventListener("click", () => {
-					this.toggleTagGuide();
+			// Spiciness Meter
+			this.elements.spicinessMeter.addEventListener("input", (e) => {
+				this.spicinessValue = parseFloat(e.target.value);
+				this.updateSpicinessLabel();
+				this.getRecommendations(false, true);
+			});
+
+			// Help Me Choose CTA
+			this.elements.helpMeChooseBtn.addEventListener("click", () => {
+				this.getRecommendations(true);
+			});
+
+			// Ingredient Exclusions
+			if (this.elements.exclusionToggle) {
+				this.elements.exclusionToggle.addEventListener("click", () => {
+					const isHidden = this.elements.exclusionPanel.hidden;
+					this.elements.exclusionPanel.hidden = !isHidden;
+					this.elements.exclusionToggle.querySelector(".toggle-icon").textContent = isHidden ? "－" : "＋";
 				});
 			}
 
-			// Initialize tooltips
-			this.initTooltips();
+			if (this.elements.exclusionInput) {
+				this.elements.exclusionInput.addEventListener("input", (e) => {
+					this.handleExclusionInput(e.target.value);
+				});
+
+				this.elements.exclusionInput.addEventListener("keydown", (e) => {
+					if (e.key === "Enter" && e.target.value.trim()) {
+						this.addExclusion(e.target.value.trim());
+					}
+				});
+			}
+
+			// Menu Visibility Toggle
+			if (this.elements.menuToggleBtn) {
+				this.elements.menuToggleBtn.addEventListener("click", (e) => {
+					e.preventDefault();
+					this.toggleMenuVisibility(true);
+				});
+			}
+
+			if (this.elements.modalClose) {
+				this.elements.modalClose.addEventListener("click", (e) => {
+					e.preventDefault();
+					this.toggleMenuVisibility(false);
+				});
+			}
+
+			// Modal Category Tabs
+			if (this.elements.modalTabsContainer) {
+				this.elements.modalTabsContainer.addEventListener("click", (e) => {
+					const btn = e.target.closest(".modal-tab-btn");
+					if (!btn) return;
+					
+					this.modalCategory = btn.dataset.tab;
+					this.updateActiveSelectors(this.elements.modalTabsContainer, [this.modalCategory], "tab");
+					this.renderMenu();
+				});
+			}
+
+			// Close modal on background click
+			if (this.elements.menuModal) {
+				this.elements.menuModal.addEventListener("click", (e) => {
+					if (e.target === this.elements.menuModal) {
+						this.toggleMenuVisibility(false);
+					}
+				});
+			}
+		},
+
+		renderCategoryControls() {
+			const config = this.categoryConfig[this.selectedCategory];
+			
+			// Render Flavors
+			this.elements.flavorSelectorFlavors.innerHTML = config.flavors.map(f => 
+				`<button class="flavor-btn" data-trait="${f.toLowerCase()}">${f}</button>`
+			).join("");
+
+			// Render Styles
+			this.elements.flavorSelectorTextures.innerHTML = config.styles.map(s => 
+				`<button class="flavor-btn" data-trait="${s.toLowerCase()}">${s}</button>`
+			).join("");
+
+			// Update Spiciness Meter state
+			if (config.spiciness.enabled) {
+				this.elements.spicinessContainer.classList.remove("disabled");
+				this.elements.meterHint.textContent = "";
+				this.elements.spicinessMeter.disabled = false;
+			} else {
+				this.elements.spicinessContainer.classList.add("disabled");
+				this.elements.meterHint.textContent = "Not used for drinks";
+				this.elements.spicinessMeter.disabled = true;
+			}
+		},
+
+		updateActiveSelectors(container, activeValues, dataAttr) {
+			if (!container) return;
+			const buttons = container.querySelectorAll("button");
+			buttons.forEach(btn => {
+				const val = btn.getAttribute(`data-${dataAttr}`);
+				btn.classList.toggle("active", activeValues.includes(val));
+			});
+		},
+
+		updateSpicinessLabel() {
+			let label = "Mild";
+			if (this.spicinessValue > 0.3) label = "Medium";
+			if (this.spicinessValue > 0.7) label = "Hot";
+			if (this.spicinessValue > 0.9) label = "Extra Hot 🔥";
+			this.elements.spicinessLabel.textContent = label;
 		},
 
 		fetchMenuData() {
 			this.setLoading(true);
-			try {
-				fetch("menu.json")
-					.then((response) => {
-						if (!response.ok)
-							throw new Error(`HTTP error! status: ${response.status}`);
-						return response.json();
-					})
-					.then((data) => {
-						// Handle new structure with promo and menu
-						if (data.menu && Array.isArray(data.menu)) {
-							this.menuItems = data.menu;
-							this.promoData = data.promo || null;
-						} else {
-							// Fallback to old structure (array of items)
-							this.menuItems = data;
-							this.promoData = null;
+			fetch("menu.json")
+				.then(res => res.json())
+				.then(data => {
+					this.menuItems = data.menu;
+					this.promoData = data.promo;
+					
+					// Extract unique ingredients for autocomplete
+					const ingredientsSet = new Set();
+					this.menuItems.forEach(item => {
+						if (item.ingredients) {
+							item.ingredients.forEach(ing => ingredientsSet.add(ing.toLowerCase()));
 						}
-						
-						this.filteredItems = this.menuItems;
-						
-						// Render promo and featured dish first
-						this.renderPromo();
-						this.renderFeaturedDish();
-						
-						// Then render menu
-						this.renderAllItemsOnce();
-						this.elements.menuList.style.opacity = "1";
-						this.createTagLegend();
-					})
-					.catch((error) => {
-						console.error("Error fetching or parsing menu data:", error);
-						this.elements.menuList.innerHTML =
-							'<p class="error-state">Could not load menu. Please try again later.</p>';
-						this.elements.menuList.style.opacity = "1";
-					})
-					.finally(() => {
-						this.setLoading(false);
 					});
-			} catch (error) {
-				console.error("Error in fetchMenuData:", error);
-				this.setLoading(false);
-			}
+					this.allIngredients = Array.from(ingredientsSet).sort();
+
+					this.renderPromo();
+					this.renderFeaturedDish();
+					this.getRecommendations();
+				})
+				.catch(err => console.error("Error loading menu:", err))
+				.finally(() => this.setLoading(false));
 		},
 
-		renderAllItemsOnce() {
-			this.renderCategorizedItems(this.menuItems);
-		},
+		getRecommendations(isSurprise = false, skipLoading = false) {
+			if (!this.menuItems.length) return;
 
-		performFilter() {
-			this.itemsLimit = 9; // Reset limit when filtering
-			this.setLoading(true);
-			try {
-				let items = this.menuItems;
+			if (!skipLoading) this.setLoading(true);
 
-				// Filter by category
-				if (this.currentCategory && this.currentCategory !== "surprise") {
-					items = items.filter((item) =>
-						item.tags?.includes(this.currentCategory),
-					);
-				}
-
-				this.filteredItems = items;
-				this.renderCategorizedItems(this.filteredItems);
-			} finally {
-				this.setLoading(false);
-			}
-		},
-
-		renderCategorizedItems(items) {
-			// Only fade on category change, not every interaction
-			this.elements.menuList.style.opacity = "0.5";
-
-			// Update content quickly
 			setTimeout(() => {
-				this.elements.menuList.innerHTML = "";
-				const fragment = document.createDocumentFragment();
+				const config = this.categoryConfig[this.selectedCategory];
+				
+				// 1. Hard Filter by Category and Exclusions
+				let pool = this.menuItems.filter(item => 
+					item.type === this.selectedCategory &&
+					!this.excludedIngredients.some(ex => item.ingredients?.map(i => i.toLowerCase()).includes(ex))
+				);
 
-				// Filter by active tab if not "all"
-				let itemsToShow = items;
-				if (this.activeMenuTab !== "all") {
-					itemsToShow = items.filter(
-						(item) => (item.type || "main") === this.activeMenuTab,
-					);
-				}
+				// 2. Score Items
+				const scoredItems = pool.map(item => {
+					let score = 0;
+					const attrs = item.attributes;
 
-				// Render items without category headers (tabs handle navigation)
-				const slicedItems = itemsToShow.slice(0, this.itemsLimit);
-				slicedItems.forEach((item) => {
-					const card = this.createMenuItemCard(item);
-					fragment.appendChild(card);
+					// Flavor Matches
+					this.selectedFlavors.forEach(f => {
+						if (attrs.flavors?.includes(f)) score += 3;
+					});
+
+					// Style Matches
+					this.selectedStyles.forEach(s => {
+						if (attrs.styles?.includes(s)) score += 3;
+					});
+
+					// Spiciness Match (if enabled)
+					if (config.spiciness.enabled) {
+						const diff = Math.abs(attrs.spiciness - this.spicinessValue);
+						const spacyWeight = config.spiciness.weight;
+						score += (1 - diff) * 2 * spacyWeight;
+					}
+
+					return { ...item, matchScore: score };
 				});
 
-				this.elements.menuList.appendChild(fragment);
-				this.elements.noResults.hidden = itemsToShow.length > 0;
+				// 3. Sort and Select
+				scoredItems.sort((a, b) => b.matchScore - a.matchScore);
 
-				// Update "Explore More" button
-				this.updateLoadMoreButton(itemsToShow.length);
+				// Randomize among top 5 if surprise
+				if (isSurprise && scoredItems.length > 0) {
+					const topCount = Math.min(5, scoredItems.length);
+					const randomIndex = Math.floor(Math.random() * topCount);
+					this.primaryMatch = scoredItems[randomIndex];
+					scoredItems.splice(randomIndex, 1);
+				} else {
+					this.primaryMatch = scoredItems[0];
+					scoredItems.shift();
+				}
 
-				// Fade in content
-				this.elements.menuList.style.opacity = "1";
-			}, 100); // Quick transition
+				this.recommendedItems = scoredItems;
+				this.renderSpotlight();
+				this.updateExclusionFeedback(pool.length);
+				if (!skipLoading) this.setLoading(false);
+			}, skipLoading ? 0 : 300);
 		},
 
-		handleMenuTabClick(button) {
-			this.itemsLimit = 9; // Reset limit when switching tabs
-			this.setLoading(true);
-			try {
-				// Update active tab
-				this.elements.menuTabs.forEach((btn) => btn.classList.remove("active"));
-				button.classList.add("active");
-
-				this.activeMenuTab = button.dataset.tab;
-
-				// Re-render menu with new tab filter, keeping current category tag
-				this.performFilter();
-			} finally {
-				this.setLoading(false);
-			}
-		},
-
-		handleCategoryClick(button) {
-			const newCategory = button.dataset.category;
-
-			if (newCategory === "surprise") {
-				this.showRandomItem();
+		renderSpotlight() {
+			if (!this.primaryMatch) {
+				this.elements.spotlightContainer.innerHTML = `<p class="no-matches">No matches found with your current filters.</p>`;
 				return;
 			}
-
-			// Deactivate all buttons
-			this.elements.categoryButtons.forEach((btn) =>
-				btn.classList.remove("active"),
-			);
-
-			if (this.currentCategory === newCategory) {
-				// If the same category is clicked again, deactivate it and show all items.
-				this.currentCategory = null;
-			} else {
-				// Activate the new category
-				this.currentCategory = newCategory;
-				button.classList.add("active");
-			}
-
-			this.performFilter(); // This will handle loading state
+			
+			const item = this.primaryMatch;
+			const visibleTags = item.tags ? item.tags.slice(0, 2) : [];
+			const flavors = item.attributes?.flavors || [];
+			const styles = item.attributes?.styles || [];
+			
+			this.elements.spotlightContainer.innerHTML = `
+				<div class="spotlight-card">
+					<div class="spotlight-image-container">
+						<div class="spotlight-image" style="background-image: url('${item.image}')"></div>
+						<div class="spotlight-tags">
+							${visibleTags.map(tag => `<span class="spotlight-tag" title="${tag}">${this.getTagIcon(tag)} ${tag}</span>`).join("")}
+						</div>
+					</div>
+					<div class="spotlight-details">
+						<div class="spotlight-main-info">
+							<h3 class="spotlight-name">${item.name}</h3>
+							<span class="spotlight-price">$${item.price.toFixed(2)}</span>
+						</div>
+						<p class="spotlight-description">${item.description}</p>
+						<div class="spotlight-traits">
+							${flavors.map(f => `<span class="trait-pill flavor">${f}</span>`).join("")}
+							${styles.map(s => `<span class="trait-pill style">${s}</span>`).join("")}
+						</div>
+					</div>
+				</div>
+			`;
 		},
 
-		updateLoadMoreButton(totalItems) {
-			if (!this.elements.loadMoreContainer) return;
-
-			if (totalItems > this.itemsLimit) {
-				this.elements.loadMoreContainer.innerHTML = `
-					<button class="btn btn-load-more">Explore More Flavors</button>
-				`;
-				this.elements.loadMoreContainer.hidden = false;
-				
-				const btn = this.elements.loadMoreContainer.querySelector('.btn-load-more');
-				btn.addEventListener('click', () => {
-					this.itemsLimit += this.itemsIncrement;
-					this.renderCategorizedItems(this.filteredItems);
-				});
-			} else {
-				this.elements.loadMoreContainer.hidden = true;
-				this.elements.loadMoreContainer.innerHTML = "";
-			}
-		},
-
-		showRandomItem() {
-			this.setLoading(true);
-			try {
-				// Don't clear filters - work with current active filters
-				let items = this.menuItems;
-
-				// Filter by active tab if not "all"
-				if (this.activeMenuTab !== "all") {
-					items = items.filter(
-						(item) => (item.type || "main") === this.activeMenuTab,
-					);
-				}
-
-				// Filter by active category tag if one is selected
-				if (this.currentCategory && this.currentCategory !== "surprise") {
-					items = items.filter((item) =>
-						item.tags?.includes(this.currentCategory),
-					);
-				}
-
-				// If no items match the current filters, show all items
-				if (items.length === 0) {
-					items = this.menuItems;
-				}
-
-				// Select a random item from the filtered items
-				const randomIndex = Math.floor(Math.random() * items.length);
-				const randomItem = items[randomIndex];
-				this.filteredItems = [randomItem];
-
-				setTimeout(() => {
-					try {
-						this.renderCategorizedItems(this.filteredItems);
-
-						const card = this.elements.menuList.querySelector(
-							`[data-id="${randomItem.id}"]`,
-						);
-						if (card) {
-							card.scrollIntoView({ behavior: "smooth", block: "center" });
-							// Highlight the selected card briefly
-							card.classList.add("is-highlighted");
-							setTimeout(() => {
-								card.classList.remove("is-highlighted");
-							}, 2000);
-						}
-					} finally {
-						this.setLoading(false);
-					}
-				}, 100); // Small delay for visual feedback
-			} catch (error) {
-				console.error("Error in showRandomItem:", error);
-				this.setLoading(false);
-			}
-		},
-
-		// Single loading state management function
-		setLoading(isLoading) {
-			this.isLoading = isLoading;
-			if (this.elements.loadingDotsContainer) {
-				if (isLoading) {
-					this.elements.loadingDotsContainer.hidden = false;
-					this.elements.loadingDotsContainer.style.display = "flex";
-				} else {
-					this.elements.loadingDotsContainer.hidden = true;
-					this.elements.loadingDotsContainer.style.display = "none";
-				}
-			}
-		},
-
-		toggleTagGuide() {
-			if (!this.elements.legend || !this.elements.legendToggle) return;
-
-			const isHidden = this.elements.legend.hidden;
-			this.elements.legend.hidden = !isHidden;
-
-			// Update button text
-			const textSpan =
-				this.elements.legendToggle.querySelector(".tag-guide-text");
-			if (textSpan) {
-				textSpan.textContent = isHidden
-					? "Hide tag guide"
-					: "What do these tags mean?";
-			}
-
-			// Trigger reflow to ensure transition works
-			if (isHidden) {
-				// Force a reflow
-				void this.elements.legend.offsetHeight;
-				this.elements.legend.classList.add("is-expanded");
-			} else {
-				this.elements.legend.classList.remove("is-expanded");
-			}
+		renderMenu() {
+			if (!this.elements.menuList) return;
+			this.elements.menuList.innerHTML = "";
+			const filtered = this.menuItems.filter(item => item.type === this.modalCategory);
+			filtered.forEach(item => {
+				this.elements.menuList.innerHTML += this.createMenuItemCard(item);
+			});
 		},
 
 		createMenuItemCard(item) {
-			const card = document.createElement("div");
-			card.className = "menu-item-card";
-			card.setAttribute("data-id", item.id);
-
-			const priceFormatted = `$${item.price.toFixed(2)}`;
-
-			// Tag priority map for sorting
-			const priorityMap = {
-				Spicy: 1,
-				Vegetarian: 2,
-				"Vegetarian Option": 2,
-				Popular: 3,
-				Seafood: 4,
-				Dessert: 5,
-				Drink: 6,
-			};
-
-			const tags = (item.tags || [])
-				.filter((tag) => tag !== "Meal" && tag !== "Meals")
-				.sort((a, b) => (priorityMap[a] || 99) - (priorityMap[b] || 99));
-
-			// Max 2 icons per item
-			const visibleTags = tags.slice(0, 2);
-
-			const tagsHtml = visibleTags
-				.map((tag) => {
-					const iconInfo = this.getTagIconInfo(tag);
-					return `<span class="tag-icon" title="${tag}">${iconInfo.icon}</span>`;
-				})
-				.join("");
-
-			card.innerHTML = `
-				<div class="menu-card-image" style="background-image: url('${item.image || ''}');">
+			const visibleTags = item.tags ? item.tags.slice(0, 2) : [];
+			return `
+				<div class="menu-card" style="background-image: url('${item.image}')">
 					<div class="menu-card-overlay">
 						<div class="menu-card-content">
-							<h3 class="menu-card-title">${item.name}</h3>
-							<p class="menu-card-description">${item.description}</p>
-							<div class="menu-card-footer">
-								<div class="menu-card-price">${priceFormatted}</div>
-								<div class="menu-card-tags">${tagsHtml}</div>
+							<div class="menu-card-top">
+								<h4 class="menu-item-name">${item.name}</h4>
+								<span class="menu-item-price">$${item.price.toFixed(2)}</span>
+							</div>
+							<div class="menu-item-tags">
+								${visibleTags.map(tag => `<span class="tag-icon" title="${tag}">${this.getTagIcon(tag)}</span>`).join("")}
 							</div>
 						</div>
 					</div>
 				</div>
 			`;
-			return card;
 		},
 
-		// Helper to get icon for a tag
-		getTagIconInfo(tagText) {
-			const tagMap = {
-				Spicy: { icon: "🌶️" },
-				Vegetarian: { icon: "🌱" },
-				"Vegetarian Option": { icon: "🌱" },
-				Popular: { icon: "⭐" },
-				Dessert: { icon: "🍰" },
-				Drink: { icon: "🥤" },
-				Seafood: { icon: "🐟" },
-				Healthy: { icon: "🥗" },
-				Sweet: { icon: "🍬" },
-			};
-
-			return tagMap[tagText] || { icon: "🏷️" };
+		getTagIcon(tag) {
+			const lowerTag = tag.toLowerCase();
+			if (lowerTag.includes("spicy")) return "🌶️";
+			if (lowerTag.includes("vegetarian")) return "🌱";
+			if (lowerTag.includes("popular")) return "⭐";
+			if (lowerTag.includes("dessert")) return "🍰";
+			if (lowerTag.includes("drink")) return "🥤";
+			if (lowerTag.includes("seafood")) return "🐟";
+			if (lowerTag.includes("cheesy")) return "🧀";
+			return "";
 		},
 
-		// Tooltip functionality (removed - no longer needed)
-		initTooltips() {
-			// Tooltips removed per user request
+		handleExclusionInput(val) {
+			if (!val) {
+				this.elements.exclusionSuggestions.hidden = true;
+				return;
+			}
+			const query = val.toLowerCase();
+			const matches = this.allIngredients.filter(ing => 
+				ing.includes(query) && !this.excludedIngredients.includes(ing)
+			).slice(0, 5);
+
+			if (matches.length > 0) {
+				this.elements.exclusionSuggestions.innerHTML = matches.map(m => `<li>${m}</li>`).join("");
+				this.elements.exclusionSuggestions.hidden = false;
+				this.elements.exclusionSuggestions.querySelectorAll("li").forEach(li => {
+					li.addEventListener("click", () => {
+						this.addExclusion(li.textContent);
+						this.elements.exclusionInput.value = "";
+						this.elements.exclusionSuggestions.hidden = true;
+					});
+				});
+			} else {
+				this.elements.exclusionSuggestions.hidden = true;
+			}
+		},
+
+		addExclusion(ingredient) {
+			const ing = ingredient.toLowerCase();
+			if (ing && !this.excludedIngredients.includes(ing) && this.excludedIngredients.length < 5) {
+				this.excludedIngredients.push(ing);
+				this.renderExclusionChips();
+				this.getRecommendations();
+			}
+		},
+
+		removeExclusion(ing) {
+			this.excludedIngredients = this.excludedIngredients.filter(i => i !== ing);
+			this.renderExclusionChips();
+			this.getRecommendations();
+		},
+
+		renderExclusionChips() {
+			this.elements.exclusionChips.innerHTML = this.excludedIngredients.map(ing => `
+				<span class="exclusion-chip">
+					${ing}
+					<span class="remove-btn" onclick="app.removeExclusion('${ing}')">&times;</span>
+				</span>
+			`).join("");
+		},
+
+		updateExclusionFeedback(poolSize) {
+			if (this.excludedIngredients.length > 0 && poolSize === 0) {
+				this.elements.exclusionFeedback.textContent = "Your exclusions filtered out all matches. Try removing some!";
+				this.elements.exclusionFeedback.hidden = false;
+			} else {
+				this.elements.exclusionFeedback.hidden = true;
+			}
+		},
+
+		setLoading(isLoading) {
+			this.isLoading = isLoading;
+			this.elements.loadingDotsContainer.hidden = !isLoading;
+			this.elements.loadingDotsContainer.style.display = isLoading ? "flex" : "none";
+			this.elements.helpMeChooseBtn.disabled = isLoading;
 		},
 
 		renderPromo() {
-			if (!this.promoData || !this.promoData.enabled || !this.elements.promoShowcase) {
-				if (this.elements.promoShowcase) {
-					this.elements.promoShowcase.hidden = true;
-				}
-				return;
-			}
-
-			const sections = this.promoData.sections || [];
-			if (sections.length === 0) {
-				if (this.elements.promoShowcase) {
-					this.elements.promoShowcase.hidden = true;
-				}
-				return;
-			}
-
-			// Create banner with 3 sections
-			const promoHTML = `
-				<div class="promo-banner">
-					${sections.map((section, index) => `
-						<div class="promo-banner-section" data-linked-item="${section.linkedItemId || ''}">
-							<div class="promo-banner-image" style="background-image: url('${section.image || ''}');">
-								<div class="promo-banner-overlay"></div>
-								<div class="promo-banner-content">
-									<h4 class="promo-banner-title">${section.title || ''}</h4>
-								</div>
-							</div>
-						</div>
-					`).join('')}
+			if (!this.promoData || !this.promoData.enabled) return;
+			this.elements.promoShowcase.innerHTML = this.promoData.sections.map(section => `
+				<div class="promo-card" onclick="app.scrollToPromoItem('${section.linkedItemId}')">
+					<div class="promo-image" style="background-image: url('${section.image}')"></div>
+					<div class="promo-content">
+						<h5>${section.title}</h5>
+					</div>
 				</div>
-			`;
-
-			this.elements.promoShowcase.innerHTML = promoHTML;
-			this.elements.promoShowcase.hidden = false;
-
-			// Add click handlers for each section
-			const bannerSections = this.elements.promoShowcase.querySelectorAll('.promo-banner-section');
-			bannerSections.forEach(section => {
-				section.addEventListener('click', () => {
-					const itemId = section.dataset.linkedItem;
-					if (itemId) {
-						this.scrollToMenuItem(itemId);
-					}
-				});
-			});
+			`).join("");
 		},
 
 		renderFeaturedDish() {
-			if (!this.elements.featuredDish) return;
-
-			// Find featured dish (featured: true) or fallback to first Popular item
-			let featuredItem = this.menuItems.find(item => item.featured === true);
-			
-			if (!featuredItem) {
-				featuredItem = this.menuItems.find(item => 
-					item.tags && item.tags.includes('Popular')
-				);
-			}
-
-			if (!featuredItem) {
-				this.elements.featuredDish.hidden = true;
-				return;
-			}
-
-			const priceFormatted = `$${featuredItem.price.toFixed(2)}`;
-			const tags = (featuredItem.tags || [])
-				.filter((tag) => tag !== "Meal" && tag !== "Meals")
-				.slice(0, 2); // Limit to 2 tags
-			const tagsHtml = tags
-				.map((tag) => {
-					const iconInfo = this.getTagIconInfo(tag);
-					return `<span class="tag-icon" title="${tag}">${iconInfo.icon}</span>`;
-				})
-				.join("");
-
-			const featuredHTML = `
-				<div class="featured-card">
-					<div class="featured-header">
-						<span class="featured-label">Chef's Pick</span>
-					</div>
-					<div class="featured-content">
-						<div class="featured-info">
-							<h3 class="featured-name">${featuredItem.name}</h3>
-							<div class="featured-tags">${tagsHtml}</div>
-						</div>
-						<div class="featured-footer">
-							<span class="featured-price">${priceFormatted}</span>
-							<button class="btn btn-featured-cta" data-item-id="${featuredItem.id}">View</button>
+			const featured = this.menuItems.find(item => item.featured);
+			if (featured && this.elements.featuredDish) {
+				this.elements.featuredDish.innerHTML = `
+					<div class="featured-card" onclick="app.scrollToPromoItem('${featured.id}')">
+						<div class="featured-image" style="background-image: url('${featured.image}')"></div>
+						<div class="featured-badge">Chef's Pick</div>
+						<div class="featured-content">
+							<h4>${featured.name}</h4>
+							<p>${featured.description}</p>
 						</div>
 					</div>
-				</div>
-			`;
-
-			this.elements.featuredDish.innerHTML = featuredHTML;
-			this.elements.featuredDish.hidden = false;
-
-			// Add click handler for CTA
-			const ctaButton = this.elements.featuredDish.querySelector('.btn-featured-cta');
-			if (ctaButton) {
-				ctaButton.addEventListener('click', () => {
-					const itemId = ctaButton.dataset.itemId;
-					if (itemId) {
-						this.scrollToMenuItem(itemId);
-					}
-				});
+				`;
 			}
 		},
 
-		scrollToMenuItem(itemId) {
-			// Scroll to the menu item in the menu list
-			const card = this.elements.menuList.querySelector(`[data-id="${itemId}"]`);
-			if (card) {
-				card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-				// Highlight the card briefly
-				card.classList.add('is-highlighted');
-				setTimeout(() => {
-					card.classList.remove('is-highlighted');
-				}, 2000);
+		scrollToPromoItem(itemId) {
+			const item = this.menuItems.find(i => i.id === itemId);
+			if (item) {
+				this.selectedCategory = item.type;
+				this.selectedFlavors = [];
+				this.selectedStyles = [];
+				this.updateActiveSelectors(this.elements.categorySelector, [this.selectedCategory], "type");
+				this.renderCategoryControls();
+				this.primaryMatch = item;
+				this.renderSpotlight();
+				this.elements.spotlightContainer.scrollIntoView({ behavior: "smooth", block: "center" });
 			}
 		},
 
-		createTagLegend() {
-			if (!this.elements.legendContainer) return;
-
-			// Define legend items with icons
-			const tagLegend = {
-				Spicy: { icon: "🌶️", label: "Spicy" },
-				Vegetarian: { icon: "🌱", label: "Vegetarian" },
-				Popular: { icon: "⭐", label: "Popular choice" },
-				Dessert: { icon: "🍰", label: "Dessert" },
-				Drink: { icon: "🥤", label: "Drink" },
-				Seafood: { icon: "🐟", label: "Seafood" },
-			};
-
-			const legendItems = Object.keys(tagLegend)
-				.map((tag) => {
-					const info = tagLegend[tag];
-					return `
-						<div class="legend-item">
-							<span class="legend-icon">${info.icon}</span>
-							<span class="legend-text">${info.label}</span>
-						</div>
-					`;
-				})
-				.join("");
-
-			this.elements.legendContainer.innerHTML = legendItems;
-		},
-
-		showTooltip(element, text) {
-			// Hide any existing tooltip
-			this.hideTooltip();
-
-			if (!text) return;
-
-			// Create tooltip element
-			const tooltip = document.createElement("div");
-			tooltip.className = "tooltip tooltip-top";
-			tooltip.textContent = text;
-			document.body.appendChild(tooltip);
-
-			// Position tooltip
-			const rect = element.getBoundingClientRect();
-			const tooltipRect = tooltip.getBoundingClientRect();
-
-			// Check if tooltip should be above or below
-			const spaceAbove = rect.top;
-			const spaceBelow = window.innerHeight - rect.bottom;
-
-			let top, left;
-
-			if (spaceBelow < tooltipRect.height + 20 && spaceAbove > spaceBelow) {
-				tooltip.classList.remove("tooltip-top");
-				tooltip.classList.add("tooltip-bottom");
-				top = rect.bottom + 8;
-			} else {
-				top = rect.top - tooltipRect.height - 8;
+		toggleMenuVisibility(show) {
+			this.elements.menuModal.hidden = !show;
+			document.body.style.overflow = show ? "hidden" : "";
+			if (show) {
+				this.modalCategory = this.selectedCategory;
+				this.updateActiveSelectors(this.elements.modalTabsContainer, [this.modalCategory], "tab");
+				this.renderMenu();
 			}
-
-			// Position horizontally centered
-			left = rect.left + rect.width / 2 - tooltipRect.width / 2;
-
-			// Keep tooltip within viewport bounds
-			const padding = 10;
-			if (left < padding) left = padding;
-			if (left + tooltipRect.width > window.innerWidth - padding) {
-				left = window.innerWidth - tooltipRect.width - padding;
-			}
-
-			tooltip.style.position = "fixed";
-			tooltip.style.top = `${top}px`;
-			tooltip.style.left = `${left}px`;
-
-			// Show tooltip with animation
-			requestAnimationFrame(() => {
-				tooltip.classList.add("show");
-			});
-
-			this.activeTooltip = tooltip;
-		},
-
-		hideTooltip() {
-			if (this.activeTooltip) {
-				this.activeTooltip.classList.remove("show");
-				setTimeout(() => {
-					if (this.activeTooltip?.parentNode) {
-						this.activeTooltip.parentNode.removeChild(this.activeTooltip);
-					}
-					this.activeTooltip = null;
-				}, 200);
-			}
-		},
+		}
 	};
 
+	window.app = app; // Expose for onclick handlers
 	app.init();
 });
