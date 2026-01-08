@@ -6,10 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
 		activeTooltip: null, // Track currently active tooltip
 		activeMenuTab: "all", // Track active menu tab
 		isLoading: false, // Track loading state
+		promoData: null, // Promo data from menu.json
+		itemsLimit: 9, // Show 9 items (3 rows) by default
+		itemsIncrement: 9, // Increment by 9 when "Show More" is clicked
 
 		elements: {
 			menuList: document.getElementById("menu-list"),
 			noResults: document.getElementById("no-results"),
+			loadMoreContainer: document.getElementById("load-more-container"),
 			categoryButtons: document.querySelectorAll(
 				".filter-btn--chip[data-category]",
 			),
@@ -19,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			legendToggle: document.getElementById("tag-guide-toggle"),
 			legend: document.getElementById("tag-legend"),
 			primaryAction: document.querySelector(".btn-primary-action"),
+			promoShowcase: document.getElementById("promo-showcase"),
+			featuredDish: document.getElementById("featured-dish"),
 		},
 
 		init() {
@@ -74,12 +80,27 @@ document.addEventListener("DOMContentLoaded", () => {
 							throw new Error(`HTTP error! status: ${response.status}`);
 						return response.json();
 					})
-					.then((menuData) => {
-						this.menuItems = menuData;
-						this.filteredItems = menuData;
+					.then((data) => {
+						// Handle new structure with promo and menu
+						if (data.menu && Array.isArray(data.menu)) {
+							this.menuItems = data.menu;
+							this.promoData = data.promo || null;
+						} else {
+							// Fallback to old structure (array of items)
+							this.menuItems = data;
+							this.promoData = null;
+						}
+						
+						this.filteredItems = this.menuItems;
+						
+						// Render promo and featured dish first
+						this.renderPromo();
+						this.renderFeaturedDish();
+						
+						// Then render menu
 						this.renderAllItemsOnce();
 						this.elements.menuList.style.opacity = "1";
-						this.createTagLegend(); // Create legend after menu data is loaded
+						this.createTagLegend();
 					})
 					.catch((error) => {
 						console.error("Error fetching or parsing menu data:", error);
@@ -101,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		},
 
 		performFilter() {
+			this.itemsLimit = 9; // Reset limit when filtering
 			this.setLoading(true);
 			try {
 				let items = this.menuItems;
@@ -137,7 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 
 				// Render items without category headers (tabs handle navigation)
-				itemsToShow.forEach((item) => {
+				const slicedItems = itemsToShow.slice(0, this.itemsLimit);
+				slicedItems.forEach((item) => {
 					const card = this.createMenuItemCard(item);
 					fragment.appendChild(card);
 				});
@@ -145,28 +168,26 @@ document.addEventListener("DOMContentLoaded", () => {
 				this.elements.menuList.appendChild(fragment);
 				this.elements.noResults.hidden = itemsToShow.length > 0;
 
+				// Update "Explore More" button
+				this.updateLoadMoreButton(itemsToShow.length);
+
 				// Fade in content
 				this.elements.menuList.style.opacity = "1";
 			}, 100); // Quick transition
 		},
 
 		handleMenuTabClick(button) {
+			this.itemsLimit = 9; // Reset limit when switching tabs
 			this.setLoading(true);
 			try {
 				// Update active tab
 				this.elements.menuTabs.forEach((btn) => btn.classList.remove("active"));
 				button.classList.add("active");
 
-				// Clear category filters when switching tabs
-				this.elements.categoryButtons.forEach((btn) =>
-					btn.classList.remove("active"),
-				);
-				this.currentCategory = null;
-
 				this.activeMenuTab = button.dataset.tab;
 
-				// Re-render menu with new tab filter
-				this.renderCategorizedItems(this.filteredItems);
+				// Re-render menu with new tab filter, keeping current category tag
+				this.performFilter();
 			} finally {
 				this.setLoading(false);
 			}
@@ -195,6 +216,26 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 
 			this.performFilter(); // This will handle loading state
+		},
+
+		updateLoadMoreButton(totalItems) {
+			if (!this.elements.loadMoreContainer) return;
+
+			if (totalItems > this.itemsLimit) {
+				this.elements.loadMoreContainer.innerHTML = `
+					<button class="btn btn-load-more">Explore More Flavors</button>
+				`;
+				this.elements.loadMoreContainer.hidden = false;
+				
+				const btn = this.elements.loadMoreContainer.querySelector('.btn-load-more');
+				btn.addEventListener('click', () => {
+					this.itemsLimit += this.itemsIncrement;
+					this.renderCategorizedItems(this.filteredItems);
+				});
+			} else {
+				this.elements.loadMoreContainer.hidden = true;
+				this.elements.loadMoreContainer.innerHTML = "";
+			}
 		},
 
 		showRandomItem() {
@@ -298,61 +339,63 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			const priceFormatted = `$${item.price.toFixed(2)}`;
 
-			// Show all tags (no overflow limit)
-			const tags = (item.tags || []).filter(
-				(tag) => tag !== "Meal" && tag !== "Meals",
-			); // Remove Meal/Meals tags
-			const tagsHtml = tags
+			// Tag priority map for sorting
+			const priorityMap = {
+				Spicy: 1,
+				Vegetarian: 2,
+				"Vegetarian Option": 2,
+				Popular: 3,
+				Seafood: 4,
+				Dessert: 5,
+				Drink: 6,
+			};
+
+			const tags = (item.tags || [])
+				.filter((tag) => tag !== "Meal" && tag !== "Meals")
+				.sort((a, b) => (priorityMap[a] || 99) - (priorityMap[b] || 99));
+
+			// Max 2 icons per item
+			const visibleTags = tags.slice(0, 2);
+
+			const tagsHtml = visibleTags
 				.map((tag) => {
-					const tagColorClass = this.getTagColorClass(tag);
-					return `<span class="tag ${tagColorClass}">${tag}</span>`;
+					const iconInfo = this.getTagIconInfo(tag);
+					return `<span class="tag-icon" title="${tag}">${iconInfo.icon}</span>`;
 				})
 				.join("");
 
 			card.innerHTML = `
-        <h3>${item.name}</h3>
-        <p class="description">${item.description}</p>
-        <div class="tags">${tagsHtml}</div>
-        <div class="price">${priceFormatted}</div>
-      `;
+				<div class="menu-card-image" style="background-image: url('${item.image || ''}');">
+					<div class="menu-card-overlay">
+						<div class="menu-card-content">
+							<h3 class="menu-card-title">${item.name}</h3>
+							<p class="menu-card-description">${item.description}</p>
+							<div class="menu-card-footer">
+								<div class="menu-card-price">${priceFormatted}</div>
+								<div class="menu-card-tags">${tagsHtml}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			`;
 			return card;
 		},
 
-		// Helper to generate a consistent color class for each tag based on flavor
-		getTagColorClass(tagText) {
-			// Map tags to flavor-appropriate colors
-			const tagColorMap = {
-				Spicy: "tag-spicy",
-				Sweet: "tag-sweet",
-				Vegetarian: "tag-vegetarian",
-				"Vegetarian Option": "tag-vegetarian",
-				Healthy: "tag-healthy",
-				Popular: "tag-popular",
-				Cheesy: "tag-cheesy",
-				Meat: "tag-meat",
-				Chicken: "tag-chicken",
-				Seafood: "tag-seafood",
-				Dessert: "tag-dessert",
-				Drink: "tag-drink",
-				Refreshing: "tag-refreshing",
-				Shareable: "tag-shareable",
-				"Comfort Food": "tag-comfort",
-				Mocktail: "tag-mocktail",
-				Fizzy: "tag-fizzy",
+		// Helper to get icon for a tag
+		getTagIconInfo(tagText) {
+			const tagMap = {
+				Spicy: { icon: "🌶️" },
+				Vegetarian: { icon: "🌱" },
+				"Vegetarian Option": { icon: "🌱" },
+				Popular: { icon: "⭐" },
+				Dessert: { icon: "🍰" },
+				Drink: { icon: "🥤" },
+				Seafood: { icon: "🐟" },
+				Healthy: { icon: "🥗" },
+				Sweet: { icon: "🍬" },
 			};
 
-			// Return mapped color or fallback to hash-based for unknown tags
-			if (tagColorMap[tagText]) {
-				return tagColorMap[tagText];
-			}
-
-			// Fallback for any unmapped tags
-			let hash = 0;
-			for (let i = 0; i < tagText.length; i++) {
-				hash = tagText.charCodeAt(i) + ((hash << 5) - hash);
-			}
-			const colorIndex = Math.abs(hash) % 6;
-			return `tag-color-${colorIndex}`;
+			return tagMap[tagText] || { icon: "🏷️" };
 		},
 
 		// Tooltip functionality (removed - no longer needed)
@@ -360,39 +403,149 @@ document.addEventListener("DOMContentLoaded", () => {
 			// Tooltips removed per user request
 		},
 
+		renderPromo() {
+			if (!this.promoData || !this.promoData.enabled || !this.elements.promoShowcase) {
+				if (this.elements.promoShowcase) {
+					this.elements.promoShowcase.hidden = true;
+				}
+				return;
+			}
+
+			const sections = this.promoData.sections || [];
+			if (sections.length === 0) {
+				if (this.elements.promoShowcase) {
+					this.elements.promoShowcase.hidden = true;
+				}
+				return;
+			}
+
+			// Create banner with 3 sections
+			const promoHTML = `
+				<div class="promo-banner">
+					${sections.map((section, index) => `
+						<div class="promo-banner-section" data-linked-item="${section.linkedItemId || ''}">
+							<div class="promo-banner-image" style="background-image: url('${section.image || ''}');">
+								<div class="promo-banner-overlay"></div>
+								<div class="promo-banner-content">
+									<h4 class="promo-banner-title">${section.title || ''}</h4>
+								</div>
+							</div>
+						</div>
+					`).join('')}
+				</div>
+			`;
+
+			this.elements.promoShowcase.innerHTML = promoHTML;
+			this.elements.promoShowcase.hidden = false;
+
+			// Add click handlers for each section
+			const bannerSections = this.elements.promoShowcase.querySelectorAll('.promo-banner-section');
+			bannerSections.forEach(section => {
+				section.addEventListener('click', () => {
+					const itemId = section.dataset.linkedItem;
+					if (itemId) {
+						this.scrollToMenuItem(itemId);
+					}
+				});
+			});
+		},
+
+		renderFeaturedDish() {
+			if (!this.elements.featuredDish) return;
+
+			// Find featured dish (featured: true) or fallback to first Popular item
+			let featuredItem = this.menuItems.find(item => item.featured === true);
+			
+			if (!featuredItem) {
+				featuredItem = this.menuItems.find(item => 
+					item.tags && item.tags.includes('Popular')
+				);
+			}
+
+			if (!featuredItem) {
+				this.elements.featuredDish.hidden = true;
+				return;
+			}
+
+			const priceFormatted = `$${featuredItem.price.toFixed(2)}`;
+			const tags = (featuredItem.tags || [])
+				.filter((tag) => tag !== "Meal" && tag !== "Meals")
+				.slice(0, 2); // Limit to 2 tags
+			const tagsHtml = tags
+				.map((tag) => {
+					const iconInfo = this.getTagIconInfo(tag);
+					return `<span class="tag-icon" title="${tag}">${iconInfo.icon}</span>`;
+				})
+				.join("");
+
+			const featuredHTML = `
+				<div class="featured-card">
+					<div class="featured-header">
+						<span class="featured-label">Chef's Pick</span>
+					</div>
+					<div class="featured-content">
+						<div class="featured-info">
+							<h3 class="featured-name">${featuredItem.name}</h3>
+							<div class="featured-tags">${tagsHtml}</div>
+						</div>
+						<div class="featured-footer">
+							<span class="featured-price">${priceFormatted}</span>
+							<button class="btn btn-featured-cta" data-item-id="${featuredItem.id}">View</button>
+						</div>
+					</div>
+				</div>
+			`;
+
+			this.elements.featuredDish.innerHTML = featuredHTML;
+			this.elements.featuredDish.hidden = false;
+
+			// Add click handler for CTA
+			const ctaButton = this.elements.featuredDish.querySelector('.btn-featured-cta');
+			if (ctaButton) {
+				ctaButton.addEventListener('click', () => {
+					const itemId = ctaButton.dataset.itemId;
+					if (itemId) {
+						this.scrollToMenuItem(itemId);
+					}
+				});
+			}
+		},
+
+		scrollToMenuItem(itemId) {
+			// Scroll to the menu item in the menu list
+			const card = this.elements.menuList.querySelector(`[data-id="${itemId}"]`);
+			if (card) {
+				card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+				// Highlight the card briefly
+				card.classList.add('is-highlighted');
+				setTimeout(() => {
+					card.classList.remove('is-highlighted');
+				}, 2000);
+			}
+		},
+
 		createTagLegend() {
 			if (!this.elements.legendContainer) return;
 
-			// Only show 6 most important/common tags (removed Meal)
+			// Define legend items with icons
 			const tagLegend = {
-				Popular: "Most loved dishes",
-				Spicy: "Has heat",
-				Vegetarian: "Vegetarian friendly",
-				Sweet: "Sweet treat",
-				Healthy: "Nutritious choice",
-				Cheesy: "Cheese lovers",
+				Spicy: { icon: "🌶️", label: "Spicy" },
+				Vegetarian: { icon: "🌱", label: "Vegetarian" },
+				Popular: { icon: "⭐", label: "Popular choice" },
+				Dessert: { icon: "🍰", label: "Dessert" },
+				Drink: { icon: "🥤", label: "Drink" },
+				Seafood: { icon: "🐟", label: "Seafood" },
 			};
 
-			const tagColorMap = {
-				Popular: "tag-popular",
-				Spicy: "tag-spicy",
-				Vegetarian: "tag-vegetarian",
-				Sweet: "tag-sweet",
-				Healthy: "tag-healthy",
-				Cheesy: "tag-cheesy",
-			};
-
-			// Create legend items for only the 6 selected tags
-			const selectedTags = Object.keys(tagLegend);
-			const legendItems = selectedTags
+			const legendItems = Object.keys(tagLegend)
 				.map((tag) => {
-					const colorClass = tagColorMap[tag] || "tag-color-0";
+					const info = tagLegend[tag];
 					return `
-            <div class="legend-item">
-              <span class="legend-dot ${colorClass}"></span>
-              <span class="legend-text">${tagLegend[tag]}</span>
-            </div>
-          `;
+						<div class="legend-item">
+							<span class="legend-icon">${info.icon}</span>
+							<span class="legend-text">${info.label}</span>
+						</div>
+					`;
 				})
 				.join("");
 

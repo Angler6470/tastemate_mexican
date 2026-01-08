@@ -16,21 +16,21 @@
         <i><p class="tagline">Discover Mexican Flavors You'll Love.</p></i>
       </header>
 
+      <!-- Promotional Showcase (High-Impact, Optional) -->
+      <section id="promo-showcase" class="promo-showcase" hidden>
+        <!-- Promo content will be injected here by script.js -->
+      </section>
+
+      <!-- Featured Dish (Subtle, Trust-Building) -->
+      <section id="featured-dish" class="featured-dish" hidden>
+        <!-- Featured dish content will be injected here by script.js -->
+      </section>
+
       <main>
       <section class="helper-card">
         <div class="helper-header">
           <h3>Not sure what to order?</h3>
           <button class="btn btn-primary-action" data-category="surprise">Help Me Choose</button>
-        </div>
-
-        <div class="filter-block filter-block--sections">
-          <label class="filter-block-label">Browse sections</label>
-          <div class="filter-group filter-group--segmented">
-            <button class="filter-btn filter-btn--segmented active" data-tab="all">All</button>
-            <button class="filter-btn filter-btn--segmented" data-tab="main">Main Dishes</button>
-            <button class="filter-btn filter-btn--segmented" data-tab="dessert">Desserts</button>
-            <button class="filter-btn filter-btn--segmented" data-tab="drink">Drinks</button>
-          </div>
         </div>
 
         <div class="filter-block filter-block--tags">
@@ -40,6 +40,16 @@
             <button class="filter-btn filter-btn--chip" data-category="Vegetarian">Vegetarian</button>
             <button class="filter-btn filter-btn--chip" data-category="Spicy">Spicy</button>
             <button class="filter-btn filter-btn--chip" data-category="Sweet">Sweet</button>
+          </div>
+        </div>
+
+        <div class="filter-block filter-block--sections">
+          <label class="filter-block-label">Browse sections</label>
+          <div class="filter-group filter-group--segmented">
+            <button class="filter-btn filter-btn--segmented active" data-tab="all">All</button>
+            <button class="filter-btn filter-btn--segmented" data-tab="main">Main Dishes</button>
+            <button class="filter-btn filter-btn--segmented" data-tab="dessert">Desserts</button>
+            <button class="filter-btn filter-btn--segmented" data-tab="drink">Drinks</button>
           </div>
         </div>
         
@@ -66,6 +76,8 @@
       <section class="menu-list" id="menu-list">
         <!-- Menu items will be injected here by script.js -->
       </section>
+
+      <div id="load-more-container" class="load-more-container" hidden></div>
 
       <section class="no-results" id="no-results" hidden>
         <h3>No Dishes Found</h3>
