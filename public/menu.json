@@ -1,23 +1,6 @@
 {
 	"promo": {
-		"enabled": true,
-		"sections": [
-			{
-				"image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
-				"title": "Limited Time Special",
-				"linkedItemId": "m1"
-			},
-			{
-				"image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=800&q=80",
-				"title": "Chef's Favorite",
-				"linkedItemId": "m3"
-			},
-			{
-				"image": "https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?auto=format&fit=crop&w=800&q=80",
-				"title": "Popular Choice",
-				"linkedItemId": "d1"
-			}
-		]
+		"enabled": false
 	},
 	"menu": [
 		{
@@ -27,16 +10,15 @@
 			"price": 14.99,
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
-			"featured": true,
-			"attributes": {
-				"flavors": ["savory", "spicy"],
-				"styles": ["hearty"],
-				"spiciness": 0.7,
-				"richness": 0.6
-			},
-			"dietary": ["meat"],
 			"tags": ["Popular", "Spicy"],
-			"ingredients": ["steak", "corn tortilla", "onion", "cilantro", "tomatillo", "garlic", "chili"]
+			"scoring": {
+				"spice": 0.7,
+				"richness": 0.6,
+				"popularity": 0.9,
+				"adventurous": 0.3,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
 		},
 		{
 			"id": "m2",
@@ -45,15 +27,15 @@
 			"price": 16.5,
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["savory", "rich"],
-				"styles": ["creamy", "hearty"],
-				"spiciness": 0.3,
-				"richness": 0.9
-			},
-			"dietary": ["vegetarian"],
 			"tags": ["Vegetarian Option", "Cheesy"],
-			"ingredients": ["poblano pepper", "cheese", "egg", "tomato", "onion", "garlic", "flour"]
+			"scoring": {
+				"spice": 0.3,
+				"richness": 0.9,
+				"popularity": 0.6,
+				"adventurous": 0.5,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
 		},
 		{
 			"id": "m3",
@@ -62,15 +44,15 @@
 			"price": 15.75,
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["savory", "rich"],
-				"styles": ["creamy", "hearty"],
-				"spiciness": 0.4,
-				"richness": 0.8
-			},
-			"dietary": ["meat"],
 			"tags": ["Popular", "Cheesy"],
-			"ingredients": ["chicken", "corn tortilla", "tomatillo", "cream", "swiss cheese", "onion", "garlic", "cilantro"]
+			"scoring": {
+				"spice": 0.4,
+				"richness": 0.8,
+				"popularity": 0.85,
+				"adventurous": 0.2,
+				"chefPick": true,
+				"isCommonOrder": true
+			}
 		},
 		{
 			"id": "d1",
@@ -79,15 +61,15 @@
 			"price": 6.99,
 			"type": "dessert",
 			"image": "https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["sweet", "rich"],
-				"styles": ["crunchy"],
-				"spiciness": 0.0,
-				"richness": 0.7
-			},
-			"dietary": ["vegetarian"],
 			"tags": ["Popular", "Sweet"],
-			"ingredients": ["flour", "sugar", "cinnamon", "butter", "egg", "chocolate", "vanilla"]
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.7,
+				"popularity": 0.95,
+				"adventurous": 0.1,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
 		},
 		{
 			"id": "d2",
@@ -96,15 +78,15 @@
 			"price": 5.5,
 			"type": "dessert",
 			"image": "https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["sweet", "rich"],
-				"styles": ["creamy", "light"],
-				"spiciness": 0.0,
-				"richness": 0.6
-			},
-			"dietary": ["vegetarian"],
 			"tags": ["Sweet", "Dessert"],
-			"ingredients": ["milk", "egg", "sugar", "condensed milk", "vanilla", "cream cheese"]
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.6,
+				"popularity": 0.7,
+				"adventurous": 0.0,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
 		},
 		{
 			"id": "b1",
@@ -113,15 +95,15 @@
 			"price": 3.5,
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["sweet", "rich"],
-				"styles": ["smooth"],
-				"spiciness": 0.0,
-				"richness": 0.4
-			},
-			"dietary": ["vegetarian", "vegan"],
 			"tags": ["Drink", "Sweet"],
-			"ingredients": ["rice", "water", "cinnamon", "sugar", "vanilla", "almonds"]
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.4,
+				"popularity": 0.8,
+				"adventurous": 0.2,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
 		},
 		{
 			"id": "b2",
@@ -130,15 +112,15 @@
 			"price": 3.75,
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1497534446932-c946e7316ad3?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["refreshing", "sweet"],
-				"styles": ["smooth"],
-				"spiciness": 0.0,
-				"richness": 0.1
-			},
-			"dietary": ["vegetarian", "vegan"],
 			"tags": ["Drink", "Refreshing"],
-			"ingredients": ["hibiscus flower", "water", "sugar"]
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.1,
+				"popularity": 0.6,
+				"adventurous": 0.4,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
 		},
 		{
 			"id": "b3",
@@ -147,15 +129,15 @@
 			"price": 2.99,
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["sweet"],
-				"styles": ["fizzy"],
-				"spiciness": 0.0,
-				"richness": 0.1
-			},
-			"dietary": ["vegetarian", "vegan"],
 			"tags": ["Drink", "Fizzy"],
-			"ingredients": ["carbonated water", "cane sugar", "caramel color", "phosphoric acid", "caffeine"]
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.1,
+				"popularity": 0.9,
+				"adventurous": 0.0,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
 		},
 		{
 			"id": "m4",
@@ -164,15 +146,15 @@
 			"price": 15.5,
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1512838243191-e81e8f66f1fd?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["savory", "spicy"],
-				"styles": ["crunchy"],
-				"spiciness": 0.5,
-				"richness": 0.5
-			},
-			"dietary": ["seafood"],
 			"tags": ["Popular", "Seafood"],
-			"ingredients": ["white fish", "corn tortilla", "cabbage", "chipotle", "cream", "lime", "cilantro", "onion", "flour"]
+			"scoring": {
+				"spice": 0.5,
+				"richness": 0.5,
+				"popularity": 0.75,
+				"adventurous": 0.6,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
 		},
 		{
 			"id": "m5",
@@ -181,15 +163,15 @@
 			"price": 13.99,
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["savory"],
-				"styles": ["crunchy", "hearty"],
-				"spiciness": 0.2,
-				"richness": 0.3
-			},
-			"dietary": ["vegetarian", "vegan"],
 			"tags": ["Vegetarian", "Healthy"],
-			"ingredients": ["bell peppers", "onion", "zucchini", "mushroom", "corn tortilla", "garlic", "cilantro", "lime"]
+			"scoring": {
+				"spice": 0.2,
+				"richness": 0.3,
+				"popularity": 0.5,
+				"adventurous": 0.3,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
 		},
 		{
 			"id": "d3",
@@ -198,15 +180,15 @@
 			"price": 7.5,
 			"type": "dessert",
 			"image": "https://images.unsplash.com/photo-1624353365286-3f8d62da510a?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["sweet", "rich"],
-				"styles": ["crunchy"],
-				"spiciness": 0.0,
-				"richness": 0.8
-			},
-			"dietary": ["vegetarian"],
 			"tags": ["Dessert", "Sweet"],
-			"ingredients": ["flour", "sugar", "cinnamon", "butter", "egg", "milk", "vanilla"]
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.8,
+				"popularity": 0.7,
+				"adventurous": 0.2,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
 		},
 		{
 			"id": "d4",
@@ -215,15 +197,15 @@
 			"price": 5.0,
 			"type": "dessert",
 			"image": "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["sweet"],
-				"styles": ["creamy", "light"],
-				"spiciness": 0.0,
-				"richness": 0.6
-			},
-			"dietary": ["vegetarian"],
 			"tags": ["Sweet", "Comfort Food"],
-			"ingredients": ["rice", "milk", "condensed milk", "cinnamon", "vanilla", "raisins"]
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.6,
+				"popularity": 0.65,
+				"adventurous": 0.0,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
 		},
 		{
 			"id": "b4",
@@ -232,15 +214,15 @@
 			"price": 6.0,
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1513558161293-cdafeac5989f?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["refreshing", "sweet"],
-				"styles": ["icy", "smooth"],
-				"spiciness": 0.0,
-				"richness": 0.1
-			},
-			"dietary": ["vegetarian", "vegan"],
 			"tags": ["Drink", "Refreshing"],
-			"ingredients": ["lime juice", "water", "agave nectar", "salt", "orange juice"]
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.1,
+				"popularity": 0.7,
+				"adventurous": 0.3,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
 		},
 		{
 			"id": "b5",
@@ -249,15 +231,15 @@
 			"price": 3.25,
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=800&q=80",
-			"attributes": {
-				"flavors": ["sweet", "fruity"],
-				"styles": ["fizzy", "smooth"],
-				"spiciness": 0.0,
-				"richness": 0.1
-			},
-			"dietary": ["vegetarian", "vegan"],
 			"tags": ["Drink", "Sweet"],
-			"ingredients": ["carbonated water", "fruit juice", "cane sugar", "citric acid"]
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.1,
+				"popularity": 0.8,
+				"adventurous": 0.1,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
 		}
 	]
 }

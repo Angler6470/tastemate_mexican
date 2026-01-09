@@ -13,166 +13,102 @@
     <div class="container-content">
       <header class="header-card">
         <img src="assets/logo/logo-dark.png" alt="TasteMate Logo" class="logo">
-        <i><p class="tagline">Discover Mexican Flavors You'll Love.</p></i>
+        <p class="tagline">A fun way to decide what to eat.</p>
       </header>
 
-      <!-- Promotional Showcase (High-Impact, Optional) -->
-      <section id="promo-showcase" class="promo-showcase" hidden>
-        <!-- Promo content will be injected here by script.js -->
-      </section>
-
-      <!-- Featured Dish (Subtle, Trust-Building) -->
-      <section id="featured-dish" class="featured-dish" hidden>
-        <!-- Featured dish content will be injected here by script.js -->
-      </section>
-
-      <!-- Discovery Engine (Primary Interface) -->
       <main>
-      <section class="discovery-engine">
-        <div class="discovery-header">
-          <h3>Discover Your Perfect Flavor</h3>
-          <p class="discovery-subtitle">Tell us what you're craving — we’ll find something you’ll love.</p>
-          
-          <div class="how-it-works">
-            <button id="how-it-works-toggle" class="how-toggle">
-              <span class="how-icon">i</span> How it works
-            </button>
-            <div id="how-it-works-content" class="how-content" hidden>
-              <ol class="how-list">
-                <li>Choose a category</li>
-                <li>Select flavors & textures you enjoy</li>
-                <li>Adjust intensity</li>
-                <li>We recommend something new for you</li>
-              </ol>
+        <!-- Category Selector -->
+        <section class="decision-engine">
+          <div class="category-section">
+            <label class="section-label">I'm looking for...</label>
+            <div class="category-selector" id="category-selector">
+              <button class="category-btn active" data-type="meal">Meal</button>
+              <button class="category-btn" data-type="dessert">Dessert</button>
+              <button class="category-btn" data-type="drink">Drink</button>
+            </div>
+          </div>
+
+          <!-- Shortcut Buttons -->
+          <div class="shortcuts-section">
+            <label class="section-label">Choose a shortcut</label>
+            <div class="shortcuts-grid" id="shortcuts-grid">
+              <button class="shortcut-btn" data-shortcut="surprise">
+                <span class="shortcut-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.5" class="shortcut-svg">
+                    <rect x="3" y="3" width="18" height="18" rx="4"/>
+                    <circle cx="9" cy="9" r="1.5" fill="currentColor"/>
+                    <circle cx="15" cy="15" r="1.5" fill="currentColor"/>
+                    <circle cx="15" cy="9" r="1.5" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="shortcut-label">Surprise Me</span>
+              </button>
+              <button class="shortcut-btn" data-shortcut="favorite">
+                <span class="shortcut-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.5" class="shortcut-svg">
+                    <path d="M12 3l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18l-5.9 3 1.2-6.5L2.5 9.9l6.6-.9L12 3z"/>
+                  </svg>
+                </span>
+                <span class="shortcut-label">House Favorite</span>
+              </button>
+              <button class="shortcut-btn" data-shortcut="comfort">
+                <span class="shortcut-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.5" class="shortcut-svg">
+                    <path d="M20.8 6.6a4.5 4.5 0 0 0-6.4 0L12 9l-2.4-2.4a4.5 4.5 0 1 0-6.4 6.4L12 21l8.8-8.8a4.5 4.5 0 0 0 0-6.4z"/>
+                  </svg>
+                </span>
+                <span class="shortcut-label">Comfort Pick</span>
+              </button>
+              <button class="shortcut-btn" data-shortcut="different">
+                <span class="shortcut-icon">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1.5" class="shortcut-svg">
+                    <path d="M9 18h6"/>
+                    <path d="M10 22h4"/>
+                    <path d="M12 2a7 7 0 0 0-4 12c.6.5 1 1.2 1 2h6c0-.8.4-1.5 1-2a7 7 0 0 0-4-12z"/>
+                  </svg>
+                </span>
+                <span class="shortcut-label">Try Something New</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Recommendation Spotlight -->
+        <section id="recommendation-spotlight" class="recommendation-spotlight" hidden>
+          <div class="spotlight-header">
+            <h3 class="spotlight-title">Our Recommendation</h3>
+          </div>
+          <div id="spotlight-container">
+            <!-- Recommendation card will be injected here -->
+          </div>
+          <div class="spotlight-actions">
+            <button id="try-another-btn" class="btn-secondary">Try Another</button>
+            <button id="show-menu-btn" class="btn-secondary">Show Full Menu</button>
+          </div>
+        </section>
+
+        <!-- Full Menu Modal -->
+        <div id="menu-modal" class="modal-overlay" hidden>
+          <div class="modal-container">
+            <header class="modal-header">
+              <h3>Full Menu</h3>
+              <button id="modal-close" class="btn-close">&times;</button>
+            </header>
+            
+            <nav class="modal-tabs" id="modal-category-tabs">
+              <button class="modal-tab-btn active" data-tab="meal">Meals</button>
+              <button class="modal-tab-btn" data-tab="dessert">Desserts</button>
+              <button class="modal-tab-btn" data-tab="drink">Drinks</button>
+            </nav>
+
+            <div class="modal-body">
+              <section class="menu-list" id="menu-list">
+                <!-- Menu items will be injected here -->
+              </section>
             </div>
           </div>
         </div>
-
-        <!-- Layer A: Category -->
-        <div class="discovery-group">
-          <label class="discovery-label">I'm looking for...</label>
-          <div class="category-selector" id="category-selector">
-            <button class="selector-btn active" data-type="meal">Meal</button>
-            <button class="selector-btn" data-type="dessert">Dessert</button>
-            <button class="selector-btn" data-type="drink">Drink</button>
-          </div>
-        </div>
-
-        <!-- Layer B: Flavor Profile -->
-        <div class="discovery-group">
-          <div class="flavor-subgroup">
-            <label class="discovery-sublabel" id="flavor-label">FLAVORS (select up to 2)</label>
-            <div class="flavor-selector" id="flavor-selector-flavors">
-              <!-- Dynamically injected -->
-            </div>
-          </div>
-          
-          <div class="flavor-divider"></div>
-
-          <div class="flavor-subgroup">
-            <label class="discovery-sublabel" id="style-label">STYLE (select up to 2)</label>
-            <div class="flavor-selector" id="flavor-selector-textures">
-              <!-- Dynamically injected -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Ingredient Guardrail (Collapsible) -->
-        <div class="discovery-group exclusion-group">
-          <button id="exclusion-toggle" class="exclusion-toggle">
-            <span class="discovery-label">Avoid ingredients (optional)</span>
-            <span class="toggle-icon">＋</span>
-          </button>
-          <div id="exclusion-panel" class="exclusion-panel" hidden>
-            <div class="exclusion-input-wrapper">
-              <input type="text" id="exclusion-input" placeholder="e.g. onion, garlic..." autocomplete="off">
-              <ul id="exclusion-suggestions" class="exclusion-suggestions" hidden></ul>
-            </div>
-            <div id="exclusion-chips" class="exclusion-chips"></div>
-          </div>
-          <div id="exclusion-feedback" class="exclusion-feedback" hidden></div>
-        </div>
-
-        <!-- Layer C: Spiciness -->
-        <div class="discovery-group">
-          <div class="meter-header">
-            <label class="discovery-label">Spiciness Meter</label>
-            <span id="spiciness-value" class="meter-value">Medium</span>
-          </div>
-          <div class="meter-container-full" id="spiciness-container">
-            <div class="range-wrapper">
-              <div class="range-ticks">
-                <span></span><span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span></span><span></span>
-                <span></span>
-              </div>
-              <input type="range" id="spiciness-meter" min="0" max="1" step="0.1" value="0.5" class="range-meter">
-            </div>
-            <div id="meter-hint" class="meter-hint"></div>
-          </div>
-          <div class="meter-icons-row">
-            <span class="meter-icon">🌶️ Mild</span>
-            <span class="meter-icon">Extra Hot 🔥</span>
-          </div>
-        </div>
-
-        <div class="cta-container">
-          <button id="help-me-choose" class="btn btn-primary-action">Help Me Choose</button>
-        </div>
-
-        <div id="loading-dots-container" class="loading-dots-container" hidden style="display: none;">
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </div>
-      </section>
-
-      <!-- Determined Result (Discovery Area) -->
-      <section id="discovery-spotlight" class="discovery-spotlight">
-        <div class="spotlight-header">
-          <span class="spotlight-label">Our Recommendation for You</span>
-        </div>
-        <div id="spotlight-container">
-          <!-- The single best match will be injected here -->
-        </div>
-      </section>
-
-      <div class="menu-toggle-container">
-        <button id="menu-toggle" class="btn-toggle">
-          <span class="toggle-text">Show full menu</span>
-          <span class="toggle-icon">↓</span>
-        </button>
-      </div>
-
-      <!-- Full Menu Modal Overlay -->
-      <div id="menu-modal" class="modal-overlay" hidden>
-        <div class="modal-container">
-          <header class="modal-header">
-            <h3>Mexican Flavor Menu</h3>
-            <button id="modal-close" class="btn-close">&times;</button>
-          </header>
-          
-          <nav class="modal-tabs" id="modal-category-tabs">
-            <button class="modal-tab-btn active" data-tab="meal">Meals</button>
-            <button class="modal-tab-btn" data-tab="dessert">Desserts</button>
-            <button class="modal-tab-btn" data-tab="drink">Drinks</button>
-          </nav>
-
-          <div class="modal-body">
-            <section class="menu-list" id="menu-list">
-              <!-- Content injected by script.js -->
-            </section>
-          </div>
-        </div>
-      </div>
-
-      <div id="load-more-container" class="load-more-container" hidden></div>
-
-      <section class="no-results" id="no-results" hidden>
-        <h3>No Dishes Found</h3>
-        <p>We couldn't find any dishes matching your search. Try a different search term or clear the filters.</p>
-      </section>
-    </main>
+      </main>
     </div>
   </div>
 
