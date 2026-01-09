@@ -14,15 +14,26 @@
 document.addEventListener("DOMContentLoaded", () => {
 	const app = {
 		menuItems: [],
+		config: null,
 		selectedCategory: "meal",
 		activeShortcut: null,
 		scoredPool: [],
 		currentRecommendation: null,
 		lastShortcut: null,
+		excludedIngredients: new Set(),
+		logoClicks: 0,
+		logoClickTimeout: null,
 
 		elements: {
+			logo: document.getElementById("logo"),
+			appTagline: document.getElementById("app-tagline"),
+			appMicrocopy: document.getElementById("app-microcopy"),
+			dietaryContainer: document.getElementById("dietary-container"),
 			categorySelector: document.getElementById("category-selector"),
 			shortcutsGrid: document.getElementById("shortcuts-grid"),
+			dietaryToggle: document.getElementById("dietary-toggle"),
+			dietaryPanel: document.getElementById("dietary-panel"),
+			exclusionChips: document.getElementById("exclusion-chips"),
 			spotlightSection: document.getElementById("recommendation-spotlight"),
 			spotlightContainer: document.getElementById("spotlight-container"),
 			tryAnotherBtn: document.getElementById("try-another-btn"),
@@ -31,14 +42,69 @@ document.addEventListener("DOMContentLoaded", () => {
 			modalClose: document.getElementById("modal-close"),
 			modalTabsContainer: document.getElementById("modal-category-tabs"),
 			menuList: document.getElementById("menu-list"),
+
+			// Admin Elements
+			adminPasswordModal: document.getElementById("admin-password-modal"),
+			passwordModalClose: document.getElementById("password-modal-close"),
+			adminPasswordInput: document.getElementById("admin-password-input"),
+			adminLoginBtn: document.getElementById("admin-login-btn"),
+			passwordError: document.getElementById("password-error"),
+			adminPanelModal: document.getElementById("admin-panel-modal"),
+			adminPanelClose: document.getElementById("admin-panel-close"),
+			adminTabs: document.getElementById("admin-tabs"),
+			adminSaveBtn: document.getElementById("admin-save-btn"),
+			adminSaveSuccess: document.getElementById("admin-save-success"),
+			menuJsonEditor: document.getElementById("menu-json-editor"),
+
+			// Config Inputs
+			configPrimaryColor: document.getElementById("config-primary-color"),
+			configBorderRadius: document.getElementById("config-border-radius"),
+			configTagline: document.getElementById("config-tagline"),
+			configMicrocopy: document.getElementById("config-microcopy"),
+			configShowDietary: document.getElementById("config-show-dietary"),
+			configAdminPassword: document.getElementById("config-admin-password"),
 		},
 
 		init() {
+			this.fetchConfig();
 			this.attachListeners();
 			this.fetchMenuData();
 		},
 
 		attachListeners() {
+			// Logo Clicks for Admin
+			this.elements.logo.addEventListener("click", () => {
+				this.handleLogoClick();
+			});
+
+			// Admin Password Modal
+			this.elements.passwordModalClose.addEventListener("click", () => {
+				this.toggleModal(this.elements.adminPasswordModal, false);
+			});
+
+			this.elements.adminLoginBtn.addEventListener("click", () => {
+				this.verifyAdminPassword();
+			});
+
+			this.elements.adminPasswordInput.addEventListener("keypress", (e) => {
+				if (e.key === "Enter") this.verifyAdminPassword();
+			});
+
+			// Admin Panel Modal
+			this.elements.adminPanelClose.addEventListener("click", () => {
+				this.toggleModal(this.elements.adminPanelModal, false);
+			});
+
+			this.elements.adminTabs.addEventListener("click", (e) => {
+				const btn = e.target.closest(".modal-tab-btn");
+				if (!btn) return;
+				this.switchAdminTab(btn.dataset.tab);
+			});
+
+			this.elements.adminSaveBtn.addEventListener("click", () => {
+				this.saveAdminChanges();
+			});
+
 			// Category Selection
 			this.elements.categorySelector.addEventListener("click", (e) => {
 				const btn = e.target.closest(".category-btn");
@@ -58,6 +124,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				const shortcut = btn.dataset.shortcut;
 				this.handleShortcut(shortcut);
+			});
+
+			// Dietary Exclusions Toggle
+			this.elements.dietaryToggle.addEventListener("click", () => {
+				const isExpanded = this.elements.dietaryToggle.getAttribute("aria-expanded") === "true";
+				const newStatus = !isExpanded;
+				
+				this.elements.dietaryToggle.setAttribute("aria-expanded", newStatus);
+				this.elements.dietaryToggle.classList.toggle("active", newStatus);
+				this.elements.dietaryPanel.classList.toggle("open", newStatus);
+			});
+
+			// Ingredient Chips
+			this.elements.exclusionChips.addEventListener("click", (e) => {
+				const chip = e.target.closest(".chip");
+				if (!chip) return;
+
+				const ingredient = chip.dataset.ingredient.toLowerCase();
+				if (this.excludedIngredients.has(ingredient)) {
+					this.excludedIngredients.delete(ingredient);
+					chip.classList.remove("excluded");
+				} else {
+					this.excludedIngredients.add(ingredient);
+					chip.classList.add("excluded");
+				}
+
+				// If we have an active recommendation, refresh it to respect new filters
+				if (this.activeShortcut) {
+					this.handleShortcut(this.activeShortcut);
+				}
+			});
+
+			// Keyboard Shortcuts
+			document.addEventListener("keydown", (e) => {
+				// Don't trigger if user is typing in an input (though we don't have any yet)
+				if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+
+				const key = e.key.toLowerCase();
+				switch (key) {
+					case "s":
+						this.handleShortcut("surprise");
+						break;
+					case "f":
+						this.handleShortcut("favorite");
+						break;
+					case "c":
+						this.handleShortcut("comfort");
+						break;
+					case "n":
+						this.handleShortcut("different");
+						break;
+				}
 			});
 
 			// Try Another Button
@@ -92,6 +210,146 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 		},
 
+		handleLogoClick() {
+			this.logoClicks++;
+			if (this.logoClickTimeout) clearTimeout(this.logoClickTimeout);
+
+			if (this.logoClicks >= 5) {
+				this.logoClicks = 0;
+				this.toggleModal(this.elements.adminPasswordModal, true);
+				this.elements.adminPasswordInput.value = "";
+				this.elements.passwordError.hidden = true;
+				this.elements.adminPasswordInput.focus();
+			} else {
+				this.logoClickTimeout = setTimeout(() => {
+					this.logoClicks = 0;
+				}, 2000); // 2 seconds to complete 5 clicks
+			}
+		},
+
+		verifyAdminPassword() {
+			const entered = this.elements.adminPasswordInput.value;
+			const correct = this.config.adminPassword;
+
+			if (entered === correct) {
+				this.toggleModal(this.elements.adminPasswordModal, false);
+				this.openAdminPanel();
+			} else {
+				this.elements.passwordError.hidden = false;
+			}
+		},
+
+		openAdminPanel() {
+			this.toggleModal(this.elements.adminPanelModal, true);
+			this.switchAdminTab("config");
+			this.populateAdminPanel();
+		},
+
+		switchAdminTab(tab) {
+			const buttons = this.elements.adminTabs.querySelectorAll(".modal-tab-btn");
+			buttons.forEach(btn => {
+				btn.classList.toggle("active", btn.dataset.tab === tab);
+			});
+
+			document.getElementById("admin-tab-config").hidden = (tab !== "config");
+			document.getElementById("admin-tab-menu").hidden = (tab !== "menu");
+		},
+
+		populateAdminPanel() {
+			// Theme
+			this.elements.configPrimaryColor.value = this.config.theme.primaryColor;
+			this.elements.configBorderRadius.value = parseInt(this.config.theme.borderRadius);
+			document.getElementById("config-container-width").value = parseInt(this.config.theme.containerMaxWidth);
+
+			// Copy
+			this.elements.configTagline.value = this.config.copy.tagline;
+			this.elements.configMicrocopy.value = this.config.copy.microcopy;
+
+			// Layout
+			this.elements.configShowDietary.checked = this.config.layout.showDietaryToggle;
+
+			// Password
+			this.elements.configAdminPassword.value = this.config.adminPassword;
+
+			// Menu JSON
+			this.elements.menuJsonEditor.value = JSON.stringify(this.menuItems, null, 2);
+		},
+
+		saveAdminChanges() {
+			try {
+				// Update Config
+				this.config.theme.primaryColor = this.elements.configPrimaryColor.value;
+				this.config.theme.borderRadius = this.elements.configBorderRadius.value + "px";
+				this.config.theme.containerMaxWidth = document.getElementById("config-container-width").value + "px";
+				this.config.copy.tagline = this.elements.configTagline.value;
+				this.config.copy.microcopy = this.elements.configMicrocopy.value;
+				this.config.layout.showDietaryToggle = this.elements.configShowDietary.checked;
+				this.config.adminPassword = this.elements.configAdminPassword.value;
+
+				// Update Menu
+				const newMenu = JSON.parse(this.elements.menuJsonEditor.value);
+				this.menuItems = newMenu;
+
+				// Apply Changes
+				this.applyConfig();
+				
+				// Persist
+				localStorage.setItem("tastemate_config", JSON.stringify(this.config));
+				localStorage.setItem("tastemate_menu", JSON.stringify(this.menuItems));
+
+				// Success feedback
+				this.elements.adminSaveSuccess.hidden = false;
+				setTimeout(() => {
+					this.elements.adminSaveSuccess.hidden = true;
+				}, 3000);
+
+			} catch (err) {
+				alert("Error saving changes. Please check your JSON format.\n" + err.message);
+			}
+		},
+
+		toggleModal(modal, show) {
+			modal.hidden = !show;
+			document.body.style.overflow = show ? "hidden" : "";
+		},
+
+		applyConfig() {
+			if (!this.config) return;
+
+			// Apply Colors
+			document.documentElement.style.setProperty("--color-orange", this.config.theme.primaryColor);
+			
+			// Apply Border Radius
+			document.documentElement.style.setProperty("--border-radius", this.config.theme.borderRadius);
+			document.documentElement.style.setProperty("--border-radius-lg", (parseInt(this.config.theme.borderRadius) * 1.5) + "px");
+
+			// Apply Container Max Width
+			document.documentElement.style.setProperty("--container-max-width", this.config.theme.containerMaxWidth);
+
+			// Apply Text
+			this.elements.appTagline.textContent = this.config.copy.tagline;
+			this.elements.appMicrocopy.textContent = this.config.copy.microcopy;
+
+			// Apply Layout
+			this.elements.dietaryContainer.hidden = !this.config.layout.showDietaryToggle;
+		},
+
+		fetchConfig() {
+			const savedConfig = localStorage.getItem("tastemate_config");
+			if (savedConfig) {
+				this.config = JSON.parse(savedConfig);
+				this.applyConfig();
+			} else {
+				fetch("config.json")
+					.then(res => res.json())
+					.then(data => {
+						this.config = data;
+						this.applyConfig();
+					})
+					.catch(err => console.error("Error loading config:", err));
+			}
+		},
+
 		updateActiveCategory() {
 			const buttons = this.elements.categorySelector.querySelectorAll(".category-btn");
 			buttons.forEach(btn => {
@@ -118,21 +376,33 @@ document.addEventListener("DOMContentLoaded", () => {
 		 * Filters by category, scores by shortcut, returns top match
 		 */
 		getRecommendation(shortcut) {
-			// Filter by category
-			const pool = this.menuItems.filter(item => item.type === this.selectedCategory);
+			// 1. Initial filter by category
+			let pool = this.menuItems.filter(item => item.type === this.selectedCategory);
 			
+			// 2. Ingredient Exclusions (MVP Feature)
+			// Any item containing an excluded ingredient is removed from the pool
+			if (this.excludedIngredients.size > 0) {
+				pool = pool.filter(item => {
+					if (!item.ingredients) return true;
+					// Case-insensitive check against excluded set
+					return !item.ingredients.some(ing => 
+						this.excludedIngredients.has(ing.toLowerCase())
+					);
+				});
+			}
+
 			if (pool.length === 0) {
 				this.showEmptyState();
 				return;
 			}
 
-			// Score each item based on shortcut
+			// 3. Score each item based on shortcut
 			const scoredItems = pool.map(item => ({
 				...item,
 				score: this.calculateScore(item, shortcut)
 			}));
 
-			// Sort by score (highest first)
+			// 4. Sort by score (highest first)
 			scoredItems.sort((a, b) => b.score - a.score);
 
 			// Store top 5 for "Try Another"
@@ -253,9 +523,14 @@ document.addEventListener("DOMContentLoaded", () => {
 		},
 
 		showEmptyState() {
+			const hasExclusions = this.excludedIngredients.size > 0;
+			const message = hasExclusions 
+				? "No matches with those exclusions — try removing one."
+				: "No items found in this category.";
+
 			this.elements.spotlightContainer.innerHTML = `
 				<div class="empty-state">
-					<p>No items found in this category.</p>
+					<p>${message}</p>
 				</div>
 			`;
 			this.elements.spotlightSection.hidden = false;
@@ -317,6 +592,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		},
 
 		fetchMenuData() {
+			const savedMenu = localStorage.getItem("tastemate_menu");
+			if (savedMenu) {
+				this.menuItems = JSON.parse(savedMenu);
+				return;
+			}
+
 			fetch("menu.json")
 				.then(res => {
 					if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);

@@ -9,11 +9,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
+    <div class="container" id="main-container">
     <div class="container-content">
       <header class="header-card">
-        <img src="assets/logo/logo-dark.png" alt="TasteMate Logo" class="logo">
-        <p class="tagline">A fun way to decide what to eat.</p>
+        <img src="assets/logo/logo-dark.png" alt="TasteMate Logo" class="logo" id="logo">
+        <p class="tagline" id="app-tagline">A fun way to decide what to eat.</p>
       </header>
 
       <main>
@@ -30,7 +30,35 @@
 
           <!-- Shortcut Buttons -->
           <div class="shortcuts-section">
-            <label class="section-label">Choose a shortcut</label>
+            <div class="section-header">
+              <label class="section-label" id="label-choose-shortcut">Choose a shortcut</label>
+              <p class="section-microcopy" id="app-microcopy">Pick a vibe—TasteMate will recommend something you’ll actually enjoy.</p>
+              
+              <div class="dietary-container" id="dietary-container">
+                <button 
+                  id="dietary-toggle" 
+                  class="dietary-toggle" 
+                  aria-expanded="false" 
+                  aria-controls="dietary-panel">
+                  Dietary & ingredients (optional)
+                  <span class="led-light"></span>
+                </button>
+                <p id="dietary-helper" class="dietary-helper">Exclude ingredients from recommendations.</p>
+              </div>
+            </div>
+
+            <!-- Ingredient Exclusions (MVP) -->
+            <div id="dietary-panel" class="dietary-panel">
+              <div class="chips-container" id="exclusion-chips">
+                <button class="chip" data-ingredient="onion">Onion</button>
+                <button class="chip" data-ingredient="tomato">Tomato</button>
+                <button class="chip" data-ingredient="dairy">Dairy</button>
+                <button class="chip" data-ingredient="gluten">Gluten</button>
+                <button class="chip" data-ingredient="cilantro">Cilantro</button>
+                <button class="chip" data-ingredient="nuts">Nuts</button>
+              </div>
+            </div>
+
             <div class="shortcuts-grid" id="shortcuts-grid">
               <button class="shortcut-btn" data-shortcut="surprise">
                 <span class="shortcut-icon">
@@ -42,6 +70,7 @@
                   </svg>
                 </span>
                 <span class="shortcut-label">Surprise Me</span>
+                <span class="shortcut-hint">S</span>
               </button>
               <button class="shortcut-btn" data-shortcut="favorite">
                 <span class="shortcut-icon">
@@ -50,6 +79,7 @@
                   </svg>
                 </span>
                 <span class="shortcut-label">House Favorite</span>
+                <span class="shortcut-hint">F</span>
               </button>
               <button class="shortcut-btn" data-shortcut="comfort">
                 <span class="shortcut-icon">
@@ -58,6 +88,7 @@
                   </svg>
                 </span>
                 <span class="shortcut-label">Comfort Pick</span>
+                <span class="shortcut-hint">C</span>
               </button>
               <button class="shortcut-btn" data-shortcut="different">
                 <span class="shortcut-icon">
@@ -67,7 +98,8 @@
                     <path d="M12 2a7 7 0 0 0-4 12c.6.5 1 1.2 1 2h6c0-.8.4-1.5 1-2a7 7 0 0 0-4-12z"/>
                   </svg>
                 </span>
-                <span class="shortcut-label">Try Something New</span>
+                <span class="shortcut-label">Something New</span>
+                <span class="shortcut-hint">N</span>
               </button>
             </div>
           </div>
@@ -109,6 +141,96 @@
           </div>
         </div>
       </main>
+    </div>
+  </div>
+
+  <!-- Admin Password Prompt -->
+  <div id="admin-password-modal" class="modal-overlay" hidden>
+    <div class="modal-container admin-password-container">
+      <header class="modal-header">
+        <h3>Admin Access</h3>
+        <button id="password-modal-close" class="btn-close">&times;</button>
+      </header>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="admin-password-input">Enter Admin Password</label>
+          <input type="password" id="admin-password-input" class="form-input" placeholder="Password">
+          <p id="password-error" class="error-text" hidden>Incorrect password. Try again.</p>
+        </div>
+        <button id="admin-login-btn" class="btn-primary">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Panel Modal -->
+  <div id="admin-panel-modal" class="modal-overlay" hidden>
+    <div class="modal-container admin-panel-container">
+      <header class="modal-header">
+        <h3>Admin Panel</h3>
+        <button id="admin-panel-close" class="btn-close">&times;</button>
+      </header>
+      
+      <nav class="modal-tabs" id="admin-tabs">
+        <button class="modal-tab-btn active" data-tab="config">Configuration</button>
+        <button class="modal-tab-btn" data-tab="menu">Menu Editor</button>
+      </nav>
+
+      <div class="modal-body">
+        <!-- Config Section -->
+        <div id="admin-tab-config" class="admin-tab-content">
+          <div class="form-group">
+            <label>Design (Theme)</label>
+            <div class="form-row">
+              <div class="form-col">
+                <label for="config-primary-color">Primary Color</label>
+                <input type="color" id="config-primary-color">
+              </div>
+              <div class="form-col">
+                <label for="config-border-radius">Border Radius (px)</label>
+                <input type="number" id="config-border-radius">
+              </div>
+              <div class="form-col">
+                <label for="config-container-width">Container Width (px)</label>
+                <input type="number" id="config-container-width">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Text Content</label>
+            <label for="config-tagline">App Tagline</label>
+            <input type="text" id="config-tagline" class="form-input">
+            <label for="config-microcopy">Microcopy</label>
+            <input type="text" id="config-microcopy" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label>Layout</label>
+            <div class="form-row checkbox-row">
+              <input type="checkbox" id="config-show-dietary">
+              <label for="config-show-dietary">Show Dietary Toggle</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="config-admin-password">Admin Password</label>
+            <input type="text" id="config-admin-password" class="form-input">
+          </div>
+        </div>
+
+        <!-- Menu Section -->
+        <div id="admin-tab-menu" class="admin-tab-content" hidden>
+          <div class="form-group">
+            <label>Menu JSON Editor</label>
+            <textarea id="menu-json-editor" class="json-editor"></textarea>
+          </div>
+        </div>
+
+        <div class="admin-actions">
+          <button id="admin-save-btn" class="btn-primary">Save Changes</button>
+          <p id="admin-save-success" class="success-text" hidden>Changes saved to local storage!</p>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -11,6 +11,7 @@
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Popular", "Spicy"],
+			"ingredients": ["Beef", "Corn Tortilla", "Onion", "Cilantro", "Tomato"],
 			"scoring": {
 				"spice": 0.7,
 				"richness": 0.6,
@@ -28,6 +29,7 @@
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Vegetarian Option", "Cheesy"],
+			"ingredients": ["Poblano Pepper", "Dairy", "Gluten", "Tomato", "Egg"],
 			"scoring": {
 				"spice": 0.3,
 				"richness": 0.9,
@@ -45,6 +47,7 @@
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Popular", "Cheesy"],
+			"ingredients": ["Chicken", "Corn Tortilla", "Dairy", "Tomatillo", "Onion"],
 			"scoring": {
 				"spice": 0.4,
 				"richness": 0.8,
@@ -62,6 +65,7 @@
 			"type": "dessert",
 			"image": "https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Popular", "Sweet"],
+			"ingredients": ["Gluten", "Sugar", "Cinnamon", "Dairy"],
 			"scoring": {
 				"spice": 0.0,
 				"richness": 0.7,
@@ -79,6 +83,7 @@
 			"type": "dessert",
 			"image": "https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Sweet", "Dessert"],
+			"ingredients": ["Dairy", "Egg", "Sugar", "Caramel"],
 			"scoring": {
 				"spice": 0.0,
 				"richness": 0.6,
@@ -96,6 +101,7 @@
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Drink", "Sweet"],
+			"ingredients": ["Rice", "Dairy", "Sugar", "Cinnamon"],
 			"scoring": {
 				"spice": 0.0,
 				"richness": 0.4,
@@ -113,6 +119,7 @@
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1497534446932-c946e7316ad3?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Drink", "Refreshing"],
+			"ingredients": ["Hibiscus", "Water", "Sugar"],
 			"scoring": {
 				"spice": 0.0,
 				"richness": 0.1,
@@ -130,6 +137,7 @@
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Drink", "Fizzy"],
+			"ingredients": ["Sugar", "Water", "Caramel Color"],
 			"scoring": {
 				"spice": 0.0,
 				"richness": 0.1,
@@ -147,6 +155,7 @@
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1512838243191-e81e8f66f1fd?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Popular", "Seafood"],
+			"ingredients": ["Fish", "Corn Tortilla", "Gluten", "Cabbage", "Dairy", "Onion"],
 			"scoring": {
 				"spice": 0.5,
 				"richness": 0.5,
@@ -164,6 +173,7 @@
 			"type": "meal",
 			"image": "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Vegetarian", "Healthy"],
+			"ingredients": ["Bell Pepper", "Onion", "Tomato", "Corn Tortilla", "Cilantro"],
 			"scoring": {
 				"spice": 0.2,
 				"richness": 0.3,
@@ -181,6 +191,7 @@
 			"type": "dessert",
 			"image": "https://images.unsplash.com/photo-1624353365286-3f8d62da510a?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Dessert", "Sweet"],
+			"ingredients": ["Gluten", "Dairy", "Sugar", "Cinnamon"],
 			"scoring": {
 				"spice": 0.0,
 				"richness": 0.8,
@@ -198,6 +209,7 @@
 			"type": "dessert",
 			"image": "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Sweet", "Comfort Food"],
+			"ingredients": ["Rice", "Dairy", "Sugar", "Cinnamon"],
 			"scoring": {
 				"spice": 0.0,
 				"richness": 0.6,
@@ -215,6 +227,7 @@
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1513558161293-cdafeac5989f?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Drink", "Refreshing"],
+			"ingredients": ["Lime", "Water", "Sugar", "Orange Juice"],
 			"scoring": {
 				"spice": 0.0,
 				"richness": 0.1,
@@ -232,6 +245,7 @@
 			"type": "drink",
 			"image": "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=800&q=80",
 			"tags": ["Drink", "Sweet"],
+			"ingredients": ["Sugar", "Water", "Fruit Extract"],
 			"scoring": {
 				"spice": 0.0,
 				"richness": 0.1,
