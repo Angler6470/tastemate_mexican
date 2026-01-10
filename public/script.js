@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		saveAdminChanges() {
 			try {
-				// Update Config
+				// Update Config Object
 				this.config.theme.primaryColor = this.elements.configPrimaryColor.value;
 				this.config.theme.borderRadius = this.elements.configBorderRadius.value + "px";
 				this.config.theme.containerMaxWidth = document.getElementById("config-container-width").value + "px";
@@ -286,22 +286,48 @@ document.addEventListener("DOMContentLoaded", () => {
 				this.config.layout.showDietaryToggle = this.elements.configShowDietary.checked;
 				this.config.adminPassword = this.elements.configAdminPassword.value;
 
-				// Update Menu
+				// Update Menu Object
 				const newMenu = JSON.parse(this.elements.menuJsonEditor.value);
-				this.menuItems = newMenu;
-
-				// Apply Changes
-				this.applyConfig();
 				
-				// Persist
-				localStorage.setItem("tastemate_config", JSON.stringify(this.config));
-				localStorage.setItem("tastemate_menu", JSON.stringify(this.menuItems));
+				// 1. Save Config to Backend
+				fetch('/api/config', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'x-admin-token': this.config.adminPassword
+					},
+					body: JSON.stringify(this.config)
+				})
+				.then(res => res.json())
+				.then(data => {
+					if (!data.success) throw new Error('Failed to save config');
+					
+					// 2. Save Menu to Backend
+					return fetch('/api/menu', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'x-admin-token': this.config.adminPassword
+						},
+						body: JSON.stringify(newMenu)
+					});
+				})
+				.then(res => res.json())
+				.then(data => {
+					if (!data.success) throw new Error('Failed to save menu');
 
-				// Success feedback
-				this.elements.adminSaveSuccess.hidden = false;
-				setTimeout(() => {
-					this.elements.adminSaveSuccess.hidden = true;
-				}, 3000);
+					this.menuItems = newMenu;
+					this.applyConfig();
+
+					// Success feedback
+					this.elements.adminSaveSuccess.hidden = false;
+					setTimeout(() => {
+						this.elements.adminSaveSuccess.hidden = true;
+					}, 3000);
+				})
+				.catch(err => {
+					alert("Error saving changes: " + err.message);
+				});
 
 			} catch (err) {
 				alert("Error saving changes. Please check your JSON format.\n" + err.message);
@@ -335,19 +361,22 @@ document.addEventListener("DOMContentLoaded", () => {
 		},
 
 		fetchConfig() {
-			const savedConfig = localStorage.getItem("tastemate_config");
-			if (savedConfig) {
-				this.config = JSON.parse(savedConfig);
-				this.applyConfig();
-			} else {
-				fetch("config.json")
-					.then(res => res.json())
-					.then(data => {
-						this.config = data;
-						this.applyConfig();
-					})
-					.catch(err => console.error("Error loading config:", err));
-			}
+			fetch("/api/config")
+				.then(res => res.json())
+				.then(data => {
+					this.config = data;
+					this.applyConfig();
+				})
+				.catch(err => {
+					console.error("Error loading config from API:", err);
+					// Fallback to static file if API fails (useful for local dev without server)
+					fetch("config.json")
+						.then(res => res.json())
+						.then(data => {
+							this.config = data;
+							this.applyConfig();
+						});
+				});
 		},
 
 		updateActiveCategory() {
@@ -592,27 +621,19 @@ document.addEventListener("DOMContentLoaded", () => {
 		},
 
 		fetchMenuData() {
-			const savedMenu = localStorage.getItem("tastemate_menu");
-			if (savedMenu) {
-				this.menuItems = JSON.parse(savedMenu);
-				return;
-			}
-
-			fetch("menu.json")
-				.then(res => {
-					if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-					return res.json();
-				})
+			fetch("/api/menu")
+				.then(res => res.json())
 				.then(data => {
 					this.menuItems = data.menu || [];
 				})
 				.catch(err => {
-					console.error("Error loading menu:", err);
-					this.elements.spotlightContainer.innerHTML = `
-						<div class="empty-state">
-							<p>Error loading menu. Please refresh the page.</p>
-						</div>
-					`;
+					console.error("Error loading menu from API:", err);
+					// Fallback to static file
+					fetch("menu.json")
+						.then(res => res.json())
+						.then(data => {
+							this.menuItems = data.menu || [];
+						});
 				});
 		}
 	};
