@@ -1,0 +1,259 @@
+{
+	"promo": {
+		"enabled": false
+	},
+	"menu": [
+		{
+			"id": "m1",
+			"name": "Carne Asada Tacos",
+			"description": "Three corn tortillas with marinated grilled steak, onions, cilantro, and a side of salsa verde.",
+			"price": 14.99,
+			"type": "meal",
+			"image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Popular", "Spicy"],
+			"ingredients": ["Beef", "Corn Tortilla", "Onion", "Cilantro", "Tomato"],
+			"scoring": {
+				"spice": 0.7,
+				"richness": 0.6,
+				"popularity": 0.9,
+				"adventurous": 0.3,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
+		},
+		{
+			"id": "m2",
+			"name": "Chiles Rellenos",
+			"description": "Two poblano peppers filled with cheese, battered and fried, topped with a mild tomato sauce.",
+			"price": 16.5,
+			"type": "meal",
+			"image": "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Vegetarian Option", "Cheesy"],
+			"ingredients": ["Poblano Pepper", "Dairy", "Gluten", "Tomato", "Egg"],
+			"scoring": {
+				"spice": 0.3,
+				"richness": 0.9,
+				"popularity": 0.6,
+				"adventurous": 0.5,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
+		},
+		{
+			"id": "m3",
+			"name": "Enchiladas Suizas",
+			"description": "Chicken enchiladas smothered in a creamy green tomatillo sauce and melted Swiss cheese.",
+			"price": 15.75,
+			"type": "meal",
+			"image": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Popular", "Cheesy"],
+			"ingredients": ["Chicken", "Corn Tortilla", "Dairy", "Tomatillo", "Onion"],
+			"scoring": {
+				"spice": 0.4,
+				"richness": 0.8,
+				"popularity": 0.85,
+				"adventurous": 0.2,
+				"chefPick": true,
+				"isCommonOrder": true
+			}
+		},
+		{
+			"id": "d1",
+			"name": "Churros",
+			"description": "Crispy fried dough pastries dusted with cinnamon sugar, served with chocolate dipping sauce.",
+			"price": 6.99,
+			"type": "dessert",
+			"image": "https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Popular", "Sweet"],
+			"ingredients": ["Gluten", "Sugar", "Cinnamon", "Dairy"],
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.7,
+				"popularity": 0.95,
+				"adventurous": 0.1,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
+		},
+		{
+			"id": "d2",
+			"name": "Flan Napolitano",
+			"description": "Classic Mexican caramel custard with a creamy, smooth texture.",
+			"price": 5.5,
+			"type": "dessert",
+			"image": "https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Sweet", "Dessert"],
+			"ingredients": ["Dairy", "Egg", "Sugar", "Caramel"],
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.6,
+				"popularity": 0.7,
+				"adventurous": 0.0,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
+		},
+		{
+			"id": "b1",
+			"name": "Horchata",
+			"description": "Traditional Mexican rice milk beverage, sweetened with cinnamon.",
+			"price": 3.5,
+			"type": "drink",
+			"image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Drink", "Sweet"],
+			"ingredients": ["Rice", "Dairy", "Sugar", "Cinnamon"],
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.4,
+				"popularity": 0.8,
+				"adventurous": 0.2,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
+		},
+		{
+			"id": "b2",
+			"name": "Agua de Jamaica",
+			"description": "Refreshing hibiscus flower iced tea, lightly sweetened.",
+			"price": 3.75,
+			"type": "drink",
+			"image": "https://images.unsplash.com/photo-1497534446932-c946e7316ad3?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Drink", "Refreshing"],
+			"ingredients": ["Hibiscus", "Water", "Sugar"],
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.1,
+				"popularity": 0.6,
+				"adventurous": 0.4,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
+		},
+		{
+			"id": "b3",
+			"name": "Mexican Coca-Cola",
+			"description": "Coca-Cola made with real cane sugar for an authentic taste.",
+			"price": 2.99,
+			"type": "drink",
+			"image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Drink", "Fizzy"],
+			"ingredients": ["Sugar", "Water", "Caramel Color"],
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.1,
+				"popularity": 0.9,
+				"adventurous": 0.0,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
+		},
+		{
+			"id": "m4",
+			"name": "Fish Tacos",
+			"description": "Lightly battered fish, cabbage slaw, and chipotle crema in warm corn tortillas.",
+			"price": 15.5,
+			"type": "meal",
+			"image": "https://images.unsplash.com/photo-1512838243191-e81e8f66f1fd?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Popular", "Seafood"],
+			"ingredients": ["Fish", "Corn Tortilla", "Gluten", "Cabbage", "Dairy", "Onion"],
+			"scoring": {
+				"spice": 0.5,
+				"richness": 0.5,
+				"popularity": 0.75,
+				"adventurous": 0.6,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
+		},
+		{
+			"id": "m5",
+			"name": "Vegetable Fajitas",
+			"description": "Sizzling platter of seasoned mixed vegetables, served with warm tortillas.",
+			"price": 13.99,
+			"type": "meal",
+			"image": "https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Vegetarian", "Healthy"],
+			"ingredients": ["Bell Pepper", "Onion", "Tomato", "Corn Tortilla", "Cilantro"],
+			"scoring": {
+				"spice": 0.2,
+				"richness": 0.3,
+				"popularity": 0.5,
+				"adventurous": 0.3,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
+		},
+		{
+			"id": "d3",
+			"name": "Churro Bites",
+			"description": "Smaller, bite-sized churros perfect for sharing, served with dulce de leche.",
+			"price": 7.5,
+			"type": "dessert",
+			"image": "https://images.unsplash.com/photo-1624353365286-3f8d62da510a?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Dessert", "Sweet"],
+			"ingredients": ["Gluten", "Dairy", "Sugar", "Cinnamon"],
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.8,
+				"popularity": 0.7,
+				"adventurous": 0.2,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
+		},
+		{
+			"id": "d4",
+			"name": "Arroz con Leche",
+			"description": "Creamy rice pudding with cinnamon and a hint of vanilla.",
+			"price": 5.0,
+			"type": "dessert",
+			"image": "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Sweet", "Comfort Food"],
+			"ingredients": ["Rice", "Dairy", "Sugar", "Cinnamon"],
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.6,
+				"popularity": 0.65,
+				"adventurous": 0.0,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
+		},
+		{
+			"id": "b4",
+			"name": "Margarita (Non-Alco)",
+			"description": "Classic lime margarita, refreshing and tangy, without the alcohol.",
+			"price": 6.0,
+			"type": "drink",
+			"image": "https://images.unsplash.com/photo-1513558161293-cdafeac5989f?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Drink", "Refreshing"],
+			"ingredients": ["Lime", "Water", "Sugar", "Orange Juice"],
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.1,
+				"popularity": 0.7,
+				"adventurous": 0.3,
+				"chefPick": false,
+				"isCommonOrder": false
+			}
+		},
+		{
+			"id": "b5",
+			"name": "Jarritos",
+			"description": "Authentic Mexican sodas in various fruit flavors.",
+			"price": 3.25,
+			"type": "drink",
+			"image": "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=800&q=80",
+			"tags": ["Drink", "Sweet"],
+			"ingredients": ["Sugar", "Water", "Fruit Extract"],
+			"scoring": {
+				"spice": 0.0,
+				"richness": 0.1,
+				"popularity": 0.8,
+				"adventurous": 0.1,
+				"chefPick": false,
+				"isCommonOrder": true
+			}
+		}
+	]
+}

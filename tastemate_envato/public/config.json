@@ -1,0 +1,17 @@
+{
+	"adminPassword": "tastemate",
+	"theme": {
+		"primaryColor": "#e87a5d",
+		"borderRadius": "16px",
+		"containerMaxWidth": "800px"
+	},
+	"copy": {
+		"tagline": "A fun way to decide what to eat.",
+		"shortcutLabel": "Choose a shortcut",
+		"microcopy": "Pick a vibe—TasteMate will recommend something you’ll actually enjoy."
+	},
+	"layout": {
+		"showDietaryToggle": true,
+		"shortcutsPerRow": 2
+	}
+}

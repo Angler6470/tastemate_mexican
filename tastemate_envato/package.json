@@ -1,0 +1,17 @@
+{
+	"name": "tastemate-mexican",
+	"version": "1.0.0",
+	"description": "Shortcut-driven food decision engine",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js",
+		"dev": "node server.js"
+	},
+	"dependencies": {
+		"dotenv": "^17.2.3",
+		"express": "^4.21.2"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.11"
+	}
+}
