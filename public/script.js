@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		config: null,
 		selectedCategory: "meal",
 		activeShortcut: null,
+		activeShortcutLabel: null,
 		scoredPool: [],
 		currentRecommendation: null,
 		lastShortcut: null,
@@ -393,7 +394,12 @@ document.addEventListener("DOMContentLoaded", () => {
 			// Update active state
 			const buttons = this.elements.shortcutsGrid.querySelectorAll(".shortcut-btn");
 			buttons.forEach(btn => {
-				btn.classList.toggle("active", btn.dataset.shortcut === shortcut);
+				const isActive = btn.dataset.shortcut === shortcut;
+				btn.classList.toggle("active", isActive);
+				
+				if (isActive) {
+					this.activeShortcutLabel = btn.querySelector(".shortcut-label").textContent;
+				}
 			});
 
 			// Calculate and display recommendation
@@ -532,7 +538,10 @@ document.addEventListener("DOMContentLoaded", () => {
 					</div>
 					<div class="card-content">
 						<div class="card-header">
-							<h2 class="card-title">${item.name}</h2>
+							<div class="card-title-group">
+								${this.activeShortcutLabel ? `<span class="picked-via">Picked via: ${this.activeShortcutLabel}</span>` : ""}
+								<h2 class="card-title">${item.name}</h2>
+							</div>
 							<span class="card-price">$${item.price.toFixed(2)}</span>
 						</div>
 						<p class="card-description">${item.description}</p>

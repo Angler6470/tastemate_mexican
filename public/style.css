@@ -553,6 +553,25 @@ body > * {
 	margin: 0;
 }
 
+.card-title-group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.picked-via {
+	display: inline-block;
+	font-size: 0.7rem;
+	font-weight: 700;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	background: #f1f5f9;
+	padding: 2px 8px;
+	border-radius: 4px;
+	width: fit-content;
+}
+
 /* Recommendation Card */
 .recommendation-card {
 	background: #fff;
