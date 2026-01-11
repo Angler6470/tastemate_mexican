@@ -1,0 +1,9 @@
+total 84
+drwxrwxr-x 3 casey casey  4096 Jan 11 11:37 .
+drwxrwxr-x 6 casey casey  4096 Jan 11 12:17 ..
+drwxrwxr-x 4 casey casey  4096 Jan 11 11:34 assets
+-rw-rw-r-- 1 casey casey   747 Jan 11 06:59 config.json
+-rw-rw-r-- 1 casey casey 14019 Jan 11 12:14 index.html
+-rw-rw-r-- 1 casey casey  6899 Jan 10 04:56 menu.json
+-rw-rw-r-- 1 casey casey 23871 Jan 11 06:59 script.js
+-rw-rw-r-- 1 casey casey 19893 Jan 11 07:00 style.css
