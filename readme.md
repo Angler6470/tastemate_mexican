@@ -3,17 +3,20 @@
 A shortcut-driven food decision engine for Mexican cuisine.
 
 ## Features
-- Category-based filtering (Meal, Dessert, Drink).
-- Bouncy, colorful shortcut buttons for quick decisions.
-- Ingredient exclusion system (Dietary & Ingredients).
-- Admin section for configuration and menu editing.
-- **Node.js/Express Backend**: Changes are persisted directly to JSON files.
+- **Smart Decision Engine**: Recommends the perfect dish based on "vibes" (Surprise, Favorite, Comfort, New).
+- **Customizable Scoring**: Admins can adjust weighted algorithms for each recommendation type.
+- **Dynamic Theme**: Change colors, border radius, container width, and background pattern directly from the UI.
+- **Ingredient Exclusions**: Built-in system for dietary restrictions (Onion, Dairy, Gluten, etc.).
+- **Node.js/Express Backend**: Persistent storage using standard JSON files (no database setup required).
+- **Mobile-First Design**: Optimized for tablets and phones with a "bubble" tactile aesthetic.
 
 ## Admin Access
-To access the admin section:
+To access the hidden admin section:
 1. Click the **TasteMate Logo** at the top of the page **5 times quickly**.
-2. Enter the admin password when prompted (Default: `tastemate`).
-3. Use the Admin Panel to change design settings, text, layout, and the menu via JSON.
+2. Enter the admin password when prompted (Default: `tastemate`, changeable in config).
+3. **Configuration Tab**: Change colors, microcopy, and UI settings.
+4. **Scoring Tab**: Fine-tune how "Favorites" or "Comfort" picks are calculated by adjusting weights.
+5. **Menu Editor**: Update your entire menu via a simple JSON editor.
 
 ## Local Development
 1. Install dependencies: `npm install`

@@ -20,7 +20,10 @@ Welcome to TasteMate! This guide will help you get your new restaurant decision 
 ## 4. How to Customize
 - **Admin Panel**: Click your restaurant's **logo 5 times** at the top of the screen.
 - **Password**: Enter the password from your `.env` file (default is `tastemate`).
-- **Editing**: You can change colors, text, and your menu items right there in the browser.
+- **Editing**: 
+  - **Look & Feel**: Change colors, bounciness, and background patterns.
+  - **Menu**: Add or remove dishes via the Menu Editor.
+  - **Scoring**: Want "House Favorites" to prioritize chef picks more? You can adjust the math in the "Scoring" tab!
 
 ---
 **Need help?** Check the main `README.md` for more detailed technical instructions!
