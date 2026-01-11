@@ -2,8 +2,11 @@
 	"adminPassword": "tastemate",
 	"theme": {
 		"primaryColor": "#e87a5d",
+		"secondaryColor": "#f1f5f9",
 		"borderRadius": "16px",
-		"containerMaxWidth": "800px"
+		"containerMaxWidth": "800px",
+		"patternOpacity": "0.08",
+		"hoverScale": "1.03"
 	},
 	"copy": {
 		"tagline": "A fun way to decide what to eat.",
@@ -13,5 +16,21 @@
 	"layout": {
 		"showDietaryToggle": true,
 		"shortcutsPerRow": 2
+	},
+	"scoringWeights": {
+		"favorite": {
+			"popularity": 0.5,
+			"chefPick": 0.3,
+			"isCommonOrder": 0.2
+		},
+		"comfort": {
+			"richness": 0.4,
+			"adventurous": 0.3,
+			"isCommonOrder": 0.3
+		},
+		"different": {
+			"adventurous": 0.6,
+			"popularity": 0.4
+		}
 	}
 }

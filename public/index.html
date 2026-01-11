@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TasteMate Mexican</title>
+  <title>TasteMate</title>
   <link rel="icon" type="image/png" href="assets/logo/logo-square.png" />
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
@@ -176,6 +176,7 @@
       
       <nav class="modal-tabs" id="admin-tabs">
         <button class="modal-tab-btn active" data-tab="config">Configuration</button>
+        <button class="modal-tab-btn" data-tab="scoring">Scoring Weights</button>
         <button class="modal-tab-btn" data-tab="menu">Menu Editor</button>
       </nav>
 
@@ -190,12 +191,26 @@
                 <input type="color" id="config-primary-color">
               </div>
               <div class="form-col">
+                <label for="config-secondary-color">Secondary Color</label>
+                <input type="color" id="config-secondary-color">
+              </div>
+              <div class="form-col">
                 <label for="config-border-radius">Border Radius (px)</label>
                 <input type="number" id="config-border-radius">
               </div>
+            </div>
+            <div class="form-row" style="margin-top: 10px;">
               <div class="form-col">
-                <label for="config-container-width">Container Width (px)</label>
+                <label for="config-container-width">Max Width (px)</label>
                 <input type="number" id="config-container-width">
+              </div>
+              <div class="form-col">
+                <label for="config-pattern-opacity">Pattern Opacity (0-1)</label>
+                <input type="number" id="config-pattern-opacity" step="0.01" min="0" max="1">
+              </div>
+              <div class="form-col">
+                <label for="config-hover-scale">Hover Scale (1.0-1.1)</label>
+                <input type="number" id="config-hover-scale" step="0.01" min="1" max="1.1">
               </div>
             </div>
           </div>
@@ -219,6 +234,59 @@
           <div class="form-group">
             <label for="config-admin-password">Admin Password</label>
             <input type="text" id="config-admin-password" class="form-input">
+          </div>
+        </div>
+
+        <!-- Scoring Section -->
+        <div id="admin-tab-scoring" class="admin-tab-content" hidden>
+          <div class="form-group">
+            <label>House Favorite Weights (Sum should be ~1.0)</label>
+            <div class="form-row">
+              <div class="form-col">
+                <label for="weight-fav-popularity">Popularity</label>
+                <input type="number" id="weight-fav-popularity" step="0.1" min="0" max="1">
+              </div>
+              <div class="form-col">
+                <label for="weight-fav-chef">Chef Pick</label>
+                <input type="number" id="weight-fav-chef" step="0.1" min="0" max="1">
+              </div>
+              <div class="form-col">
+                <label for="weight-fav-common">Common Order</label>
+                <input type="number" id="weight-fav-common" step="0.1" min="0" max="1">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Comfort Pick Weights</label>
+            <div class="form-row">
+              <div class="form-col">
+                <label for="weight-com-richness">Richness</label>
+                <input type="number" id="weight-com-richness" step="0.1" min="0" max="1">
+              </div>
+              <div class="form-col">
+                <label for="weight-com-adventurous">Low Adventurous (Inverse)</label>
+                <input type="number" id="weight-com-adventurous" step="0.1" min="0" max="1">
+              </div>
+              <div class="form-col">
+                <label for="weight-com-common">Common Order</label>
+                <input type="number" id="weight-com-common" step="0.1" min="0" max="1">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Something New Weights</label>
+            <div class="form-row">
+              <div class="form-col">
+                <label for="weight-new-adventurous">Adventurous</label>
+                <input type="number" id="weight-new-adventurous" step="0.1" min="0" max="1">
+              </div>
+              <div class="form-col">
+                <label for="weight-new-popularity">Low Popularity (Inverse)</label>
+                <input type="number" id="weight-new-popularity" step="0.1" min="0" max="1">
+              </div>
+            </div>
           </div>
         </div>
 

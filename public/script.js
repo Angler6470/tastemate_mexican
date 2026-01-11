@@ -59,11 +59,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			// Config Inputs
 			configPrimaryColor: document.getElementById("config-primary-color"),
+			configSecondaryColor: document.getElementById("config-secondary-color"),
 			configBorderRadius: document.getElementById("config-border-radius"),
+			configContainerWidth: document.getElementById("config-container-width"),
+			configPatternOpacity: document.getElementById("config-pattern-opacity"),
+			configHoverScale: document.getElementById("config-hover-scale"),
 			configTagline: document.getElementById("config-tagline"),
 			configMicrocopy: document.getElementById("config-microcopy"),
 			configShowDietary: document.getElementById("config-show-dietary"),
 			configAdminPassword: document.getElementById("config-admin-password"),
+
+			// Scoring Weights Inputs
+			weightFavPopularity: document.getElementById("weight-fav-popularity"),
+			weightFavChef: document.getElementById("weight-fav-chef"),
+			weightFavCommon: document.getElementById("weight-fav-common"),
+			weightComRichness: document.getElementById("weight-com-richness"),
+			weightComAdventurous: document.getElementById("weight-com-adventurous"),
+			weightComCommon: document.getElementById("weight-com-common"),
+			weightNewAdventurous: document.getElementById("weight-new-adventurous"),
+			weightNewPopularity: document.getElementById("weight-new-popularity"),
 		},
 
 		init() {
@@ -253,14 +267,18 @@ document.addEventListener("DOMContentLoaded", () => {
 			});
 
 			document.getElementById("admin-tab-config").hidden = (tab !== "config");
+			document.getElementById("admin-tab-scoring").hidden = (tab !== "scoring");
 			document.getElementById("admin-tab-menu").hidden = (tab !== "menu");
 		},
 
 		populateAdminPanel() {
 			// Theme
 			this.elements.configPrimaryColor.value = this.config.theme.primaryColor;
+			this.elements.configSecondaryColor.value = this.config.theme.secondaryColor || "#f1f5f9";
 			this.elements.configBorderRadius.value = parseInt(this.config.theme.borderRadius);
-			document.getElementById("config-container-width").value = parseInt(this.config.theme.containerMaxWidth);
+			this.elements.configContainerWidth.value = parseInt(this.config.theme.containerMaxWidth);
+			this.elements.configPatternOpacity.value = parseFloat(this.config.theme.patternOpacity || 0.08);
+			this.elements.configHoverScale.value = parseFloat(this.config.theme.hoverScale || 1.03);
 
 			// Copy
 			this.elements.configTagline.value = this.config.copy.tagline;
@@ -268,6 +286,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			// Layout
 			this.elements.configShowDietary.checked = this.config.layout.showDietaryToggle;
+
+			// Scoring Weights
+			const w = this.config.scoringWeights;
+			this.elements.weightFavPopularity.value = w.favorite.popularity;
+			this.elements.weightFavChef.value = w.favorite.chefPick;
+			this.elements.weightFavCommon.value = w.favorite.isCommonOrder;
+			
+			this.elements.weightComRichness.value = w.comfort.richness;
+			this.elements.weightComAdventurous.value = w.comfort.adventurous;
+			this.elements.weightComCommon.value = w.comfort.isCommonOrder;
+
+			this.elements.weightNewAdventurous.value = w.different.adventurous;
+			this.elements.weightNewPopularity.value = w.different.popularity;
 
 			// Password
 			this.elements.configAdminPassword.value = this.config.adminPassword;
@@ -280,12 +311,34 @@ document.addEventListener("DOMContentLoaded", () => {
 			try {
 				// Update Config Object
 				this.config.theme.primaryColor = this.elements.configPrimaryColor.value;
+				this.config.theme.secondaryColor = this.elements.configSecondaryColor.value;
 				this.config.theme.borderRadius = this.elements.configBorderRadius.value + "px";
-				this.config.theme.containerMaxWidth = document.getElementById("config-container-width").value + "px";
+				this.config.theme.containerMaxWidth = this.elements.configContainerWidth.value + "px";
+				this.config.theme.patternOpacity = this.elements.configPatternOpacity.value;
+				this.config.theme.hoverScale = this.elements.configHoverScale.value;
+
 				this.config.copy.tagline = this.elements.configTagline.value;
 				this.config.copy.microcopy = this.elements.configMicrocopy.value;
 				this.config.layout.showDietaryToggle = this.elements.configShowDietary.checked;
 				this.config.adminPassword = this.elements.configAdminPassword.value;
+
+				// Update Scoring Weights
+				this.config.scoringWeights = {
+					favorite: {
+						popularity: parseFloat(this.elements.weightFavPopularity.value),
+						chefPick: parseFloat(this.elements.weightFavChef.value),
+						isCommonOrder: parseFloat(this.elements.weightFavCommon.value)
+					},
+					comfort: {
+						richness: parseFloat(this.elements.weightComRichness.value),
+						adventurous: parseFloat(this.elements.weightComAdventurous.value),
+						isCommonOrder: parseFloat(this.elements.weightComCommon.value)
+					},
+					different: {
+						adventurous: parseFloat(this.elements.weightNewAdventurous.value),
+						popularity: parseFloat(this.elements.weightNewPopularity.value)
+					}
+				};
 
 				// Update Menu Object
 				const newMenu = JSON.parse(this.elements.menuJsonEditor.value);
@@ -345,6 +398,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			// Apply Colors
 			document.documentElement.style.setProperty("--color-orange", this.config.theme.primaryColor);
+			if (this.config.theme.secondaryColor) {
+				document.documentElement.style.setProperty("--bg-card", this.config.theme.secondaryColor);
+			}
 			
 			// Apply Border Radius
 			document.documentElement.style.setProperty("--border-radius", this.config.theme.borderRadius);
@@ -352,6 +408,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			// Apply Container Max Width
 			document.documentElement.style.setProperty("--container-max-width", this.config.theme.containerMaxWidth);
+
+			// Apply Pattern Opacity
+			if (this.config.theme.patternOpacity !== undefined) {
+				const bodyBefore = document.querySelector('body::before');
+				// We can't directly style pseudo-elements with JS, so we'll use a CSS variable
+				document.documentElement.style.setProperty("--pattern-opacity", this.config.theme.patternOpacity);
+			}
+
+			// Apply Hover Scale
+			if (this.config.theme.hoverScale) {
+				document.documentElement.style.setProperty("--hover-scale", this.config.theme.hoverScale);
+			}
 
 			// Apply Text
 			this.elements.appTagline.textContent = this.config.copy.tagline;
@@ -460,6 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		 */
 		calculateScore(item, shortcut) {
 			const s = item.scoring || {};
+			const weights = this.config.scoringWeights;
 			let score = 0;
 
 			switch (shortcut) {
@@ -470,25 +539,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 				case "favorite":
 					// House Favorite: Popular, chef-picked, commonly ordered
-					// Weight: popularity 50%, chefPick 30%, isCommonOrder 20%
-					score = (s.popularity || 0) * 0.5;
-					if (s.chefPick) score += 0.3;
-					if (s.isCommonOrder) score += 0.2;
+					const fw = weights.favorite;
+					score = (s.popularity || 0) * fw.popularity;
+					if (s.chefPick) score += fw.chefPick;
+					if (s.isCommonOrder) score += fw.isCommonOrder;
 					break;
 
 				case "comfort":
 					// Comfort Pick: Rich, familiar, commonly ordered
-					// Weight: richness 40%, low adventurous 30%, isCommonOrder 30%
-					score = (s.richness || 0) * 0.4;
-					score += (1 - (s.adventurous || 0)) * 0.3;
-					if (s.isCommonOrder) score += 0.3;
+					const cw = weights.comfort;
+					score = (s.richness || 0) * cw.richness;
+					score += (1 - (s.adventurous || 0)) * cw.adventurous;
+					if (s.isCommonOrder) score += cw.isCommonOrder;
 					break;
 
 				case "different":
 					// Try Something New: Adventurous, less common
-					// Weight: adventurous 60%, inverse popularity 40%
-					score = (s.adventurous || 0) * 0.6;
-					score += (1 - (s.popularity || 0)) * 0.4;
+					const nw = weights.different;
+					score = (s.adventurous || 0) * nw.adventurous;
+					score += (1 - (s.popularity || 0)) * nw.popularity;
 					break;
 
 				default:

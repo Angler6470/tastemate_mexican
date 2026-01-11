@@ -38,6 +38,8 @@
 	--border-radius: 16px;
 	--border-radius-lg: 24px;
 	--container-max-width: 800px;
+	--pattern-opacity: 0.08;
+	--hover-scale: 1.03;
 }
 
 *,
@@ -74,7 +76,7 @@ body::before {
 	background-image: url("assets/mexican_pattern.svg");
 	background-repeat: repeat;
 	background-size: 300px; /* Professional, subtle scale */
-	opacity: 0.88;
+	opacity: var(--pattern-opacity);
 	pointer-events: none;
 	z-index: 0;
 }
@@ -451,7 +453,7 @@ body > * {
 }
 
 .shortcut-btn:hover {
-	transform: scale(1.03) translateY(-4px);
+	transform: scale(var(--hover-scale)) translateY(-4px);
 }
 
 .shortcut-btn:active,
