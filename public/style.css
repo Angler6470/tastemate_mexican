@@ -828,6 +828,25 @@ body > * {
 }
 
 @media (max-width: 480px) {
+	body {
+		padding: var(--space-sm);
+	}
+
+	.container {
+		padding: var(--space-md);
+		border-radius: 16px;
+	}
+
+	.shortcuts-grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 12px;
+		padding: 4px;
+	}
+
+	.shortcut-btn {
+		border-radius: 20px;
+	}
+
 	.menu-list {
 		grid-template-columns: 1fr;
 	}
